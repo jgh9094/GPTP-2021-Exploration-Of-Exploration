@@ -510,9 +510,9 @@ void DiagWorld::SetDataTracking()
   // will add it to the world for tracking purposes
   // AddSystematics(sys_ptr);
   // summary stats (whatever resolution we want)
-  SetupSystematicsFile(0, config.OUTPUT_DIR() + "systematics.csv").SetTimingRepeat(config.PRINT_INTERVAL());
+  // SetupSystematicsFile(0, config.OUTPUT_DIR() + "systematics.csv").SetTimingRepeat(config.PRINT_INTERVAL());
 
-  std::cerr << "Systematics tracking complete!" << std::endl;
+  // std::cerr << "Systematics tracking complete!" << std::endl;
 
   // initialize all nodes (ask charles)
   std::cerr << "Initializing nodes..." << std::endl;
