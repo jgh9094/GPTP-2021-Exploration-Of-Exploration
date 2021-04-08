@@ -239,7 +239,7 @@ class DiagWorld : public emp::World<Org>
     // file we are working with
     emp::DataFile data_file;
     // systematics tracking
-    emp::Ptr<systematics_t> sys_ptr;
+    // emp::Ptr<systematics_t> sys_ptr;
     // node to track population fitnesses
     nodef_t pop_fit;
     // node to track population opitmized count
@@ -304,7 +304,7 @@ void DiagWorld::SetOnUpdate()
     EvaluationStep();
 
     // take a snapshot if nessecaryn (ask if appropiate place to take snapshot)
-    if(GetUpdate() == config.MAX_GENS() - 1){SnapshotPhylogony();}
+    // if(GetUpdate() == config.MAX_GENS() - 1){SnapshotPhylogony();}
 
     // step 2: select parent solutions for
     SelectionStep();
@@ -493,19 +493,19 @@ void DiagWorld::SetDataTracking()
   // systematic tracking (ask alex about it)
   std::cerr << "Setting up systematics tracking..." << std::endl;
 
-  sys_ptr = emp::NewPtr<systematics_t>([](const Org & o) {return o.GetGenome();});
+  // sys_ptr = emp::NewPtr<systematics_t>([](const Org & o) {return o.GetGenome();});
 
-  sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
-    return emp::to_string(taxon.GetData().GetFitness());
-  }, "fitness", "Taxon fitness");
+  // sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
+  //   return emp::to_string(taxon.GetData().GetFitness());
+  // }, "fitness", "Taxon fitness");
 
-  sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
-    return emp::ToString(taxon.GetData().GetPhenotype());
-  }, "phenotype", "Taxon Phenotype");
+  // sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
+  //   return emp::ToString(taxon.GetData().GetPhenotype());
+  // }, "phenotype", "Taxon Phenotype");
 
-  sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
-    return emp::ToString(taxon.GetInfo());
-  }, "genotype", "Taxon Genotype");
+  // sys_ptr->AddSnapshotFun([](const taxon_t & taxon) {
+  //   return emp::ToString(taxon.GetInfo());
+  // }, "genotype", "Taxon Genotype");
 
   // will add it to the world for tracking purposes
   AddSystematics(sys_ptr);
@@ -746,9 +746,9 @@ void DiagWorld::EvaluationStep()
     fit_vec[i] = (org.GetClone()) ? org.GetAggregate() : evaluate(org);
 
     // systematic stuff
-    emp::Ptr<taxon_t> taxon = sys_ptr->GetTaxonAt(i);
-    taxon->GetData().RecordFitness(org.GetAggregate());
-    taxon->GetData().RecordPhenotype(org.GetScore());
+    // emp::Ptr<taxon_t> taxon = sys_ptr->GetTaxonAt(i);
+    // taxon->GetData().RecordFitness(org.GetAggregate());
+    // taxon->GetData().RecordPhenotype(org.GetScore());
   }
 }
 
@@ -1207,10 +1207,10 @@ size_t DiagWorld::FindOptimized()
   return max_pos;
 }
 
-void DiagWorld::SnapshotPhylogony()
-{
-  sys_ptr->Snapshot(config.OUTPUT_DIR() + "phylo_" + emp::to_string(GetUpdate()) + ".csv");
-}
+// void DiagWorld::SnapshotPhylogony()
+// {
+//   sys_ptr->Snapshot(config.OUTPUT_DIR() + "phylo_" + emp::to_string(GetUpdate()) + ".csv");
+// }
 
 
 ///< helper functions
