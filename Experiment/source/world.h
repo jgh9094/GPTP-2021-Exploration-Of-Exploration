@@ -508,7 +508,7 @@ void DiagWorld::SetDataTracking()
   // }, "genotype", "Taxon Genotype");
 
   // will add it to the world for tracking purposes
-  AddSystematics(sys_ptr);
+  // AddSystematics(sys_ptr);
   // summary stats (whatever resolution we want)
   SetupSystematicsFile(0, config.OUTPUT_DIR() + "systematics.csv").SetTimingRepeat(config.PRINT_INTERVAL());
 
