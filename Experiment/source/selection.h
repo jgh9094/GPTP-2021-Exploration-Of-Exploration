@@ -205,6 +205,23 @@ class Selection
      */
     size_t EpsiLexicase(const fmatrix_t & mscore, const double epsi, const size_t M);
 
+    /**
+     * Down Sampled Epsilon Lexicase Selector:
+     *
+     * This function will iterate through a subset of individual testcases.
+     * While filtering down the population on each one, only taking the top performers.
+     * The top performers must be some within some distance of the top performance to pass.
+     *
+     * In the event of ties on the last testcase being used, a solution will be selected at random.
+     *
+     * @param mscore Matrix of solution fitnesses (must be the same amount of fitness per solution)(mscore.size => # of orgs).
+     * @param epsi Epsilon threshold value.
+     * @param t_cases vector of testcases to select from.
+     *
+     * @return A single winning solution id.
+     */
+    size_t DSELexicase(const fmatrix_t & mscore, const double epsi, const ids_t & t_cases);
+
   private:
 
     // random pointer from world.h
@@ -513,6 +530,64 @@ size_t Selection::EpsiLexicase(const fmatrix_t & mscore, const double epsi, cons
     {
       // make sure each solutions vector is the right size
       emp_assert(mscore[filter[i]].size() == M);
+      scores[i] = mscore[filter[i]][testcase];
+    }
+
+    // group org ids by performance in descending order
+    fitgp_t group = FitnessGroup(scores);
+
+    // update the filter vector with pop ids that are worthy
+    ids_t temp_filter = filter;
+    filter.clear();
+    for(const auto & p : group)
+    {
+      if(Distance(group.begin()->first, p.first) <= epsi)
+      {
+        for(auto id : p.second)
+        {
+          filter.push_back(temp_filter[id]);
+        }
+      }
+      else{break;}
+    }
+
+    ++tcnt;
+  }
+
+  // Get a random position from the remaining filtered solutions (may be one left too)
+  emp_assert(0 < filter.size());
+  size_t wid = emp::Choose(*random, filter.size(), 1)[0];
+
+  return filter[wid];
+}
+
+size_t Selection::DSELexicase(const fmatrix_t & mscore, const double epsi, const ids_t & t_cases)
+{
+  // quick checks
+  emp_assert(0 < mscore.size()); emp_assert(0.0 <= epsi);
+  emp_assert(0 < t_cases.size());
+
+  // create a vector of shuffled testcase ids
+  ids_t test_id(t_cases.size());
+  std::iota(test_id.begin(), test_id.end(), 0);
+  emp::Shuffle(*Random, test_id);
+
+  // create vector to hold filtered elite solutions
+  ids_t filter(mscore.size());
+  std::iota(filter.begin(), filter.end(), 0);
+
+  // iterate through testcases until we are out or have a winner
+  size_t tcnt = 0;
+  while(tcnt != t_cases.size() || filter.size() != 1)
+  {
+    // testcase we are randomly evaluating
+    size_t testcase = t_cases[test_id[tcnt]];
+
+    // create vector of current filter solutions
+    score_t scores(filter.size());
+    for(size_t i = 0; i < filter.size(); ++i)
+    {
+      // make sure each solutions vector is the right size
       scores[i] = mscore[filter[i]][testcase];
     }
 
