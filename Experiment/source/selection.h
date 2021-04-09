@@ -578,7 +578,7 @@ size_t Selection::DSELexicase(const fmatrix_t & mscore, const double epsi, const
 
   // iterate through testcases until we are out or have a winner
   size_t tcnt = 0;
-  while(tcnt != t_cases.size() || filter.size() != 1)
+  while(tcnt < t_cases.size() && filter.size() != 1)
   {
     // testcase we are randomly evaluating
     size_t testcase = t_cases[test_id[tcnt]];
