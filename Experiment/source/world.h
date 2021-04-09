@@ -10,6 +10,8 @@
 
 ///< empirical headers
 #include "Evolve/World.h"
+#include "tools/Random.h"
+#include "tools/random_utils.h"
 
 ///< experiment headers
 #include "config.h"
@@ -172,6 +174,8 @@ class DiagWorld : public emp::World<Org>
     void NoveltySearch();
 
     void EpsilonLexicase();
+
+    void DownSampledLexicase();
 
 
     ///< evaluation function implementations
@@ -961,6 +965,7 @@ void DiagWorld::EpsilonLexicase()
     emp_assert(selection); emp_assert(pop.size() == config.POP_SIZE());
     emp_assert(0 < pop.size());
 
+    // fitness matrix
     fmatrix_t matrix = PopFitMat();
 
     // select parent ids
@@ -977,6 +982,37 @@ void DiagWorld::EpsilonLexicase()
   std::cerr << "Epsilon Lexicase selection scheme set!" << std::endl;
 }
 
+void DiagWorld::DownSampledLexicase()
+{
+  std::cerr << "Setting selection scheme: DownSampledLexicase" << std::endl;
+
+  select = [this]()
+  {
+    // quick checks
+    emp_assert(selection); emp_assert(pop.size() == config.POP_SIZE());
+    emp_assert(0 < pop.size()); emp_assert(0 < config.DSLEX_PROP());
+
+    // fitness matrix
+    fmatrix_t matrix = PopFitMat();
+
+    // select parent ids
+    ids_t parent(pop.size());
+
+    // create subset of testcases to use for downsampled lexicase
+    size_t subset = (double) config.OBJECTIVE_CNT() * config.DSLEX_PROP();
+    std::cerr << "subset=" << subset << std::endl;
+    ids_t test_cases = emp::Choose(*random_ptr, config.OBJECTIVE_CNT(), subset);
+
+    for(size_t i = 0; i < parent.size(); ++i)
+    {
+      parent[i] = selection->DSELexicase(matrix, config.LEX_EPS(), test_cases);
+    }
+
+    return parent;
+  };
+
+  std::cerr << "Down Sampled Lexicase selection scheme set!" << std::endl;
+}
 
 ///< evaluation function implementations
 
