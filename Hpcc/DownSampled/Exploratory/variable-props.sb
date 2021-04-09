@@ -1,0 +1,149 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=17:00:00               # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=1-350                 # number of jobs being created, each with its array id
+#SBATCH --mem=20G                     # memory required per node - amount of memory (in gigs)
+#SBATCH --job-name dsl-vp             # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab             # research group account being used
+
+##################################
+# Setup relevant directories
+##################################
+DATA_DIR=/mnt/ls15/scratch/users/herna383/GPTP-2021/DOWNSAMPLED
+
+##################################
+# Setup relevant directories
+# Previously used ones will be commented out
+##################################
+REPLICATION_OFFSET=0
+
+##################################
+# Setup random seed info
+##################################
+PROBLEM_SEED_OFFSET=1000
+SEED=$((SLURM_ARRAY_TASK_ID + PROBLEM_SEED_OFFSET + REPLICATION_OFFSET))
+
+##################################
+# Setup epsilon threshold
+##################################
+EPS__0=0.0
+EPS__1=0.1
+EPS__3=0.3
+EPS__6=0.6
+EPS__12=1.2
+EPS__25=2.5
+EPS__50=5.0
+EPS__100=10.0
+
+##################################
+# Setup trait count
+##################################
+DSL__PRP__1=0.0
+DSL__PRP__2=0.02
+DSL__PRP__3=0.03
+DSL__PRP__12=0.12
+DSL__PRP__25=0.25
+DSL__PRP__50=0.5
+DSL__PRP__100=1.0
+
+##################################
+# Folder naming
+##################################
+DIAGNOSTIC_1=EXPLOITATION
+DIAGNOSTIC_2=STRUCTEXPLOITATION
+DIAGNOSTIC_3=CONTRAECOLOGY
+DIAGNOSTIC_4=EXPLORATION
+
+##################################
+# Setup selection scheme
+##################################
+MULAMBDA=0
+TOURNAMENT=1
+FITSHARING=2
+NOVELTY=3
+LEXICASE=4
+DOWNSAMPLED=5
+
+##################################
+# Setup diagnostic
+##################################
+EXPLOITATION=0
+STRUCTURED_EXPLOITATION=1
+CONTRADICTORY_ECOLOGY=2
+EXPLORATION=3
+
+###### Treatments #######
+TREATMENT__PRP_1__MIN=1
+TREATMENT__PRP_1__MAX=50
+
+TREATMENT__PRP_2__MIN=51
+TREATMENT__PRP_2__MAX=100
+
+TREATMENT__PRP_3__MIN=101
+TREATMENT__PRP_3__MAX=150
+
+TREATMENT__PRP_12__MIN=151
+TREATMENT__PRP_12__MAX=200
+
+TREATMENT__PRP_25__MIN=201
+TREATMENT__PRP_25__MAX=250
+
+TREATMENT__PRP_50__MIN=251
+TREATMENT__PRP_50__MAX=300
+
+TREATMENT__PRP_100__MIN=301
+TREATMENT__PRP_100__MAX=350
+
+##################################
+# Config file parameters
+##################################
+ACCURACY=.99
+GENERATIONS=50000
+ACCURACY_DIR=99
+POPULATION=500
+
+####################################################################
+
+if [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_1__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_1__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__1}__SEED_${SEED}
+  PROP=${DSL__PRP__1}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_2__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_2__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__2}__SEED_${SEED}
+  PROP=${DSL__PRP__2}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_3__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_3__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__3}__SEED_${SEED}
+  PROP=${DSL__PRP__3}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_12__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_12__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__12}__SEED_${SEED}
+  PROP=${DSL__PRP__12}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_25__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_25__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__25}__SEED_${SEED}
+  PROP=${DSL__PRP__25}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_50__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_50__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__50}__SEED_${SEED}
+  PROP=${DSL__PRP__50}
+
+elif [ ${SLURM_ARRAY_TASK_ID} -ge ${TREATMENT__PRP_100__MIN} ] && [ ${SLURM_ARRAY_TASK_ID} -le ${TREATMENT__PRP_100__MAX} ] ; then
+  NAME=DIA_${DIAGNOSTIC_4}__PROP_${DSL__PRP__100}__SEED_${SEED}
+  PROP=${DSL__PRP__100}
+
+else
+  echo "${SEED} from ${PROBLEM} failed to launch" >> /mnt/ls15/scratch/users/herna383/ps-coh-failtolaunch.txt
+fi
+
+####################################################################
+
+RUN_DIR=${DATA_DIR}/TRT_${OBJECTIVE_CNT}__ACC_${ACCURACY_DIR}__GEN_${GENERATIONS}/${NAME}/
+
+# make a run directory
+mkdir -p ${RUN_DIR}
+
+echo "../../../Experiment/dia_world -SEED ${SEED} -OBJECTIVE_CNT ${OBJECTIVE_CNT} -DIAGNOSTIC ${EXPLORATION} -SELECTION ${DOWNSAMPLED} -ACCURACY ${ACCURACY} -MAX_GENS ${GENERATIONS} -POP_SIZE ${POPULATION} -OUTPUT_DIR ${RUN_DIR} -LEX_EPS ${EPS__0} -DSLEX_PROP ${PROP} > run.log" > ./cmd-coh.txt
+
+../../../Experiment/dia_world -SEED ${SEED} -OBJECTIVE_CNT ${OBJECTIVE_CNT} -DIAGNOSTIC ${EXPLORATION} -SELECTION ${DOWNSAMPLED} -ACCURACY ${ACCURACY} -MAX_GENS ${GENERATIONS} -POP_SIZE ${POPULATION} -OUTPUT_DIR ${RUN_DIR} -LEX_EPS ${EPS__0} -DSLEX_PROP ${PROP}
