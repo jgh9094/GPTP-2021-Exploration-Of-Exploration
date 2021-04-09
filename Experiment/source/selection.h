@@ -570,7 +570,7 @@ size_t Selection::DSELexicase(const fmatrix_t & mscore, const double epsi, const
   // create a vector of shuffled testcase ids
   ids_t test_id(t_cases.size());
   std::iota(test_id.begin(), test_id.end(), 0);
-  emp::Shuffle(*Random, test_id);
+  emp::Shuffle(*random, test_id);
 
   // create vector to hold filtered elite solutions
   ids_t filter(mscore.size());
