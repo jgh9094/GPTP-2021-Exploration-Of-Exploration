@@ -403,6 +403,10 @@ void DiagWorld::SetSelection()
       EpsilonLexicase();
       break;
 
+    case 5: // down sampled epsilon lexicase
+      DownSampledLexicase();
+      break;
+
     default:
       std::cerr << "ERROR UNKNOWN SELECTION CALL" << std::endl;
       emp_assert(true);
@@ -1000,7 +1004,6 @@ void DiagWorld::DownSampledLexicase()
 
     // create subset of testcases to use for downsampled lexicase
     size_t subset = (double) config.OBJECTIVE_CNT() * config.DSLEX_PROP();
-    std::cerr << "subset=" << subset << std::endl;
     ids_t test_cases = emp::Choose(*random_ptr, config.OBJECTIVE_CNT(), subset);
 
     for(size_t i = 0; i < parent.size(); ++i)
