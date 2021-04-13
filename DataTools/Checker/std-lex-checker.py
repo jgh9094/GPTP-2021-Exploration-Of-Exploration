@@ -58,7 +58,7 @@ def CheckDir(dir, acc, gens):
         print('Data dirctory exists=', dir)
     else:
         print('DOES NOT EXIST=', dir)
-        # sys.exit('DATA DIRECTORY DOES NOT EXIST')
+        sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
     print('Full data Dir=', dir)
     print('Now checking data replicates sub directories')
