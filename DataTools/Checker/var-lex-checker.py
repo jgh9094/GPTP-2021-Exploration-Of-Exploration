@@ -90,7 +90,7 @@ def CheckDir(dir, var, acc, gens, off):
 
     for seed in SEEDS:
         var_val = VLIST[int((int(seed)-1)/REP_CNT)]
-        seed_int = int(seed) + off
+        seed_int = str(int(seed) + off)
         DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed_int +'/'
 
         print('Sub directory:', DATA_DIR)
