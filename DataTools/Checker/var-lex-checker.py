@@ -69,7 +69,7 @@ def CheckDir(dir, var, acc, gens):
         sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
 
-    FULL_DIR = dir + SetVarDir()
+    FULL_DIR = dir + SetVarDir(var)
     # check if data dir exists
     if os.path.isdir(FULL_DIR):
         print('Variant data dirctory exists=', FULL_DIR)
