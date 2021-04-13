@@ -134,6 +134,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
             # # create pandas data frame of entire csv and grab the row
             df = pd.read_csv(DATA_DIR + 'data.csv')
             df = df.iloc[::res, :]
+            ID = [seed] * len(GEN_LIST)
 
             # time to export the data
             cdf = pd.DataFrame({'gen': pd.Series(GEN_LIST),
@@ -143,7 +144,8 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
                             'opt_avg': pd.Series(df[POP_OPT_AVG].tolist()),
                             'opt_max': pd.Series(df[POP_OPT_MAX].tolist()),
                             'uni_avg': pd.Series(df[POP_UNI_OBJ].tolist()),
-                            'com_cnt': pd.Series(df[COM_SOL_CNT].tolist())})
+                            'com_cnt': pd.Series(df[COM_SOL_CNT].tolist()),
+                            'run_id': pd.Series(ID)})
 
             DF_LIST.append(cdf)
 
