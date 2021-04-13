@@ -26,22 +26,6 @@ import os
 # Experiment variables
 REP_CNT = 50
 
-# Will set the appropiate list of variables we are checking for
-def SetVarList(s):
-    # case by case
-    if s == 0:
-        return MU_LIST
-    elif s == 1:
-        return TR_LIST
-    elif s == 2:
-        return FS_LIST
-    elif s == 3:
-        return NS_LIST
-    elif s == 4:
-        return LX_LIST
-    else:
-        sys.exit("UNKNOWN VARIABLE LIST")
-
 # return the number of rows in a csv file
 def CountRows(file_name):
     # create pandas data frame of entire csv
