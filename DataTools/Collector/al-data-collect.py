@@ -22,11 +22,8 @@ import sys
 import os
 
 # variables we are testing for each replicate range
-MU_LIST = [1,2,4,8,16,32,64,128,256,512]
-TR_LIST = [1,2,4,8,16,32,64,128,256,512]
-LX_LIST = [0.0,0.1,0.3,0.6,1.2,2.5,5.0,10.0]
-FS_LIST = [0.0,10.0,30.0,60.0,12.0,250.0,500.0,1000.0]
-NS_LIST = [0,1,2,4,8,15,30,60]
+LC_LIST = ['10', '20', '50', '100', '200', '500', '1000']
+DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 # seed experiements replicates range
 REP_NUM = 50
 # columns we are interested in grabbing
@@ -44,120 +41,70 @@ OPT_AGG_PER = 'opt_agg_per'
 OPT_OBJ_CNT = 'opt_obj_cnt'
 
 # return appropiate string dir name (based off run.sb file naming system)
-def SetSelection(s):
+def SetVariant(s):
     # case by case
     if s == 0:
-        return 'MULAMBDA'
-    elif s == 1:
-        return 'TOURNAMENT'
-    elif s == 2:
-        return 'SHARING'
-    elif s == 3:
-        return 'NOVELTY'
-    elif s == 4:
         return 'LEXICASE'
+    elif s == 1:
+        return 'DOWNSAMPLED'
+    elif s == 2:
+        return 'COHORT'
     else:
-        sys.exit("UNKNOWN SELECTION")
+        sys.exit("UNKNOWN VARIANT")
 
 # return appropiate string dir name (based off run.sb file naming system)
-def SetDiagnostic(s):
+def SetVariantVar(s):
     # case by case
     if s == 0:
-        return 'EXPLOITATION'
-    elif s == 1:
-        return 'STRUCTEXPLOITATION'
-    elif s == 2:
-        return 'CONTRAECOLOGY'
-    elif s == 3:
-        return 'EXPLORATION'
-    else:
-        sys.exit('UNKNOWN DIAGNOSTIC')
-
-# return appropiate string dir name (based off run.sb file naming system)
-def SetSelectionVar(s):
-    # case by case
-    if s == 0:
-        return 'MU'
-    elif s == 1:
-        return 'T'
-    elif s == 2:
-        return 'SIG'
-    elif s == 3:
-        return 'K'
-    elif s == 4:
         return 'EPS'
+    elif s == 1:
+        return 'PROP'
+    elif s == 2:
+        return 'COHP'
     else:
-        sys.exit("UNKNOWN SELECTION VAR")
-
-# return the correct amount of seed ran by experiment treatment
-def SetSeeds(s):
-    # case by case
-    if s == 0 or s == 1:
-        seed = []
-        seed.append([x for x in range(1,51)])
-        seed.append([x for x in range(51,101)])
-        seed.append([x for x in range(101,151)])
-        seed.append([x for x in range(151,201)])
-        seed.append([x for x in range(201,251)])
-        seed.append([x for x in range(251,301)])
-        seed.append([x for x in range(301,351)])
-        seed.append([x for x in range(351,401)])
-        seed.append([x for x in range(401,451)])
-        seed.append([x for x in range(451,501)])
-        return seed
-
-    elif s == 2 or s == 3 or s == 4:
-        seed = []
-        seed.append([x for x in range(1,51)])
-        seed.append([x for x in range(51,101)])
-        seed.append([x for x in range(101,151)])
-        seed.append([x for x in range(151,201)])
-        seed.append([x for x in range(201,251)])
-        seed.append([x for x in range(251,301)])
-        seed.append([x for x in range(301,351)])
-        seed.append([x for x in range(351,401)])
-        return seed
-
-    else:
-        sys.exit('SEEDS SELECTION UNKNOWN')
+        sys.exit("UNKNOWN VARIANT VAR")
 
 # Will set the appropiate list of variables we are checking for
 def SetVarList(s):
     # case by case
     if s == 0:
-        return MU_LIST
+        return LC_LIST
     elif s == 1:
-        return TR_LIST
-    elif s == 2:
-        return FS_LIST
-    elif s == 3:
-        return NS_LIST
-    elif s == 4:
-        return LX_LIST
+        return DS_LIST
     else:
-        sys.exit("UNKNOWN VARIABLE LIST")
+        sys.exit("UNKNOWN VARIANT LIST")
+
+# return the correct amount of seed ran by experiment treatment
+def SetSeeds():
+    seed = []
+    seed.append([x for x in range(1,51)])
+    seed.append([x for x in range(51,101)])
+    seed.append([x for x in range(101,151)])
+    seed.append([x for x in range(151,201)])
+    seed.append([x for x in range(201,251)])
+    seed.append([x for x in range(251,301)])
+    seed.append([x for x in range(301,351)])
+    return seed
 
 # loop through differnt files that exist
-def DirExplore(data, dump, sel, dia, offs, res, obj, acc, gens):
+def DirExplore(data, dump, var, offs, res, obj, acc, gens):
     # check if data dir exists
     if os.path.isdir(data) == False:
         print('DATA=', data)
         sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
-    # check if data dir exists
+    # check if dump dir exists
     if os.path.isdir(dump) == False:
         print('DATA=', data)
         sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
-    # check that selection data folder exists
-    SEL_DIR = data + SetSelection(sel) + '/TRT_' + obj + '__ACC_' + acc + '__GEN_' + gens + '/'
-    if os.path.isdir(SEL_DIR) == False:
-        print('SEL_DIR=', SEL_DIR)
-        sys.exit('SELECTION DIRECTORY NOT FOUND')
+    # what directory are we looking into
+    SEL_DIR = data + SetVariant(var) + '/'
+    print('Selection dir=', SEL_DIR)
 
     # Set vars that we need to loop through
-    VLIST = SetVarList(sel)
-    SEEDS = SetSeeds(sel)
+    VLIST = SetVarList(var)
+    SEEDS = SetSeeds()
 
     # gens we are expecting
     GEN_LIST = [x for x in range(int(gens)+1) if x%res == 0]
@@ -174,11 +121,18 @@ def DirExplore(data, dump, sel, dia, offs, res, obj, acc, gens):
 
         # iterate through seeds to collect data
         for s in seeds:
-            seed = str(s + offs)
-            DATA_DIR =  SEL_DIR + 'DIA_' + SetDiagnostic(dia) + '__' + SetSelectionVar(sel) + '_' + var_val + '__SEED_' + seed + '/data.csv'
+            seed = str(int(s) + offs)
+            DATA_DIR = ''
 
-            # create pandas data frame of entire csv and grab the row
-            df = pd.read_csv(DATA_DIR)
+            # check the standard lexicase stuff
+            if var == 0:
+                DATA_DIR = SEL_DIR + 'TRT_' + var_val + '__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__EPS_0.0__SEED_' + seed +'/'
+            else:
+                DATA_DIR = SEL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed +'/'
+
+            print('DATA_DIR=', DATA_DIR)
+            # # create pandas data frame of entire csv and grab the row
+            df = pd.read_csv(DATA_DIR + 'data.csv')
             df = df.iloc[::res, :]
 
             # time to export the data
@@ -195,15 +149,14 @@ def DirExplore(data, dump, sel, dia, offs, res, obj, acc, gens):
 
     fin_df = pd.concat(DF_LIST)
 
-    fin_df.to_csv(path_or_buf= dump + 'al-' + SetDiagnostic(dia).lower() + '-' + gens + '-' + obj + '-' + acc + '.csv', index=False)
+    fin_df.to_csv(path_or_buf= dump + 'al-' + SetVariant(var).lower() + '.csv', index=False)
 
 def main():
     # Generate and get the arguments
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("data_dir",    type=str, help="Target experiment directory.")
     parser.add_argument("dump_dir",    type=str, help="Data dumping directory")
-    parser.add_argument("selection",   type=int, help="Selection scheme we are looking for? \n0: (μ,λ)\n1: Tournament\n2: Fitness Sharing\n3: Novelty Search\n4: Espilon Lexicase")
-    parser.add_argument("diagnostic",  type=int, help="Diagnostic we are looking for?\n0: Exploitation\n1: Structured Exploitation\n2: Ecology Contradictory Traits\n3: Exploration")
+    parser.add_argument("variant",   type=int, help="Lexicase variant we are looking for? \n0: standard\n1: down sampled\n2: cohort")
     parser.add_argument("seed_offset", type=int, help="Experiment seed offset. (REPLICATION_OFFSET + PROBLEM_SEED_OFFSET")
     parser.add_argument("resolution",  type=int, help="The resolution desired for the data extraction")
     parser.add_argument("objectives", type=str, help="Number of objectives being optimized")
@@ -216,10 +169,8 @@ def main():
     print('Data directory=',data_dir)
     dump_dir = args.dump_dir.strip()
     print('Dump directory=', dump_dir)
-    selection = args.selection
-    print('Selection scheme=', SetSelection(selection))
-    diagnostic = args.diagnostic
-    print('Diagnostic=',SetDiagnostic(diagnostic))
+    variant = args.variant
+    print('Lexicase varaint=', SetVariant(variant))
     offset = args.seed_offset
     print('Offset=', offset)
     resolution = args.resolution
@@ -233,7 +184,7 @@ def main():
 
     # Get to work!
     print("\nChecking all related data directories now!")
-    DirExplore(data_dir, dump_dir, selection, diagnostic, offset, resolution, objectives, accuracy, generations)
+    DirExplore(data_dir, dump_dir, variant, offset, resolution, objectives, accuracy, generations)
 
 if __name__ == "__main__":
     main()
