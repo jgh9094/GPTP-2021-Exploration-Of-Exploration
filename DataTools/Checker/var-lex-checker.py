@@ -40,6 +40,16 @@ def SetVarList(s):
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
+# Will set the appropiate variant folder name
+def SetVarDir(s):
+    # case by case
+    if s == 0:
+        return 'DOWNSAMPLED'
+    elif s == 1:
+        return 'COHORT'
+    else:
+        sys.exit("UNKNOWN VARIABLE LIST")
+
 # return the number of rows in a csv file
 def CountRows(file_name):
     # create pandas data frame of entire csv
@@ -58,7 +68,16 @@ def CheckDir(dir, var, acc, gens):
         print('DOES NOT EXIST=', dir)
         sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
-    print('Full data Dir=', dir)
+
+    FULL_DIR = dir + SetVarDir()
+    # check if data dir exists
+    if os.path.isdir(FULL_DIR):
+        print('Variant data dirctory exists=', FULL_DIR)
+    else:
+        print('DOES NOT EXIST=', FULL_DIR)
+        sys.exit('DATA DIRECTORY DOES NOT EXIST')
+
+    print('Full data Dir=', FULL_DIR)
     print('Now checking data replicates sub directories')
 
     # step 2: create seed data directories and check if exist
@@ -71,7 +90,7 @@ def CheckDir(dir, var, acc, gens):
 
     for seed in SEEDS:
         var_val = VLIST[int((int(seed)-1)/REP_CNT)]
-        DATA_DIR = dir + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed +'/'
+        DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed +'/'
 
         print('Sub directory:', DATA_DIR)
 
