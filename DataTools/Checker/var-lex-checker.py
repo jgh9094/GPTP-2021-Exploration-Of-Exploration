@@ -27,7 +27,7 @@ import os
 REP_CNT = 50
 
 # variables we are testing for each replicate range
-DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.50', '1.0']
+DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 CL_LIST = []
 
 # Will set the appropiate list of variables we are checking for
