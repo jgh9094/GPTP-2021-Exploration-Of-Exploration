@@ -59,7 +59,7 @@ def CountRows(file_name):
     return gens[-1]
 
 # responsible for looking through the data directories for success
-def CheckDir(dir, var, acc, gens):
+def CheckDir(dir, var, acc, gens, off):
 
     # check if data dir exists
     if os.path.isdir(dir):
@@ -90,7 +90,8 @@ def CheckDir(dir, var, acc, gens):
 
     for seed in SEEDS:
         var_val = VLIST[int((int(seed)-1)/REP_CNT)]
-        DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed +'/'
+        seed_int = int(seed) + off
+        DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed_int +'/'
 
         print('Sub directory:', DATA_DIR)
 
@@ -134,6 +135,7 @@ def main():
     parser.add_argument("variant", type=int, help="Lexicase variant we are looking at: 1-down sampled, 2-cohort")
     parser.add_argument("accuracy", type=str, help="Accuracy for experiment")
     parser.add_argument("generations", type=str, help="Number of generations experiments ran for")
+    parser.add_argument("offset", type=int, help='Experiment treatment offset')
 
     # Parse all the arguments
     args = parser.parse_args()
@@ -145,11 +147,13 @@ def main():
     print('Accuracy=', accuracy)
     generations = args.generations
     print('Generations=', generations)
+    offset = args.offset
+    print('Offset=', offset)
 
 
     # Get to work!
     print("\nChecking all related data directories now!")
-    CheckDir(data_dir, variant, accuracy, generations)
+    CheckDir(data_dir, variant, accuracy, generations, offset)
 
 
 if __name__ == "__main__":
