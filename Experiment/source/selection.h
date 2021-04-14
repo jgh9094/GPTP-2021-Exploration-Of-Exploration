@@ -39,6 +39,8 @@ class Selection
     using sorted_t = emp::vector<std::pair<size_t,double>>;
     // vector of double vectors for K neighborhoods
     using neigh_t = emp::vector<score_t>;
+    // vector of vector position ids that represent cohort assignment
+    using cohort_t = emp::vector<ids_t>;
 
 
   public:
@@ -95,6 +97,20 @@ class Selection
      * @return Map grouping population ids by fitness (keys (fitness) in decending order)
      */
     fitgp_t FitnessGroup(const score_t & score);
+
+    /**
+     * Cohort Generation:
+     *
+     * This function will return a vector of vectors conataining position ids.
+     * A vector containing all ids will first be generated, then shuffled, then partitioned
+     *
+     * @param N Total number of objects being partitioned
+     * @param P Percentage of N that we place in each cohort
+     *
+     * @return Vector containing all cohort of ids
+     */
+    cohort_t CohortGeneration(const size_t N, const double P);
+
 
 
     ///< fitness transformation
@@ -314,6 +330,46 @@ Selection::fitgp_t Selection::FitnessGroup(const score_t & score)
   }
 
   return group;
+}
+
+Selection::cohort_t Selection::CohortGeneration(const size_t N, const double P)
+{
+  // number of objects in a cohort
+  double proportion = static_cast<double>(N) * P;
+  size_t coh_size = static_cast<size_t>(proportion);
+  // total number of chorts
+  size_t coh_num = N / coh_size;
+  // check to see that there is an even split
+  emp_assert(coh_size * coh_num == N);
+
+  // initialize the number of cohorts and their size
+  // initialize with N, we know that the position N is outside the range of N
+  cohort_t cohorts(coh_num);
+  for(auto & c : cohort) {c.resize(coh_size, N);}
+
+  // initialize position ids and shuffle
+  ids_t pop(N);
+  std::iota(pop.begin(), pop.end(), 0);
+  emp::Shuffle(*random, pop);
+
+  // distrubute the shuffled population ids into the cohorts
+  emp_assert(cohorts.size() == coh_num);
+  size_t pop_i = 0;
+  for(auto & coh : cohorts)
+  {
+    emp_assert(coh.size() == coh_size);
+    for(size_t c = 0; c < coh.size(); ++c)
+    {
+      coh[c] = pop[pop_i];
+      ++pop_i;
+    }
+    ++pop_i;
+  }
+
+  // make sure that pop_i reached the end
+  emp_assert(pop_i == N);
+
+  return cohorts;
 }
 
 
