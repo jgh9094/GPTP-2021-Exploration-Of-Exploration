@@ -79,6 +79,8 @@ class DiagWorld : public emp::World<Org>
     using fitgp_t = std::map<double, ids_t, std::greater<int>>;
     // vector of double vectors for K neighborhoods
     using neigh_t = emp::vector<score_t>;
+    // vector of vector position ids that represent cohort assignment
+    using cohort_t = emp::vector<ids_t>;
 
     ///< world related types
 
@@ -176,6 +178,8 @@ class DiagWorld : public emp::World<Org>
     void EpsilonLexicase();
 
     void DownSampledLexicase();
+
+    void CohortLexicase();
 
 
     ///< evaluation function implementations
@@ -405,6 +409,10 @@ void DiagWorld::SetSelection()
 
     case 5: // down sampled epsilon lexicase
       DownSampledLexicase();
+      break;
+
+    case 6: // cohort epsilon lexicase selection
+      CohortLexicase();
       break;
 
     default:
@@ -1015,6 +1023,51 @@ void DiagWorld::DownSampledLexicase()
   };
 
   std::cerr << "Down Sampled Lexicase selection scheme set!" << std::endl;
+}
+
+void DiagWorld::CohortLexicase()
+{
+  std::cerr << "Setting selection scheme: CohortLexicase" << std::endl;
+
+  select = [this]()
+  {
+    // quick checks
+    emp_assert(selection); emp_assert(pop.size() == config.POP_SIZE());
+    emp_assert(0 < pop.size()); emp_assert(0 < config.COH_LEX_PROP());
+
+    // fitness matrix
+    const fmatrix_t matrix = PopFitMat();
+    // population cohorts
+    const cohort_t pop_cohorts = selection->CohortGeneration(config.POP_SIZE(), config.COH_LEX_PROP());
+    // testcase cohorts
+    const cohort_t test_cohorts = selection->CohortGeneration(config.OBJECTIVE_CNT(), config.COH_LEX_PROP());
+    // quick checks
+    emp_assert(pop_cohorts.size() == test_cohorts.size());
+
+    // select parent ids
+    ids_t parent(pop.size());
+
+    // iterate through cohort pairing
+    size_t pnt_cnt = 0;
+    for(size_t p = 0; p < pop_cohorts.size(); ++p)
+    {
+      for(size_t c = 0; c < pop_cohorts[p].size(); ++c, ++pnt_cnt)
+      {
+        // get winner from current cohort
+        size_t pnt_win = selection->CELexicase(matrix, config.LEX_EPS(), pop_cohorts[p], test_cohorts[p]);
+        // quick checks; we know that POP_SIZE is our error value
+        emp_assert(pnt_win != config.POP_SIZE());
+        // store parent and keep going
+        parent[pnt_cnt] = pnt_win;
+      }
+    }
+
+    // quick checks
+    emp_assert(pnt_cnt == config.POP_SIZE());
+    return parent;
+  };
+
+  std::cerr << "Cohort Lexicase selection scheme set!" << std::endl;
 }
 
 ///< evaluation function implementations
