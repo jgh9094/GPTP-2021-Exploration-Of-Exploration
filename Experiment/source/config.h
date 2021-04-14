@@ -31,6 +31,7 @@ EMP_BUILD_CONFIG(DiaConfig,
   VALUE(NOVEL_K,          size_t,           256,       "Parameter estiamte k-nearest neighbors."),
   VALUE(LEX_EPS,          double,           1.0,       "Parameter estimate for lexicase epsilon."),
   VALUE(DSLEX_PROP,       double,           1.0,       "Parameter for down sampled proportion"),
+  VALUE(COH_LEX_PROP,     double,           1.0,       "Parameter for cohort proportions"),
 
   GROUP(SYSTEMATICS, "Output rates for OpenWorld"),
   VALUE(SNAP_INTERVAL,             size_t,             10000,          "How many updates between prints?"),
