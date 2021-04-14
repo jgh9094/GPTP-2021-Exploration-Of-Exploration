@@ -379,12 +379,10 @@ Selection::cohort_t Selection::CohortGeneration(const size_t N, const double P)
   for(auto & coh : cohorts)
   {
     emp_assert(coh.size() == coh_size);
-    for(size_t c = 0; c < coh.size(); ++c)
+    for(size_t c = 0; c < coh.size(); ++c, ++pop_i)
     {
       coh[c] = pop[pop_i];
-      ++pop_i;
     }
-    ++pop_i;
   }
 
   // make sure that pop_i reached the end
