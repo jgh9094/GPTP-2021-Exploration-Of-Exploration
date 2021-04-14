@@ -335,17 +335,17 @@ Selection::fitgp_t Selection::FitnessGroup(const score_t & score)
 Selection::cohort_t Selection::CohortGeneration(const size_t N, const double P)
 {
   // number of objects in a cohort
-  double proportion = static_cast<double>(N) * P;
-  size_t coh_size = static_cast<size_t>(proportion);
+  const double proportion = static_cast<double>(N) * P;
+  const size_t coh_size = static_cast<size_t>(proportion);
   // total number of chorts
-  size_t coh_num = N / coh_size;
+  const size_t coh_num = N / coh_size;
   // check to see that there is an even split
   emp_assert(coh_size * coh_num == N);
 
   // initialize the number of cohorts and their size
   // initialize with N, we know that the position N is outside the range of N
   cohort_t cohorts(coh_num);
-  for(auto & c : cohort) {c.resize(coh_size, N);}
+  for(auto & c : cohorts) {c.resize(coh_size, N);}
 
   // initialize position ids and shuffle
   ids_t pop(N);
