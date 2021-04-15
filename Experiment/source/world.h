@@ -1098,7 +1098,9 @@ void DiagWorld::NoveltyLexicase()
     // iterate through cohort pairing
     for(size_t i = 0; i < parent.size(); ++i)
     {
-      parent[i] = selection->EpsiLexicase(t_matrix, config.LEX_EPS(), 2 * config.OBJECTIVE_CNT());
+      // if K == 0, then we only expect to go to the nubmer of objectives in the problem
+      if(config.NOVEL_K() == 0) {parent[i] = selection->EpsiLexicase(t_matrix, config.LEX_EPS(), config.OBJECTIVE_CNT());}
+      else{parent[i] = selection->EpsiLexicase(t_matrix, config.LEX_EPS(), 2 * config.OBJECTIVE_CNT());}
     }
 
     return parent;
