@@ -60,11 +60,11 @@ class Selection
     fmatrix_t SimilarityMatrix(const gmatrix_t & genome, const double exp);
 
     // sanity check for novelty lexicase
-    bool SizeCheck(const fmatrix_t & matrix, const size_t K)
+    bool SizeCheck(const fmatrix_t & matrix, const size_t M)
     {
       for(auto & v : matrix)
       {
-        if(v.size() != 2 * K) {return false;}
+        if(v.size() != 2 * M) {return false;}
       }
 
       return true;
@@ -549,7 +549,7 @@ Selection::fmatrix_t Selection::LexicaseNoveltyFit(const fmatrix_t & mscore, con
     for(size_t sol = 0 ; sol < tscore.size(); ++sol){tscore[sol].push_back(transform[sol]);}
   }
 
-  emp_assert(SizeCheck(tscore, K));
+  emp_assert(SizeCheck(tscore, M));
 
   return tscore;
 }
