@@ -84,7 +84,7 @@ def SetSeeds(s):
     elif s == 2:
         return [x for x in range(1,401)]
     elif s == 3:
-        return [x for x in range(1,351)]
+        return [x for x in range(1,401)]
     else:
         sys.exit('SEEDS SELECTION UNKNOWN')
 
