@@ -21,11 +21,6 @@ import math as mth
 import sys
 import os
 
-# variables we are testing for each replicate range
-LC_LIST = ['10', '20', '50', '100', '200', '500', '1000']
-DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
-# seed experiements replicates range
-REP_NUM = 50
 # columns we are interested in grabbing
 POP_FIT_AVG = 'pop_fit_avg'
 POP_FIT_MAX = 'pop_fit_max'
@@ -40,51 +35,85 @@ COM_OPT_CNT = 'com_opt_cnt'
 OPT_AGG_PER = 'opt_agg_per'
 OPT_OBJ_CNT = 'opt_obj_cnt'
 
-# return appropiate string dir name (based off run.sb file naming system)
-def SetVariant(s):
-    # case by case
-    if s == 0:
-        return 'LEXICASE'
-    elif s == 1:
-        return 'DOWNSAMPLED'
-    elif s == 2:
-        return 'COHORT'
-    else:
-        sys.exit("UNKNOWN VARIANT")
+# Experiment variables
+REP_CNT = 50
 
-# return appropiate string dir name (based off run.sb file naming system)
-def SetVariantVar(s):
-    # case by case
-    if s == 0:
-        return 'EPS'
-    elif s == 1:
-        return 'PROP'
-    elif s == 2:
-        return 'COHP'
-    else:
-        sys.exit("UNKNOWN VARIANT VAR")
+# variables we are testing for each replicate range
+DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
+CL_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
+EL_LIST = ['0.0', '0.1', '0.3', '0.6', '1.2', '2.5', '5.0', '10.0']
+NL_LIST = ['0', '1', '2', '4', '8', '15', '30', '60']
 
 # Will set the appropiate list of variables we are checking for
 def SetVarList(s):
     # case by case
     if s == 0:
-        return LC_LIST
-    elif s == 1:
         return DS_LIST
+    elif s == 1:
+        return CL_LIST
+    elif s == 2:
+        return EL_LIST
+    elif s == 3:
+        return NL_LIST
     else:
-        sys.exit("UNKNOWN VARIANT LIST")
+        sys.exit("UNKNOWN VARIABLE LIST")
+
+# return appropiate string dir name (based off run.sb file naming system)
+def SetSelectionVar(s):
+    # case by case
+    if s == 0:
+        return 'PROP'
+    elif s == 1:
+        return 'PROP'
+    elif s == 2:
+        return 'EPS'
+    elif s == 3:
+        return 'NOV'
+    else:
+        sys.exit("UNKNOWN SELECTION VAR")
+
+# Will set the appropiate variant folder name
+def SetVarDir(s):
+    # case by case
+    if s == 0:
+        return 'DOWNSAMPLED'
+    elif s == 1:
+        return 'COHORT'
+    elif s == 2:
+        return 'EPSILON'
+    elif s == 3:
+        return 'NOVELTY'
+    else:
+        sys.exit("UNKNOWN VARIABLE LIST")
 
 # return the correct amount of seed ran by experiment treatment
-def SetSeeds():
-    seed = []
-    seed.append([x for x in range(1,51)])
-    seed.append([x for x in range(51,101)])
-    seed.append([x for x in range(101,151)])
-    seed.append([x for x in range(151,201)])
-    seed.append([x for x in range(201,251)])
-    seed.append([x for x in range(251,301)])
-    seed.append([x for x in range(301,351)])
-    return seed
+def SetSeeds(s):
+    # case by case
+    if s == 0 or s == 1:
+        seed = []
+        seed.append([x for x in range(1,51)])
+        seed.append([x for x in range(51,101)])
+        seed.append([x for x in range(101,151)])
+        seed.append([x for x in range(151,201)])
+        seed.append([x for x in range(201,251)])
+        seed.append([x for x in range(251,301)])
+        seed.append([x for x in range(301,351)])
+        return seed
+
+    elif s == 2 or s == 3:
+        seed = []
+        seed.append([x for x in range(1,51)])
+        seed.append([x for x in range(51,101)])
+        seed.append([x for x in range(101,151)])
+        seed.append([x for x in range(151,201)])
+        seed.append([x for x in range(201,251)])
+        seed.append([x for x in range(251,301)])
+        seed.append([x for x in range(301,351)])
+        seed.append([x for x in range(351,401)])
+        return seed
+
+    else:
+        sys.exit('SEEDS SELECTION UNKNOWN')
 
 # loop through differnt files that exist
 def DirExplore(data, dump, var, offs, res, obj, acc, gens):
@@ -104,7 +133,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
 
     # Set vars that we need to loop through
     VLIST = SetVarList(var)
-    SEEDS = SetSeeds()
+    SEEDS = SetSeeds(var)
 
     # gens we are expecting
     GEN_LIST = [x for x in range(int(gens)+1) if x%res == 0]
@@ -128,7 +157,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
             if var == 0:
                 DATA_DIR = SEL_DIR + 'TRT_' + var_val + '__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__EPS_0.0__SEED_' + seed +'/'
             else:
-                DATA_DIR = SEL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed +'/'
+                DATA_DIR = SEL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__' + SetSelectionVar(var) + '_' + var_val + '__SEED_' + seed +'/'
 
             print('DATA_DIR=', DATA_DIR)
             # # create pandas data frame of entire csv and grab the row
@@ -151,7 +180,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
 
     fin_df = pd.concat(DF_LIST)
 
-    fin_df.to_csv(path_or_buf= dump + 'al-' + SetVariant(var).lower() + '.csv', index=False)
+    fin_df.to_csv(path_or_buf= dump + 'al-' + SetVarDir(var).lower() + '.csv', index=False)
 
 def main():
     # Generate and get the arguments
