@@ -59,6 +59,17 @@ class Selection
     // similarity matrix generator
     fmatrix_t SimilarityMatrix(const gmatrix_t & genome, const double exp);
 
+    // sanity check for novelty lexicase
+    bool SizeCheck(const fmatrix_t & matrix, const size_t K)
+    {
+      for(auto & v : matrix)
+      {
+        if(v.size() != 2 * K) {return false;}
+      }
+
+      return true;
+    }
+
     // print vectors
     template <class T>
     void PrintVec(const emp::vector<T> &v, const std::string s)
@@ -161,6 +172,21 @@ class Selection
      * @return Vector with transformed scores.
      */
     score_t Novelty(const score_t & score, const neigh_t & neigh, const size_t K);
+
+    /**
+     * Lexicase Novelty Fitness Transformation:
+     *
+     * This function will go through each trait and calculate the appropiate novelty score.
+     * Once all novelty scores are calculated, it will return matrix of fitness and novelty scores.
+     *
+     *
+     * @param mscore Vector containing all solution fitness vectors.
+     * @param K K-nearest neighbors we are looking for.
+     * @param M Total number of testcases we are expecting for all solutions
+     *
+     * @return Matrix with fitness and novelty scores
+     */
+    fmatrix_t LexicaseNoveltyFit(const fmatrix_t & mscore, const size_t K, const size_t M);
 
 
     ///< selector functions
@@ -486,6 +512,43 @@ Selection::score_t Selection::Novelty(const score_t & score, const neigh_t & nei
   }
 
   return nscore;
+}
+
+Selection::fmatrix_t Selection::LexicaseNoveltyFit(const fmatrix_t & mscore, const size_t K, const size_t M)
+{
+  // quick checks
+  emp_assert(0 < mscore.size()); emp_assert(0 < K);
+
+  // initialize transformed score matrix to number of solutions
+  fmatrix_t tscore(mscore.size());
+  // resize all vectors to hold current fitness performance
+  for(auto & s : tscore){s.resize(M);}
+  // store all fitness performances in fitness & novelty matrix
+  for(size_t sol = 0; sol < mscore.size(); ++sol)
+  {
+    for(size_t test = 0; test < M; ++test) {tscore[sol][test] = mscore[sol][test];}
+  }
+
+  // iterate through testcases individually and send them off for grouping
+  for(size_t test = 0; test < M; ++test)
+  {
+    // iterate through all solutions and store their testcase performance
+    score_t tc_score(mscore.size());
+    for(size_t sol = 0; sol < mscore.size(); ++sol){tc_score[sol] = mscore[sol][test];}
+
+    // construct the fitness k-nearest neighbor groupings
+    neigh_t neighbor = FitNearestN(tc_score, K);
+    // transform the fitness values into novelty values
+    score_t transform = Novelty(tc_score, neighbor, K);
+
+    // store novelty score in tranformed matrix (fitness and novelty values)
+    emp_assert(transform.size() == tscore.size());
+    for(size_t sol = 0 ; sol < tscore.size(); ++sol){tscore[sol].push_back(transform[sol]);}
+  }
+
+  emp_assert(SizeCheck(tscore, K));
+
+  return tscore;
 }
 
 
