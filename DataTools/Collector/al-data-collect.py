@@ -39,6 +39,7 @@ OPT_OBJ_CNT = 'opt_obj_cnt'
 REP_CNT = 50
 
 # variables we are testing for each replicate range
+LX_LIST = ['10', '20', '50', '100', '200', '500', '1000']
 DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 CL_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 EL_LIST = ['0.0', '0.1', '0.3', '0.6', '1.2', '2.5', '5.0', '10.0']
@@ -55,6 +56,8 @@ def SetVarList(s):
         return EL_LIST
     elif s == 3:
         return NL_LIST
+    elif s == 4:
+        return LX_LIST
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
@@ -69,6 +72,8 @@ def SetSelectionVar(s):
         return 'EPS'
     elif s == 3:
         return 'NOV'
+    elif s == 4:
+        return 'EPS'
     else:
         sys.exit("UNKNOWN SELECTION VAR")
 
@@ -83,13 +88,15 @@ def SetVarDir(s):
         return 'EPSILON'
     elif s == 3:
         return 'NOVELTY'
+    elif s == 4:
+        return 'LEXICASE'
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
 # return the correct amount of seed ran by experiment treatment
 def SetSeeds(s):
     # case by case
-    if s == 0 or s == 1:
+    if s == 0 or s == 1 or s == 4:
         seed = []
         seed.append([x for x in range(1,51)])
         seed.append([x for x in range(51,101)])
@@ -125,7 +132,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
     # check if dump dir exists
     if os.path.isdir(dump) == False:
         print('DATA=', data)
-        sys.exit('DATA DIRECTORY DOES NOT EXIST')
+        # sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
     # what directory are we looking into
     SEL_DIR = data + SetVarDir(var) + '/'
@@ -144,6 +151,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
     for i in range(len(SEEDS)):
         seeds = SEEDS[i]
         var_val = str(VLIST[i])
+        var_name = SetSelectionVar(var)
         print('i=',i)
 
         TRT = [VLIST[i]] * len(GEN_LIST)
@@ -154,13 +162,13 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
             DATA_DIR = ''
 
             # check the standard lexicase stuff
-            if var == 0:
+            if SetVarDir(var) == 'LEXICASE':
                 DATA_DIR = SEL_DIR + 'TRT_' + var_val + '__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__EPS_0.0__SEED_' + seed +'/'
             else:
-                DATA_DIR = SEL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__' + SetSelectionVar(var) + '_' + var_val + '__SEED_' + seed +'/'
+                DATA_DIR = SEL_DIR + 'TRT_' + obj +'__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__' + var_name +'_' + var_val + '__SEED_' + seed +'/'
 
             print('DATA_DIR=', DATA_DIR)
-            # # create pandas data frame of entire csv and grab the row
+            # create pandas data frame of entire csv and grab the row
             df = pd.read_csv(DATA_DIR + 'data.csv')
             df = df.iloc[::res, :]
             ID = [seed] * len(GEN_LIST)
@@ -187,12 +195,13 @@ def main():
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("data_dir",    type=str, help="Target experiment directory.")
     parser.add_argument("dump_dir",    type=str, help="Data dumping directory")
-    parser.add_argument("variant",   type=int, help="Lexicase variant we are looking for? \n0: standard\n1: down sampled\n2: cohort")
-    parser.add_argument("seed_offset", type=int, help="Experiment seed offset. (REPLICATION_OFFSET + PROBLEM_SEED_OFFSET")
-    parser.add_argument("resolution",  type=int, help="The resolution desired for the data extraction")
+    parser.add_argument("variant",   type=int, help="Lexicase variant we are looking for? \n0: down sampled\n1: cohort \n2: epsilon \n3: novelty \n4: lexicase")
     parser.add_argument("objectives", type=str, help="Number of objectives being optimized")
     parser.add_argument("accuracy", type=str, help="Accuracy for experiment")
     parser.add_argument("generations", type=str, help="Number of generations experiments ran for")
+    parser.add_argument("seed_offset", type=int, help="Experiment seed offset. (REPLICATION_OFFSET + PROBLEM_SEED_OFFSET")
+    parser.add_argument("resolution",  type=int, help="The resolution desired for the data extraction")
+
 
     # Parse all the arguments
     args = parser.parse_args()
