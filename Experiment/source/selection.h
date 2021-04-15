@@ -530,7 +530,7 @@ Selection::fmatrix_t Selection::LexicaseNoveltyFit(const fmatrix_t & mscore, con
   }
 
   // if k = 0, return as is
-  if(K == 0) (return tscore;)
+  if(K == 0) {return tscore;}
 
   // iterate through testcases individually and send them off for grouping
   for(size_t test = 0; test < M; ++test)
