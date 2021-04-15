@@ -108,6 +108,7 @@ ACCURACY=.99
 GENERATIONS=50000
 ACCURACY_DIR=99
 POPULATION=500
+OBJECTIVE_CNT=100
 
 ####################################################################
 
