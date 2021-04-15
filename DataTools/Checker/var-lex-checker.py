@@ -28,7 +28,9 @@ REP_CNT = 50
 
 # variables we are testing for each replicate range
 DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
-CL_LIST = []
+CL_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
+EL_LIST = ['0.0', '0.1', '0.3', '0.6', '1.2', '2.5', '5.0', '10.0']
+NL_LIST = ['0', '1', '2', '4', '8', '15', '30', '60']
 
 # Will set the appropiate list of variables we are checking for
 def SetVarList(s):
@@ -37,8 +39,26 @@ def SetVarList(s):
         return DS_LIST
     elif s == 1:
         return CL_LIST
+    elif s == 2:
+        return EL_LIST
+    elif s == 3:
+        return NL_LIST
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
+
+# return appropiate string dir name (based off run.sb file naming system)
+def SetSelectionVar(s):
+    # case by case
+    if s == 0:
+        return 'PROP'
+    elif s == 1:
+        return 'PROP'
+    elif s == 2:
+        return 'EPS'
+    elif s == 3:
+        return 'NOV'
+    else:
+        sys.exit("UNKNOWN SELECTION VAR")
 
 # Will set the appropiate variant folder name
 def SetVarDir(s):
@@ -47,8 +67,26 @@ def SetVarDir(s):
         return 'DOWNSAMPLED'
     elif s == 1:
         return 'COHORT'
+    elif s == 2:
+        return 'EPSILON'
+    elif s == 3:
+        return 'NOVELTY'
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
+
+# return the correct amount of seed ran by experiment treatment
+def SetSeeds(s):
+    # case by case
+    if s == 0:
+        return [x for x in range(1,351)]
+    elif s == 1:
+        return [x for x in range(1,351)]
+    elif s == 2:
+        return [x for x in range(1,401)]
+    elif s == 3:
+        return [x for x in range(1,351)]
+    else:
+        sys.exit('SEEDS SELECTION UNKNOWN')
 
 # return the number of rows in a csv file
 def CountRows(file_name):
@@ -85,13 +123,13 @@ def CheckDir(dir, var, acc, gens, off):
     DIR_DNE = []
     DAT_DNE = []
     DAT_DNF = []
-
-    SEEDS = [str(x) for x in range(1,351)]
+    var_name = SetSelectionVar(var)
+    SEEDS = SetSeeds(var)
 
     for seed in SEEDS:
         var_val = VLIST[int((int(seed)-1)/REP_CNT)]
         seed_int = str(int(seed) + off)
-        DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__PROP_' + var_val + '__SEED_' + seed_int +'/'
+        DATA_DIR = FULL_DIR + 'TRT_100__ACC_' + acc + '__GEN_' + gens + '/DIA_EXPLORATION__' + var_name +'_' + var_val + '__SEED_' + seed_int +'/'
 
         print('Sub directory:', DATA_DIR)
 
@@ -132,7 +170,7 @@ def main():
     # Generate and get the arguments
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("data_directory", type=str, help="Target experiment directory.")
-    parser.add_argument("variant", type=int, help="Lexicase variant we are looking at: 1-down sampled, 2-cohort")
+    parser.add_argument("variant", type=int, help="Lexicase variant we are looking at: 0-down sampled, 1-cohort, 2-epsilon, 3-novelty")
     parser.add_argument("accuracy", type=str, help="Accuracy for experiment")
     parser.add_argument("generations", type=str, help="Number of generations experiments ran for")
     parser.add_argument("offset", type=int, help='Experiment treatment offset')
