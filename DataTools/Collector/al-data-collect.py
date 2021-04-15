@@ -128,7 +128,7 @@ def DirExplore(data, dump, var, offs, res, obj, acc, gens):
         sys.exit('DATA DIRECTORY DOES NOT EXIST')
 
     # what directory are we looking into
-    SEL_DIR = data + SetVariant(var) + '/'
+    SEL_DIR = data + SetVarDir(var) + '/'
     print('Selection dir=', SEL_DIR)
 
     # Set vars that we need to loop through
@@ -201,7 +201,7 @@ def main():
     dump_dir = args.dump_dir.strip()
     print('Dump directory=', dump_dir)
     variant = args.variant
-    print('Lexicase varaint=', SetVariant(variant))
+    print('Lexicase varaint=', SetVarDir(variant))
     offset = args.seed_offset
     print('Offset=', offset)
     resolution = args.resolution
