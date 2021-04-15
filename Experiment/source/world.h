@@ -181,6 +181,8 @@ class DiagWorld : public emp::World<Org>
 
     void CohortLexicase();
 
+    void NoveltyLexicase();
+
 
     ///< evaluation function implementations
 
@@ -413,6 +415,10 @@ void DiagWorld::SetSelection()
 
     case 6: // cohort epsilon lexicase selection
       CohortLexicase();
+      break;
+
+    case 7: // novelty epsilon lexicase selection
+      NoveltyLexicase();
       break;
 
     default:
@@ -1068,6 +1074,37 @@ void DiagWorld::CohortLexicase()
   };
 
   std::cerr << "Cohort Lexicase selection scheme set!" << std::endl;
+}
+
+void DiagWorld::NoveltyLexicase()
+{
+  std::cerr << "Setting selection scheme: NoveltyLexicase" << std::endl;
+
+  select = [this]()
+  {
+    // quick checks
+    emp_assert(selection); emp_assert(pop.size() == config.POP_SIZE());
+    emp_assert(0 < pop.size()); emp_assert(0 <= config.NOVEL_K());
+    emp_assert(0 <= config.LEX_EPS());
+
+    // fitness matrix
+    const fmatrix_t matrix = PopFitMat();
+    // create fitness and novelty value matrix
+    const fmatrix_t t_matrix = selection->LexicaseNoveltyFit(matrix, config.NOVEL_K(), config.OBJECTIVE_CNT());
+
+    // select parent ids
+    ids_t parent(pop.size());
+
+    // iterate through cohort pairing
+    for(size_t i = 0; i < parent.size(); ++i)
+    {
+      parent[i] = selection->EpsiLexicase(t_matrix, config.LEX_EPS(), 2 * config.OBJECTIVE_CNT());
+    }
+
+    return parent;
+  };
+
+  std::cerr << "Novelty Lexicase selection scheme set!" << std::endl;
 }
 
 ///< evaluation function implementations
