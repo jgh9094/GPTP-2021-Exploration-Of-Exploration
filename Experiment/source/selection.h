@@ -517,7 +517,7 @@ Selection::score_t Selection::Novelty(const score_t & score, const neigh_t & nei
 Selection::fmatrix_t Selection::LexicaseNoveltyFit(const fmatrix_t & mscore, const size_t K, const size_t M)
 {
   // quick checks
-  emp_assert(0 < mscore.size()); emp_assert(0 < K);
+  emp_assert(0 < mscore.size()); emp_assert(0 <= K);
 
   // initialize transformed score matrix to number of solutions
   fmatrix_t tscore(mscore.size());
