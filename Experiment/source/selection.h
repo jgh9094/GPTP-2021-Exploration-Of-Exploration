@@ -529,6 +529,9 @@ Selection::fmatrix_t Selection::LexicaseNoveltyFit(const fmatrix_t & mscore, con
     for(size_t test = 0; test < M; ++test) {tscore[sol][test] = mscore[sol][test];}
   }
 
+  // if k = 0, return as is
+  if(K == 0) (return tscore;)
+
   // iterate through testcases individually and send them off for grouping
   for(size_t test = 0; test < M; ++test)
   {
