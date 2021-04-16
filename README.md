@@ -21,7 +21,7 @@ This repository is associated with our **TBD** submission, Selection Scheme Diag
 This section discusses the kinds selection schemes we are analyzing in this project:
 
 - Lexicase Selection
-- $\epsilon$
+- ε-Lexicase Selection
 - Novelty Search
 - Epsilon Lexicase
 
