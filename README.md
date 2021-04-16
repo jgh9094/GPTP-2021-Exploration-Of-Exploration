@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository is associated with our **TBD** submission, Selection Scheme Diagnostics Part I. This is currently a work in progress and will be kept up to date!
+This repository is associated with our GPTP 2021 submission: Exploration of Lexicase Exploration.
 
 **Repository Guide:**
 - Still a work in progress
@@ -22,27 +22,22 @@ This section discusses the kinds selection schemes we are analyzing in this proj
 
 - Lexicase Selection
 - ε-Lexicase Selection
-- Novelty Search
-- Epsilon Lexicase
+- Cohort Lexicase Selection
+- Downsampled Lexicase Selection
+- Novelty-Lexicase Selection
 
 ## Diagnostic Problems
-This section discusses the isolated component that different problems share.
+The diagnostic we are using for this project.
 
-- Exploitation
-- Structured Exploitation
 - Exploration
-- Ecological Niche Filling
-
-## Experimental Setup
-
-A more detailed description of the experiment set up can be found [here](https://jgh9094.github.io/Selection-Scheme-Diagnotics-Part-I/Descriptions/experiment_setup.html).
 
 ## Preliminary Results
 
 Below you will find the preliminary results that drive the final selection scheme parameters that we will be testing.
 In each file there are statistics that provide evidence as to why each final selection scheme parameter is selected.
 
-- [Exploitation](https://jgh9094.github.io/Selection-Scheme-Diagnotics-Part-I/Descriptions/stats-prelim-exploitation.html)
-- [Structured Exploitation](https://jgh9094.github.io/Selection-Scheme-Diagnotics-Part-I/Descriptions/stats-prelim-struct-exploitation.html)
-- [Exploration](https://jgh9094.github.io/Selection-Scheme-Diagnotics-Part-I/Descriptions/stats-prelim-exploration.html)
-- Ecological Niche Filling [TODO]
+- [Lexicase Selection]()
+- [ε-Lexicase Selection]()
+- [Cohort Lexicase Selection]()
+- [Downsampled Lexicase Selection]()
+- [Novelty-Lexicase Selection]()
