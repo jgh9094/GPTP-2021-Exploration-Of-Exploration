@@ -14,22 +14,14 @@ This repository is associated with our **TBD** submission, Selection Scheme Diag
 
 ## Abstract
 
-> Evolutionary algorithms have demonstrated to ability to solve complex real-world optimization problems, sometimes presenting solutions that are unintuitive to a human designer.
-> The difference between solving complex optimization problem and not can be heavily influenced by the kind of algorithm and its configuration.
-> Thus, being able to piece together the best algorithm for a give optimization problem may be the key to solving it.
-> One of the major phases of an evolutionary algorithm, that many in fact share, is the selection of genetic material for the construction of a new population of solutions for the following generation -- otherwise known as a selection scheme.
-> Over time, the complexity of selection schemes has grown in an effort to increase robustness and effectiveness when traversing the fitness landscape to find high quality solutions.
-> The effectiveness of new selection schemes is usually illustrated with different sets of real-world problems, which can make it difficult to compare schemes.
-> While this approach demonstrates a selection scheme's ability to solve a complex optimization problem, understanding or visualizing the fitness landscape being traversed is difficult and may be impossible.
-> In this work we present four diagnostic optimization problems that focus on isolating problem characteristics that algorithms will encounter in a real-world optimization problem.
-This will allow for a better understanding of the strengths and weaknesses of different selection schemes.
+> TODO
 
 ## Selection Schemes
 
-This section discusses the kinds selection schemes we are analyzing in this project. These selection schemes were selected because of we believe they
+This section discusses the kinds selection schemes we are analyzing in this project:
 
-- Mu-Lambda Selection
-- Fitness Sharing
+- Lexicase Selection
+- $\epsilon$
 - Novelty Search
 - Epsilon Lexicase
 
