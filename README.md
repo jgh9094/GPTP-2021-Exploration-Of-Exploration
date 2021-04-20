@@ -40,4 +40,4 @@ In each file there are statistics that provide evidence as to why each final sel
 - [ε-Lexicase Selection](https://jgh9094.github.io/GPTP-2021/Web/epsilon-results.html)
 - [Cohort Lexicase Selection](https://jgh9094.github.io/GPTP-2021/Web/cohort-results.html)
 - [Downsampled Lexicase Selection](https://jgh9094.github.io/GPTP-2021/Web/down-sampled-results.html)
-- [Novelty-Lexicase Selection]()
+- [Novelty-Lexicase Selection](https://jgh9094.github.io/GPTP-2021/Web/novelty-results.html)
