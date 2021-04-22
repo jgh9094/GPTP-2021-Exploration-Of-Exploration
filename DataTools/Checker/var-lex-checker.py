@@ -31,6 +31,7 @@ DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 CL_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 EL_LIST = ['0.0', '0.1', '0.3', '0.6', '1.2', '2.5', '5.0', '10.0']
 NL_LIST = ['0', '1', '2', '4', '8', '15', '30', '60']
+TS_LIST = ['8']
 
 # Will set the appropiate list of variables we are checking for
 def SetVarList(s):
@@ -43,6 +44,8 @@ def SetVarList(s):
         return EL_LIST
     elif s == 3:
         return NL_LIST
+    elif s == 4:
+        return TS_LIST
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
@@ -57,6 +60,8 @@ def SetSelectionVar(s):
         return 'EPS'
     elif s == 3:
         return 'NOV'
+    elif s == 4:
+        return 'T'
     else:
         sys.exit("UNKNOWN SELECTION VAR")
 
@@ -71,6 +76,8 @@ def SetVarDir(s):
         return 'EPSILON'
     elif s == 3:
         return 'NOVELTY'
+    elif s == 4:
+        return 'TOURNAMENT'
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
@@ -85,6 +92,8 @@ def SetSeeds(s):
         return [x for x in range(1,401)]
     elif s == 3:
         return [x for x in range(1,401)]
+    elif s == 4:
+        return [x for x in range(1,51)]
     else:
         sys.exit('SEEDS SELECTION UNKNOWN')
 
