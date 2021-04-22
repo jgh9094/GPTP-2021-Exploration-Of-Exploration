@@ -179,7 +179,7 @@ def main():
     # Generate and get the arguments
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("data_directory", type=str, help="Target experiment directory.")
-    parser.add_argument("variant", type=int, help="Lexicase variant we are looking at: 0-down sampled, 1-cohort, 2-epsilon, 3-novelty")
+    parser.add_argument("variant", type=int, help="Lexicase variant we are looking at: 0-down sampled, 1-cohort, 2-epsilon, 3-novelty, 4-tournament")
     parser.add_argument("accuracy", type=str, help="Accuracy for experiment")
     parser.add_argument("generations", type=str, help="Number of generations experiments ran for")
     parser.add_argument("offset", type=int, help='Experiment treatment offset')
