@@ -44,6 +44,7 @@ DS_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 CL_LIST = ['0.01', '0.02', '0.03', '0.12', '0.25', '0.5', '1.0']
 EL_LIST = ['0.0', '0.1', '0.3', '0.6', '1.2', '2.5', '5.0', '10.0']
 NL_LIST = ['0', '1', '2', '4', '8', '15', '30', '60']
+TR_LIST = ['8']
 
 # Will set the appropiate list of variables we are checking for
 def SetVarList(s):
@@ -58,6 +59,8 @@ def SetVarList(s):
         return NL_LIST
     elif s == 4:
         return LX_LIST
+    elif s == 5:
+        return TR_LIST
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
@@ -74,6 +77,8 @@ def SetSelectionVar(s):
         return 'NOV'
     elif s == 4:
         return 'EPS'
+    elif s == 5:
+        return 'T'
     else:
         sys.exit("UNKNOWN SELECTION VAR")
 
@@ -90,6 +95,8 @@ def SetVarDir(s):
         return 'NOVELTY'
     elif s == 4:
         return 'LEXICASE'
+    elif s == 5:
+        return 'TOURNAMENT'
     else:
         sys.exit("UNKNOWN VARIABLE LIST")
 
@@ -117,6 +124,11 @@ def SetSeeds(s):
         seed.append([x for x in range(251,301)])
         seed.append([x for x in range(301,351)])
         seed.append([x for x in range(351,401)])
+        return seed
+
+    elif s == 5:
+        seed = []
+        seed.append([x for x in range(1,51)])
         return seed
 
     else:
@@ -195,7 +207,7 @@ def main():
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("data_dir",    type=str, help="Target experiment directory.")
     parser.add_argument("dump_dir",    type=str, help="Data dumping directory")
-    parser.add_argument("variant",   type=int, help="Lexicase variant we are looking for? \n0: down sampled\n1: cohort \n2: epsilon \n3: novelty \n4: lexicase")
+    parser.add_argument("variant",   type=int, help="Lexicase variant we are looking for? \n0: down sampled\n1: cohort \n2: epsilon \n3: novelty \n4: lexicase \n5: tournament")
     parser.add_argument("objectives", type=str, help="Number of objectives being optimized")
     parser.add_argument("accuracy", type=str, help="Accuracy for experiment")
     parser.add_argument("generations", type=str, help="Number of generations experiments ran for")
