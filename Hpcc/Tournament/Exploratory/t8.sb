@@ -1,0 +1,82 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=10:00:00               # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=1-50                  # number of jobs being created, each with its array id
+#SBATCH --mem=20G                     # memory required per node - amount of memory (in gigs)
+#SBATCH --job-name torn-8             # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab             # research group account being used
+
+##################################
+# Setup relevant directories
+##################################
+DATA_DIR=/mnt/ls15/scratch/users/herna383/GPTP-2021/TOURNAMENT
+
+##################################
+# Setup relevant directories
+# Previously used ones will be commented out
+##################################
+REPLICATION_OFFSET=5000
+
+##################################
+# Setup random seed info
+##################################
+PROBLEM_SEED_OFFSET=0
+SEED=$((SLURM_ARRAY_TASK_ID + PROBLEM_SEED_OFFSET + REPLICATION_OFFSET))
+
+##################################
+# Setup tournament size
+##################################
+TOUR_SIZE=8
+
+##################################
+# Folder naming
+##################################
+DIAGNOSTIC_1=EXPLOITATION
+DIAGNOSTIC_2=STRUCTEXPLOITATION
+DIAGNOSTIC_3=CONTRAECOLOGY
+DIAGNOSTIC_4=EXPLORATION
+
+##################################
+# Setup selection scheme
+##################################
+MULAMBDA=0
+TOURNAMENT=1
+FITSHARING=2
+NOVELTY=3
+LEXICASE=4
+DOWNSAMPLED=5
+COHORT=6
+LEX_NOVELTY=7
+
+##################################
+# Setup diagnostic
+##################################
+EXPLOITATION=0
+STRUCTURED_EXPLOITATION=1
+CONTRADICTORY_ECOLOGY=2
+EXPLORATION=3
+
+##################################
+# Config file parameters
+##################################
+ACCURACY=.99
+GENERATIONS=50000
+ACCURACY_DIR=99
+POPULATION=500
+OBJECTIVE_CNT=100
+
+####################################################################
+
+NAME=DIA_${DIAGNOSTIC_4}__T_${TOUR_SIZE}__SEED_${SEED}
+
+####################################################################
+
+RUN_DIR=${DATA_DIR}/TRT_${OBJECTIVE_CNT}__ACC_${ACCURACY_DIR}__GEN_${GENERATIONS}/${NAME}/
+
+# make a run directory
+mkdir -p ${RUN_DIR}
+
+echo "../../../Experiment/dia_world -SEED ${SEED} -OBJECTIVE_CNT ${OBJECTIVE_CNT} -DIAGNOSTIC ${EXPLORATION} -SELECTION ${TOURNAMENT} -ACCURACY ${ACCURACY} -MAX_GENS ${GENERATIONS} -POP_SIZE ${POPULATION} -OUTPUT_DIR ${RUN_DIR} -TOUR_SIZE ${TOUR_SIZE} > run.log" > ./cmd-coh.txt
+
+../../../Experiment/dia_world -SEED ${SEED} -OBJECTIVE_CNT ${OBJECTIVE_CNT} -DIAGNOSTIC ${EXPLORATION} -SELECTION ${TOURNAMENT} -ACCURACY ${ACCURACY} -MAX_GENS ${GENERATIONS} -POP_SIZE ${POPULATION} -OUTPUT_DIR ${RUN_DIR} -TOUR_SIZE ${TOUR_SIZE}
