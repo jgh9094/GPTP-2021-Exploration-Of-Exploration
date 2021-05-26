@@ -76,7 +76,7 @@ class DiagWorld : public emp::World<Org>
     // matrix of population genomes
     using gmatrix_t = emp::vector<genome_t>;
     // map holding population id groupings by fitness (keys in decending order)
-    using fitgp_t = std::map<double, ids_t, std::greater<int>>;
+    using fitgp_t = std::map<double, ids_t, std::greater<double>>;
     // vector of double vectors for K neighborhoods
     using neigh_t = emp::vector<score_t>;
     // vector of vector position ids that represent cohort assignment

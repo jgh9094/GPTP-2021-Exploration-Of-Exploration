@@ -34,7 +34,7 @@ class Selection
     // vector holding population genomes
     using gmatrix_t = emp::vector<emp::vector<double>>;
     // map holding population id groupings by fitness (keys in decending order)
-    using fitgp_t = std::map<double, ids_t, std::greater<int>>;
+    using fitgp_t = std::map<double, ids_t, std::greater<double>>;
     // sorted score vector w/ position id and score
     using sorted_t = emp::vector<std::pair<size_t,double>>;
     // vector of double vectors for K neighborhoods
