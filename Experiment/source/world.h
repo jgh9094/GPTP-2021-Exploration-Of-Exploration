@@ -98,6 +98,8 @@ class DiagWorld : public emp::World<Org>
     using systematics_t = emp::Systematics<Org, Org::genome_t, pheno_info<typename Org::score_t>>;
     using taxon_t = typename systematics_t::taxon_t;
 
+    using config_t = DiaConfig;
+
 
   public:
 
@@ -209,6 +211,7 @@ class DiagWorld : public emp::World<Org>
 
     void SnapshotPhylogony();
 
+    void SnapshotConfig(const config_t & config);
 
     ///< helper functions
 
@@ -293,6 +296,8 @@ void DiagWorld::Initialize()
   SetSelection();
   SetOnOffspringReady();
   PopulateWorld();
+
+  SnapshotConfig(config);
 
   std::cerr << "==========================================" << std::endl;
   std::cerr << "FINISHED INITIAL SETUP" << std::endl;
@@ -1383,6 +1388,23 @@ DiagWorld::gmatrix_t DiagWorld::PopGenomes()
   }
 
   return matrix;
+}
+
+void DiagWorld::SnapshotConfig(const config_t & config) {
+  // Make a new datafile for snapshot
+  emp::DataFile snapshot_file(config.OUTPUT_DIR() + "/run_config.csv");
+  std::function<std::string()> get_cur_param;
+  std::function<std::string()> get_cur_value;
+  snapshot_file.AddFun<std::string>([&get_cur_param]() -> std::string { return get_cur_param(); }, "parameter" );
+  snapshot_file.AddFun<std::string>([&get_cur_value]() -> std::string { return get_cur_value(); }, "value" );
+  snapshot_file.PrintHeaderKeys(); // param,value
+
+  for (const auto & entry : config) {
+    get_cur_param = [&entry]() { return entry.first; };
+    get_cur_value = [&entry]() { return emp::to_string(entry.second->GetValue()); };
+    snapshot_file.Update();
+  }
+
 }
 
 #endif
