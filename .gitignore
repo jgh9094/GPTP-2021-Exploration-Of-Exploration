@@ -5,6 +5,9 @@ dia_world
 *.csv
 data/
 
+# Image files
+imgs/
+
 # Python virtual environment
 pyenv/
 
