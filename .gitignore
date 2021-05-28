@@ -1,5 +1,10 @@
 # Executables
 dia_world
 
+# Data files
+*.csv
+data/
+
+# Python virtual environment
 pyenv/
 
