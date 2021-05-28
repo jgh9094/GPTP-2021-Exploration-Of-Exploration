@@ -209,6 +209,8 @@ class DiagWorld : public emp::World<Org>
 
     size_t FindOptimized();
 
+    size_t FindUniqueStart();
+
     void SnapshotPhylogony();
 
     void SnapshotConfig(const config_t & config);
@@ -461,7 +463,7 @@ void DiagWorld::SetOnOffspringReady()
 
       // give everything to offspring from parent
       org.MeClone();
-      org.Inherit(parent.GetScore(), parent.GetOptimal(), parent.GetCount(), parent.GetAggregate());
+      org.Inherit(parent.GetScore(), parent.GetOptimal(), parent.GetCount(), parent.GetAggregate(), parent.GetStart());
     }
     else{org.Reset();}
   });
@@ -583,6 +585,12 @@ void DiagWorld::SetDataTracking()
   {
     return UniqueObjective();
   }, "pop_uni_obj", "Number of unique optimized traits per generation!");
+
+    // unique starting positions
+  data_file.AddFun<size_t>([this]()
+  {
+    return FindUniqueStart();
+  }, "uni_str_pos", "Number of unique starting positions in the population!");
 
   // count of common solution in the population
   data_file.AddFun<size_t>([this]()
@@ -1126,6 +1134,7 @@ void DiagWorld::Exploitation()
     score_t score = diagnostic->Exploitation(org.GetGenome());
     org.SetScore(score);
     org.AggregateScore();
+    org.StartPosition();
 
     // set optimal vector and count
     optimal_t opti = diagnostic->OptimizedVector(org.GetGenome(), config.ACCURACY());
@@ -1148,6 +1157,7 @@ void DiagWorld::StructuredExploitation()
     score_t score = diagnostic->StructExploitation(org.GetGenome());
     org.SetScore(score);
     org.AggregateScore();
+    org.StartPosition();
 
     // set optimal vector and count
     optimal_t opti = diagnostic->OptimizedVector(org.GetGenome(), config.ACCURACY());
@@ -1170,6 +1180,7 @@ void DiagWorld::StrongEcology()
     score_t score = diagnostic->StrongEcology(org.GetGenome());
     org.SetScore(score);
     org.AggregateScore();
+    org.StartPosition();
 
     // set optimal vector and count
     optimal_t opti = diagnostic->OptimizedVector(org.GetGenome(), config.ACCURACY());
@@ -1192,6 +1203,7 @@ void DiagWorld::Exploration()
     score_t score = diagnostic->Exploration(org.GetGenome());
     org.SetScore(score);
     org.AggregateScore();
+    org.StartPosition();
 
     // set optimal vector and count
     optimal_t opti = diagnostic->OptimizedVector(org.GetGenome(), config.ACCURACY());
@@ -1219,6 +1231,7 @@ void DiagWorld::WeakEcology()
     optimal_t opti = diagnostic->OptimizedVector(org.GetGenome(), config.ACCURACY());
     org.SetOptimal(opti);
     org.CountOptimized();
+    org.StartPosition();
 
     return org.GetAggregate();
   };
@@ -1341,6 +1354,29 @@ size_t DiagWorld::FindOptimized()
   }
 
   return max_pos;
+}
+
+size_t DiagWorld::FindUniqueStart()
+{
+  // quick checks
+  emp_assert(0 < pop.size()); emp_assert(pop.size() == config.POP_SIZE());
+
+  // collect number of unique starting positions
+  std::set<size_t> position;
+
+  // iterate pop to check is a solution has the objective optimized
+  for(size_t p = 0; p < pop.size(); ++p)
+  {
+    Org & org = *pop[p];
+
+    // check that the position has be set
+    emp_assert(org.GetStart() != config.OBJECTIVE_CNT());
+
+    // insert position into set
+    position.insert(org.GetStart());
+  }
+
+  return position.size();
 }
 
 // void DiagWorld::SnapshotPhylogony()
