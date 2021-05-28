@@ -51,6 +51,7 @@ fixed_params= {
     "SNAP_INTERVAL":"10000",
     "PRINT_INTERVAL":"1000",
     "OUTPUT_DIR":"./",
+    "LEX_EPS":"0"
 }
 
 # Create combo object to collect all conditions we'll run
