@@ -5,7 +5,7 @@ Generate slurm job submission scripts - one per condition
 import argparse, os, sys, errno, subprocess, csv
 from pyvarco import CombinationCollector
 
-seed_offset = 120000
+seed_offset = 130000
 default_num_replicates = 50
 job_time_request = "96:00:00"
 job_memory_request = "4G"
