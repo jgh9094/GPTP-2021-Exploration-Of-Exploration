@@ -34,7 +34,7 @@ print(version)
 ## Setup
 
 ```{r}
-data_loc <- paste0(working_directory, "data/timeseries.csv")
+data_loc <- paste0(working_directory, "data/timeseries-res-1000g.csv")
 data <- read.csv(data_loc, na.strings="NONE")
 
 data$cardinality <- as.factor(
