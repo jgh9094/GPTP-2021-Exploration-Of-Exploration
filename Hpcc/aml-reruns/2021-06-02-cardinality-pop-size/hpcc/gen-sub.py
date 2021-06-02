@@ -143,6 +143,8 @@ def main():
         # Add fixed parameter information
         run_param_info = {param:fixed_params[param] for param in fixed_params}
         run_param_info["OBJECTIVE_CNT"] = condition_dict["OBJECTIVE_CNT"]
+        run_param_info["POP_SIZE"] = condition_dict["POP_SIZE"]
+        run_param_info["MAX_GENS"] = condition_dict["MAX_GENS"]
 
         fields = list(run_param_info.keys())
         fields.sort()
