@@ -4,6 +4,7 @@ dia_world
 # Data files
 *.csv
 data/
+*.tar.gz
 
 # Image files
 imgs/
