@@ -1,4 +1,4 @@
-# Diagnostic cardinality
+# Epsilon lexicase
 
 ## Overview
 
