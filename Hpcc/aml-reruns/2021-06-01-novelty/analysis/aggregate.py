@@ -9,7 +9,6 @@ config_exclude = {
     "FIT_SIGMA",
     "FIT_ALPHA",
     "PNORM_EXP",
-    "NOVEL_K",
     "DSLEX_PROP",
     "COH_LEX_PROP",
     "SNAP_INTERVAL",
