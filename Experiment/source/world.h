@@ -844,13 +844,17 @@ void DiagWorld::RecordData()
   emp_assert(0 < common.size());  // should already be set in FindCommon
 
   /// update the file
-  data_file.Update();
+  if ( !(GetUpdate() % config.DATA_INTERVAL()) || (GetUpdate() == config.MAX_GENS()) ) {
+    data_file.Update();
+  }
 
+  if ( !(GetUpdate() % config.PRINT_INTERVAL()) || (GetUpdate() == config.MAX_GENS()) ) {
+    // output this so we know where we are in terms of generations and fitness
+    Org & org = *pop[elite_pos];
+    Org & opt = *pop[opti_pos];
+    std::cout << "gen=" << GetUpdate() << ", max_fit=" << org.GetAggregate()  << ", max_opt=" << opt.GetCount() << std::endl;
+  }
 
-  // output this so we know where we are in terms of generations and fitness
-  Org & org = *pop[elite_pos];
-  Org & opt = *pop[opti_pos];
-  std::cout << "gen=" << GetUpdate() << ", max_fit=" << org.GetAggregate()  << ", max_opt=" << opt.GetCount() << std::endl;
 }
 
 void DiagWorld::ReproductionStep()

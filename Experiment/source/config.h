@@ -34,8 +34,9 @@ EMP_BUILD_CONFIG(DiaConfig,
   VALUE(COH_LEX_PROP,     double,           1.0,       "Parameter for cohort proportions"),
 
   GROUP(SYSTEMATICS, "Output rates for OpenWorld"),
-  VALUE(SNAP_INTERVAL,             size_t,             10000,          "How many updates between prints?"),
-  VALUE(PRINT_INTERVAL,            size_t,              1000,          "How many updates between prints?"),
+  VALUE(SNAP_INTERVAL,             size_t,             1000,          "How many updates between prints?"),
+  VALUE(DATA_INTERVAL,             size_t,                10,          "How many updates between writing data to file?"),
+  VALUE(PRINT_INTERVAL,            size_t,                 1,          "How many updates between prints?"),
   VALUE(OUTPUT_DIR,           std::string,              "./",          "What directory are we dumping all this data")
 )
 
