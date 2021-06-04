@@ -117,6 +117,31 @@ ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=POP_SIZE)) +
   )
 ```
 
+```{r}
+ggplot(data, aes(x=gen, y=elite_trait_avg, color=POP_SIZE)) +
+  stat_summary(geom="line", fun=mean) +
+  stat_summary(
+    geom="ribbon",
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    alpha=0.2,
+    linetype=0
+  ) +
+  scale_y_continuous(
+    name="Elite trait average"
+  ) +
+  scale_x_continuous(
+    name="Generations"
+  ) +
+  facet_wrap(
+    ~cardinality,
+    scales="free_x"
+  ) +
+  ggsave(
+    paste(working_directory, "imgs/elite_trait_average_ot-gen.pdf", sep="")
+  )
+```
+
 ## Unique starting positions over time (population)
 
 ```{r}
