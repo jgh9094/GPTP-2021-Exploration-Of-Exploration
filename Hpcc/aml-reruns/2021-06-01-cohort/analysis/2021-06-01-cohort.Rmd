@@ -1,10 +1,10 @@
-# Down-sampled lexicase
+# Cohort lexicase
 
 ## Overview
 
 ```{r}
 # Relative location of data.
-working_directory <- "Hpcc/aml-reruns/2021-05-28-downsampled/analysis/"
+working_directory <- "Hpcc/aml-reruns/2021-06-01-cohort/analysis/"
 # working_directory <- "./"                                              # << For local analysis
 
 # Settings for visualization
@@ -49,7 +49,7 @@ data$epsilon <- as.factor(
 )
 
 data$proportion <- as.factor(
-  data$DSLEX_PROP
+  data$COH_LEX_PROP
 )
 
 data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
