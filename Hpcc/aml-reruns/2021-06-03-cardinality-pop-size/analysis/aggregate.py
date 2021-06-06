@@ -10,11 +10,8 @@ config_exclude = {
     "FIT_ALPHA",
     "PNORM_EXP",
     "NOVEL_K",
-    "DSLEX_PROP",
-    "COH_LEX_PROP",
     "SNAP_INTERVAL",
     "PRINT_INTERVAL",
-    "DATA_INTERVAL",
     "OUTPUT_DIR"
 }
 
@@ -75,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser(description="Data aggregation script.")
     parser.add_argument("--data", type=str, nargs="+", help="Where should we pull data (one or more locations)?")
     parser.add_argument("--dump", type=str, help="Where to dump this?", default=".")
-    parser.add_argument("--units", type=str, default="generations", choices=["generations", "evaluations", "interval"], help="Unit for resolution of time series: generations, evaluations, interval")
+    parser.add_argument("--units", type=str, default="generations", choices=["generations", "evaluations", "interval", "total"], help="Unit for resolution of time series")
     parser.add_argument("--resolution", type=int, default=1, help="What resolution should we collect time series data at?")
     parser.add_argument("--out_fname", type=str, help="What should we call the output file?", default="timeseries.csv")
 
@@ -170,6 +167,10 @@ def main():
             data = [ line for line in data if keep_line(int(line["gen"]), int(line["gen"])) ]
         elif units == "evaluations":
             data = [ line for line in data if keep_line(int(line["evaluations"]), int(line["gen"])) ]
+        elif units == "total":
+            # keep sample rate consistent and evenly distributed
+            sample = [int(x*(len(data)-1)/(resolution-1)) for x in range(resolution)]
+            data = [ data[i] for i in sample ]
 
         data_fields = [field for field in line_keys if not field in data_field_exclude]
         config_fields = [field for field in run_settings if not field in config_exclude]
