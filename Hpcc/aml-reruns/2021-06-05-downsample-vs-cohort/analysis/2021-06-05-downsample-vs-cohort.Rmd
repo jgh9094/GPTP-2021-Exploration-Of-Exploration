@@ -1,0 +1,157 @@
+# Down-sampled lexicase versus cohort lexicase
+
+## Overview
+
+```{r}
+# Relative location of data.
+working_directory <- "Hpcc/aml-reruns/2021-06-05-downsample-vs-cohort/analysis/"
+# working_directory <- "./"                                              # << For local analysis
+
+# Settings for visualization
+cb_palette <- "Set2"
+# Create directory to dump plots
+dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
+```
+
+## Analysis dependencies
+
+```{r, message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(cowplot)
+library(viridis)
+library(RColorBrewer)
+source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
+```
+
+These analyses were conducted in the following computing environment:
+
+```{r}
+print(version)
+```
+
+
+## Setup
+
+```{r}
+data_loc <- paste0(working_directory, "data/timeseries.csv")
+data <- read.csv(data_loc, na.strings="NONE")
+
+data$cardinality <- as.factor(
+  data$OBJECTIVE_CNT
+)
+data$selection_name <- as.factor(
+  data$selection_name
+)
+
+data$epsilon <- as.factor(
+  data$LEX_EPS
+)
+
+# I always set cohort and downsampled lexicase sampling rates to be the same on a given run (regardless of selection scheme)
+data$proportion <- as.factor(
+  data$COH_LEX_PROP
+)
+
+data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
+data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+
+####### misc #######
+# Configure our default graphing theme
+theme_set(theme_cowplot())
+```
+
+## Performance over time (max)
+
+
+Raw aggregate performances.
+
+```{r}
+ggplot(data, aes(x=evaluations, y=ele_agg_per, color=selection_name)) +
+  stat_summary(geom="line", fun=mean) +
+  stat_summary(
+    geom="ribbon",
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    alpha=0.2,
+    linetype=0
+  ) +
+  scale_y_continuous(
+    name="Elite aggregate performance",
+    limits=c(0, 10000)
+  ) +
+  scale_x_continuous(
+    name="Evaluations"
+  ) +
+  ggsave(
+    paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep=""),
+    width=10,
+    height=7
+  )
+```
+
+```{r}
+ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=selection_name)) +
+  stat_summary(geom="line", fun=mean) +
+  stat_summary(
+    geom="ribbon",
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    alpha=0.2,
+    linetype=0
+  ) +
+  scale_y_continuous(
+    name="Elite trait average",
+    limits=c(0, 100)
+  ) +
+  scale_x_continuous(
+    name="Evaluations"
+  ) +
+  ggsave(
+    paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
+  )
+```
+
+## Unique starting positions over time (population)
+
+```{r}
+ggplot(data, aes(x=evaluations, y=uni_str_pos, color=selection_name)) +
+  stat_summary(geom="line", fun=mean) +
+  stat_summary(
+    geom="ribbon",
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    alpha=0.2,
+    linetype=0
+  ) +
+  scale_y_continuous(
+    name="Unique starting positions (population)",
+  ) +
+  scale_x_continuous(
+    name="Evaluations"
+  ) +
+  ggsave(
+    paste(working_directory, "imgs/pop_unique_starting_positions_ot.pdf", sep="")
+  )
+```
+
+```{r}
+ggplot(data, aes(x=evaluations, y=unique_start_positions_coverage, color=selection_name)) +
+  stat_summary(geom="line", fun=mean) +
+  stat_summary(
+    geom="ribbon",
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    alpha=0.2,
+    linetype=0
+  ) +
+  scale_y_continuous(
+    name="Unique starting position coverage (population)",
+  ) +
+  scale_x_continuous(
+    name="Evaluations"
+  ) +
+  ggsave(
+    paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
+  )
+```
