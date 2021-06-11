@@ -37,15 +37,23 @@ print(version)
 data_loc <- paste0(working_directory, "data/timeseries-res-1000g.csv")
 data <- read.csv(data_loc, na.strings="NONE")
 
+data$selection_name <- as.factor(
+  data$selection_name
+)
+
 data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
 data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+
+final_data <- filter(data, evaluations==max(data$evaluations))
 
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
 ```
 
-## Performance over time (max)
+## Performance
+
+### Performance over time
 
 ```{r}
 ggplot(data, aes(x=gen, y=ele_agg_per, color=selection_name, fill=selection_name)) +
@@ -79,11 +87,10 @@ ggplot(data, aes(x=gen, y=ele_agg_per, color=selection_name, fill=selection_name
   ggsave(
     paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep="")
   )
-
 ```
 
 ```{r}
-elite_trait_avg_fig <- ggplot(
+elite_ave_performance_fig <- ggplot(
     data,
     aes(x=gen, y=elite_trait_avg, color=selection_name, fill=selection_name)
   ) +
@@ -117,20 +124,20 @@ elite_trait_avg_fig <- ggplot(
   ggsave(
     paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
-elite_trait_avg_fig
+elite_ave_performance_fig
 ```
 
 ## Final Performance
 
 ```{r}
-final_data <- filter(data, gen==max(data$gen))
-ggplot(
+elite_final_performance_fig <- ggplot(
     final_data,
     aes(x=selection_name, y=elite_trait_avg, fill=selection_name)
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
-    alpha = .8
+    alpha = .8,
+    scale="width"
   ) +
   geom_point(
     mapping=aes(color=selection_name),
@@ -143,22 +150,36 @@ ggplot(
     outlier.shape = NA,
     alpha = 0.5
   ) +
-  scale_fill_brewer(
+  scale_y_continuous(
+    name="Average trait performance",
+    limits=c(0, 100)
+  ) +
+  scale_x_discrete(
     name="Selection",
     limits=c("EpsilonLexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
-    palette=cb_palette
+  ) +
+  scale_fill_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("EpsilonLexicase", "Tournament"),
+    labels=c("Lexicase", "Tournament"),
   ) +
   scale_color_brewer(
     name="Selection",
+    palette=cb_palette,
     limits=c("EpsilonLexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
-    palette=cb_palette
+  ) +
+  theme(
+    legend.position="none"
   )
-
+elite_final_performance_fig
 ```
 
-## Unique starting positions over time (population)
+## Unique starting positions
+
+### Coverage over time
 
 ```{r}
 ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
@@ -184,7 +205,7 @@ ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
 
 ```{r}
 
-start_position_coverage_fig <- ggplot(
+unique_start_position_coverage_fig <- ggplot(
     data,
     aes(x=gen, y=unique_start_positions_coverage, color=selection_name, fill=selection_name)
   ) +
@@ -218,42 +239,91 @@ start_position_coverage_fig <- ggplot(
   ggsave(
     paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
-start_position_coverage_fig
+unique_start_position_coverage_fig
+```
+
+### Final Coverage
+
+```{r}
+unique_start_positions_coverage_final_fig <- ggplot(
+    final_data,
+    aes(x=selection_name, y=unique_start_positions_coverage, fill=selection_name)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8,
+    scale="width"
+  ) +
+  geom_point(
+    mapping=aes(color=selection_name),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(
+    name="Starting position coverage",
+    limits=c(0, 1.0)
+  ) +
+  scale_x_discrete(
+    name="Selection",
+    limits=c("EpsilonLexicase", "Tournament"),
+    labels=c("Lexicase", "Tournament"),
+  ) +
+  scale_fill_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("EpsilonLexicase", "Tournament"),
+    labels=c("Lexicase", "Tournament"),
+  ) +
+  scale_color_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("EpsilonLexicase", "Tournament"),
+    labels=c("Lexicase", "Tournament"),
+  ) +
+  theme(
+    legend.position="none"
+  )
+unique_start_positions_coverage_final_fig
 ```
 
 ## Manuscript figures
 
 ```{r}
-font_size <- 16
 grid <- plot_grid(
-  elite_trait_avg_fig +
+  elite_ave_performance_fig +
+    ggtitle("Performance over time") +
+    theme(legend.position="none"),
+  elite_final_performance_fig +
+    ggtitle("Final performance") +
+    theme(),
+  unique_start_position_coverage_fig +
+    ggtitle("Start position coverage over time") +
+    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
     theme(
-      text=element_text(size=16),
-      legend.position="top",
-      axis.title.x=element_blank(),
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank(),
-      axis.text.y=element_text(size=14)
-
+      legend.position="bottom",
+      legend.box="horizontal"
     ),
-  start_position_coverage_fig +
-    theme(
-      text=element_text(size=16),
-      legend.position="none",
-      axis.text.y=element_text(size=14),
-      axis.text.x=element_text(size=14)
-    ),
+  unique_start_positions_coverage_final_fig +
+    ggtitle("Final start position coverage") +
+    theme(),
   nrow=2,
-  ncol=1,
-  align="v",
+  ncol=2,
+  rel_widths=c(3,2),
   labels="auto"
 )
-grid
 
 save_plot(
-  paste(working_directory, "imgs/tournament-vs-lexicase.pdf", sep=""),
+  paste(working_directory, "imgs/tournament-vs-lexicase-panel.pdf", sep=""),
   grid,
-  base_height=10,
   base_width=12,
+  base_height=8
 )
+
+grid
 ```
