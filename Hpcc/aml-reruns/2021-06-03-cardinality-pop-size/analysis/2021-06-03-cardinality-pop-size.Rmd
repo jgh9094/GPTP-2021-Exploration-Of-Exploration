@@ -52,15 +52,18 @@ data$POP_SIZE <- as.factor(
   data$POP_SIZE
 )
 
+data <- filter(data,cardinality=="100") # These runs finished.
 data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
 data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+
+final_data <- filter(data, evaluations==max(data$evaluations))
 
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
 ```
 
-## Performance over time (max)
+## Performance (max)
 
 
 Raw aggregate performances.
@@ -93,7 +96,11 @@ ggplot(data, aes(x=evaluations, y=ele_agg_per, color=POP_SIZE)) +
 ```
 
 ```{r}
-ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=POP_SIZE)) +
+elite_ave_performance_fig <-
+  ggplot(
+    data,
+    aes(x=evaluations, y=elite_trait_avg, color=POP_SIZE, fill=POP_SIZE)
+  ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
     geom="ribbon",
@@ -103,18 +110,27 @@ ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=POP_SIZE)) +
     linetype=0
   ) +
   scale_y_continuous(
-    name="Elite trait average"
+    name="Average trait performance"
   ) +
   scale_x_continuous(
     name="Evaluations"
   ) +
-  facet_wrap(
-    ~cardinality,
-    scales="free_x"
+  # facet_wrap(
+  #   ~cardinality,
+  #   scales="free_x"
+  # ) +
+  scale_fill_brewer(
+    name="Population Size",
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    name="Population Size",
+    palette=cb_palette
   ) +
   ggsave(
     paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
+elite_ave_performance_fig
 ```
 
 ```{r}
@@ -142,7 +158,51 @@ ggplot(data, aes(x=gen, y=elite_trait_avg, color=POP_SIZE)) +
   )
 ```
 
-## Unique starting positions over time (population)
+### Final performance
+
+```{r}
+elite_final_performance_fig <- ggplot(
+    final_data,
+    aes(x=POP_SIZE, y=elite_trait_avg, fill=POP_SIZE)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8,
+    scale="width"
+  ) +
+  geom_point(
+    mapping=aes(color=POP_SIZE),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(
+    name="Average trait performance",
+    limits=c(0, 100)
+  ) +
+  scale_x_discrete(
+    name="Population Size"
+  ) +
+  scale_fill_brewer(
+    name="Population Size",
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    name="Population Size",
+    palette=cb_palette
+  ) +
+  theme(
+    legend.position="none"
+  )
+elite_final_performance_fig
+```
+
+## Unique starting positions (population)
 
 ```{r}
 
@@ -171,7 +231,10 @@ ggplot(data, aes(x=evaluations, y=uni_str_pos, color=POP_SIZE)) +
 ```
 
 ```{r}
-ggplot(data, aes(x=evaluations, y=unique_start_positions_coverage, color=POP_SIZE)) +
+unique_start_position_coverage_fig <- ggplot(
+    data,
+    aes(x=evaluations, y=unique_start_positions_coverage, color=POP_SIZE, fill=POP_SIZE)
+  ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
     geom="ribbon",
@@ -181,16 +244,106 @@ ggplot(data, aes(x=evaluations, y=unique_start_positions_coverage, color=POP_SIZ
     linetype=0
   ) +
   scale_y_continuous(
-    name="Unique starting position coverage (population)",
+    name="Starting position coverage",
+    limits=c(0.0, 1.0)
   ) +
   scale_x_continuous(
     name="Evaluations"
   ) +
-  facet_wrap(
-    ~cardinality,
-    scales="free"
+  scale_fill_brewer(
+    name="Population Size",
+    palette=cb_palette
   ) +
+  scale_color_brewer(
+    name="Population Size",
+    palette=cb_palette
+  ) +
+  # facet_wrap(
+  #   ~cardinality,
+  #   scales="free"
+  # ) +
   ggsave(
     paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
+unique_start_position_coverage_fig
+```
+
+### Final coverage
+
+```{r}
+unique_start_positions_coverage_final_fig <- ggplot(
+    final_data,
+    aes(x=POP_SIZE, y=unique_start_positions_coverage, fill=POP_SIZE)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8,
+    scale="width"
+  ) +
+  geom_point(
+    mapping=aes(color=POP_SIZE),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(
+    name="Starting position coverage",
+    limits=c(0, 1.0)
+  ) +
+  scale_x_discrete(
+    name="Population size"
+  ) +
+  scale_fill_brewer(
+    name="Population size",
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    name="Population size",
+    palette=cb_palette
+  ) +
+  theme(
+    legend.position="none"
+  )
+unique_start_positions_coverage_final_fig
+```
+
+## Manuscript figures
+
+```{r}
+grid <- plot_grid(
+  elite_ave_performance_fig +
+    ggtitle("Performance over time") +
+    theme(legend.position="none"),
+  elite_final_performance_fig +
+    ggtitle("Final performance") +
+    theme(),
+  unique_start_position_coverage_fig +
+    ggtitle("Start position coverage over time") +
+    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    theme(
+      legend.position="bottom",
+      legend.box="horizontal"
+    ),
+  unique_start_positions_coverage_final_fig +
+    ggtitle("Final start position coverage") +
+    theme(),
+  nrow=2,
+  ncol=2,
+  rel_widths=c(2,1),
+  labels="auto"
+)
+
+save_plot(
+  paste(working_directory, "imgs/pop-size-panel.pdf", sep=""),
+  grid,
+  base_width=12,
+  base_height=8
+)
+
+grid
 ```
