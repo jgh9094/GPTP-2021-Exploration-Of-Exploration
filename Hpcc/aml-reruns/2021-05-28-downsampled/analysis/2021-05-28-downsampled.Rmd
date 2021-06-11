@@ -213,7 +213,7 @@ unique_start_position_coverage_fig <- ggplot(
     limits=c(0.0, 1.0)
   ) +
   scale_x_continuous(
-    name="Generations"
+    name="Evaluations"
   ) +
   scale_fill_brewer(
     name="Sampling rate",
