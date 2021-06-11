@@ -227,14 +227,14 @@ unique_start_position_coverage_fig <- ggplot(
     name="Generations"
   ) +
   scale_fill_brewer(
-    name="Cohort size",
+    name="Selection",
     palette=cb_palette,
     limits=c("CohortLexicase", "DownSampledLexicase"),
     labels=c("Cohort lexicase", "Down-sampled lexicase")
 
   ) +
   scale_color_brewer(
-    name="Cohort size",
+    name="Selection",
     palette=cb_palette,
     limits=c("CohortLexicase", "DownSampledLexicase"),
     labels=c("Cohort lexicase", "Down-sampled lexicase")
@@ -271,18 +271,18 @@ unique_start_positions_coverage_final_fig <- ggplot(
     limits=c(0, 1.0)
   ) +
   scale_x_discrete(
-    name="Cohort size",
+    name="Selection",
     limits=c("CohortLexicase", "DownSampledLexicase"),
     labels=c("Cohort lexicase", "Down-sampled lexicase")
   ) +
   scale_fill_brewer(
-    name="Cohort size",
+    name="Selection",
     palette=cb_palette,
     limits=c("CohortLexicase", "DownSampledLexicase"),
     labels=c("Cohort lexicase", "Down-sampled lexicase")
   ) +
   scale_color_brewer(
-    name="Cohort size",
+    name="Selection",
     palette=cb_palette,
     limits=c("CohortLexicase", "DownSampledLexicase"),
     labels=c("Cohort lexicase", "Down-sampled lexicase")
