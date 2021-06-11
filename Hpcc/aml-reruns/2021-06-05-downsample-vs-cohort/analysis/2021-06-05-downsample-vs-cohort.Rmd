@@ -8,7 +8,7 @@ working_directory <- "Hpcc/aml-reruns/2021-06-05-downsample-vs-cohort/analysis/"
 # working_directory <- "./"                                              # << For local analysis
 
 # Settings for visualization
-cb_palette <- "Set2"
+cb_palette <- "Dark2"
 # Create directory to dump plots
 dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```
@@ -49,22 +49,24 @@ data$epsilon <- as.factor(
 )
 
 # I always set cohort and downsampled lexicase sampling rates to be the same on a given run (regardless of selection scheme)
-data$proportion <- as.factor(
-  data$COH_LEX_PROP
+data$proportion <- factor(
+  data$COH_LEX_PROP,
+  levels=c(1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01)
 )
 
 data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
 data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+
+final_data <- filter(data, evaluations==max(data$evaluations))
 
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
 ```
 
-## Performance over time (max)
+## Performance
 
-
-Raw aggregate performances.
+### Performance over time
 
 ```{r}
 ggplot(data, aes(x=evaluations, y=ele_agg_per, color=selection_name)) +
@@ -91,7 +93,11 @@ ggplot(data, aes(x=evaluations, y=ele_agg_per, color=selection_name)) +
 ```
 
 ```{r}
-ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=selection_name)) +
+elite_ave_performance_fig <-
+  ggplot(
+    data,
+    aes(x=gen, y=elite_trait_avg, color=selection_name, fill=selection_name)
+  ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
     geom="ribbon",
@@ -101,18 +107,83 @@ ggplot(data, aes(x=evaluations, y=elite_trait_avg, color=selection_name)) +
     linetype=0
   ) +
   scale_y_continuous(
-    name="Elite trait average",
+    name="Average trait performance",
     limits=c(0, 100)
   ) +
   scale_x_continuous(
-    name="Evaluations"
+    name="Generations"
+  ) +
+  scale_fill_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  scale_color_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
   ) +
   ggsave(
     paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
+elite_ave_performance_fig
 ```
 
-## Unique starting positions over time (population)
+### Final performance
+
+```{r}
+elite_final_performance_fig <- ggplot(
+    final_data,
+    aes(x=selection_name, y=elite_trait_avg, fill=selection_name)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8,
+    scale="width"
+  ) +
+  geom_point(
+    mapping=aes(color=selection_name),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(
+    name="Average trait performance",
+    limits=c(0, 100)
+  ) +
+  scale_x_discrete(
+    name="Selection",
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  scale_fill_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  scale_color_brewer(
+    name="Selection",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  theme(
+    legend.position="none"
+  )
+elite_final_performance_fig
+```
+
+## Unique starting positions
+
+### Coverage over time
 
 ```{r}
 ggplot(data, aes(x=evaluations, y=uni_str_pos, color=selection_name)) +
@@ -136,7 +207,10 @@ ggplot(data, aes(x=evaluations, y=uni_str_pos, color=selection_name)) +
 ```
 
 ```{r}
-ggplot(data, aes(x=evaluations, y=unique_start_positions_coverage, color=selection_name)) +
+unique_start_position_coverage_fig <- ggplot(
+    data,
+    aes(x=gen, y=unique_start_positions_coverage, color=selection_name, fill=selection_name)
+  ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
     geom="ribbon",
@@ -146,12 +220,111 @@ ggplot(data, aes(x=evaluations, y=unique_start_positions_coverage, color=selecti
     linetype=0
   ) +
   scale_y_continuous(
-    name="Unique starting position coverage (population)",
+    name="Starting position coverage",
+    limits=c(0.0, 1.0)
   ) +
   scale_x_continuous(
-    name="Evaluations"
+    name="Generations"
+  ) +
+  scale_fill_brewer(
+    name="Cohort size",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+
+  ) +
+  scale_color_brewer(
+    name="Cohort size",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
   ) +
   ggsave(
     paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
+unique_start_position_coverage_fig
+```
+
+```{r}
+unique_start_positions_coverage_final_fig <- ggplot(
+    final_data,
+    aes(x=selection_name, y=unique_start_positions_coverage, fill=selection_name)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8,
+    scale="width"
+  ) +
+  geom_point(
+    mapping=aes(color=selection_name),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_y_continuous(
+    name="Starting position coverage",
+    limits=c(0, 1.0)
+  ) +
+  scale_x_discrete(
+    name="Cohort size",
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  scale_fill_brewer(
+    name="Cohort size",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  scale_color_brewer(
+    name="Cohort size",
+    palette=cb_palette,
+    limits=c("CohortLexicase", "DownSampledLexicase"),
+    labels=c("Cohort lexicase", "Down-sampled lexicase")
+  ) +
+  theme(
+    legend.position="none"
+  )
+unique_start_positions_coverage_final_fig
+```
+
+## Manuscript figures
+
+```{r}
+grid <- plot_grid(
+  elite_ave_performance_fig +
+    ggtitle("Performance over time") +
+    theme(legend.position="none"),
+  elite_final_performance_fig +
+    ggtitle("Final performance") +
+    theme(),
+  unique_start_position_coverage_fig +
+    ggtitle("Start position coverage over time") +
+    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    theme(
+      legend.position="bottom",
+      legend.box="horizontal"
+    ),
+  unique_start_positions_coverage_final_fig +
+    ggtitle("Final start position coverage") +
+    theme(),
+  nrow=2,
+  ncol=2,
+  rel_widths=c(3,2),
+  labels="auto"
+)
+
+save_plot(
+  paste(working_directory, "imgs/down-sampled-vs-cohort-panel.pdf", sep=""),
+  grid,
+  base_width=12,
+  base_height=8
+)
+
+grid
 ```
