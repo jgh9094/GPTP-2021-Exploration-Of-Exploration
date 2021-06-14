@@ -4,7 +4,7 @@
 
 ```{r}
 # Relative location of data.
-working_directory <- "Hpcc/aml-reruns/2021-05-28-epsilon/analysis/"
+working_directory <- "experiments/2021-05-28-epsilon/analysis/"
 # working_directory <- "./"                                              # << For local analysis
 
 # Settings for visualization
