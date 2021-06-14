@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EXP_TAG=2021-05-28-epsilon
-EXP_DIR=/mnt/home/lalejini/devo_ws/GPTP-2021/Hpcc/aml-reruns/${EXP_TAG}
+EXP_DIR=/mnt/home/lalejini/devo_ws/GPTP-2021/experiments/${EXP_TAG}
 BASE_DATA_DIR=/mnt/scratch/lalejini/data/gptp-2021/${EXP_TAG}
 
 REPLICATES=50
