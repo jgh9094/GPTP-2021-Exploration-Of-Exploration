@@ -1,7 +1,7 @@
 # Project-specific settings
 PROJECT := dia_world
-EMP_DIR := ../../Empirical/source
-CEREAL_DIR := ../../Empirical/third-party/cereal/include
+EMP_DIR := ../Empirical/source
+CEREAL_DIR := ../Empirical/third-party/cereal/include
 
 # Flags to use regardless of compiler
 CFLAGS_all := -Wall -Wno-unused-function -std=c++17 -I$(EMP_DIR)/
