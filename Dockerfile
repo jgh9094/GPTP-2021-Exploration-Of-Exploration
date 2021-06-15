@@ -65,11 +65,11 @@ RUN \
     && \
   export EXP_TAG=2021-05-27-cardinality \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-05-27-tournament \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-05-28-downsampled \
     && \
@@ -77,23 +77,23 @@ RUN \
     && \
   export EXP_TAG=2021-05-28-epsilon \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-06-01-cohort \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-06-01-novelty \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-06-03-cardinality-pop-size \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-06-05-downsample-vs-cohort \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   echo "downloaded experiment data"
 
