@@ -4,8 +4,9 @@
 
 ```{r}
 # Relative location of data.
-working_directory <- "experiments/2021-05-27-cardinality/analysis/"
-# working_directory <- "./"                                              # << For local analysis
+working_directory <-
+  "experiments/2021-05-27-cardinality/analysis/"
+# working_directory <- "./"
 
 # Settings for visualization
 cb_palette <- "Set2"
@@ -34,8 +35,14 @@ print(version)
 ## Setup
 
 ```{r}
-data_loc <- paste0(working_directory, "data/timeseries-res-1000g.csv")
-data <- read.csv(data_loc, na.strings="NONE")
+data_loc <- paste0(
+  working_directory,
+  "data/timeseries-res-1000g.csv"
+)
+data <- read.csv(
+  data_loc,
+  na.strings="NONE"
+)
 
 data$cardinality <- as.factor(
   data$OBJECTIVE_CNT
@@ -44,8 +51,11 @@ data$selection_name <- as.factor(
   data$selection_name
 )
 
-data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
-data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+data$elite_trait_avg <-
+  data$ele_agg_per / data$OBJECTIVE_CNT
+
+data$unique_start_positions_coverage <-
+  data$uni_str_pos / data$OBJECTIVE_CNT
 
 ####### misc #######
 # Configure our default graphing theme
@@ -83,14 +93,23 @@ ggplot(data, aes(x=gen, y=ele_agg_per, color=cardinality)) +
     palette=cb_palette
   ) +
   ggsave(
-    paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep="")
+    paste(
+      working_directory,
+      "imgs/elite_agg_performance_ot.pdf",
+      sep=""
+    )
   )
 ```
 
 ```{r}
 elite_trait_ave_fit <- ggplot(
     data,
-    aes(x=gen, y=elite_trait_avg, color=cardinality, fill=cardinality)
+    aes(
+      x=gen,
+      y=elite_trait_avg,
+      color=cardinality,
+      fill=cardinality
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
@@ -124,7 +143,12 @@ elite_trait_ave_fit
 ```{r}
 ggplot(
     data,
-    aes(x=evaluations, y=elite_trait_avg, color=cardinality, fill=cardinality)
+    aes(
+      x=evaluations,
+      y=elite_trait_avg,
+      color=cardinality,
+      fill=cardinality
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
