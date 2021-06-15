@@ -73,7 +73,7 @@ RUN \
     && \
   export EXP_TAG=2021-05-28-downsampled \
     && \
-  ./download_exp_data.sh \
+  ./download_data.sh \
     && \
   export EXP_TAG=2021-05-28-epsilon \
     && \
