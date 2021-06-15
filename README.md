@@ -6,9 +6,12 @@
 
 This repository contains the source code and analyses associated with [our](#authors) 2021 GPTP contribution, "An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways to optimality".
 
-**Repository Guide:**
+Repository Guide:
 
-- Still a work in progress
+- [.github/](#TODO) contains GitHub action workflows used to automate supplemental material builds.
+- [experiments](#TODO) contains the configuration files, hpcc submission scripts, and analysis scripts for our exploratory experiments and our final experiments (as described in the supplemental material and the publication).
+- [docs/](#TODO) contains miscellaneous documentation associated with this work.
+- [source/](#TODO) contains the implementation of the exploration diagnostic and our experiments.
 
 ## Abstract
 
