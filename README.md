@@ -10,6 +10,7 @@ This repository is associated with our GPTP 2021 submission: Exploration of Lexi
 ## Authors
 
 - [Jose Guadalupe Hernandez](https://jgh9094.github.io/)
+- [Alexander Lalejini](https://lalejini.com/)
 - [Charles Ofria](http://ofria.com) (PhD advisor extraordinaire)
 
 ## Abstract
