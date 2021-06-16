@@ -7,6 +7,7 @@ rmd_files: [
   "index.Rmd",
   "docs/data-availability.md",
   "docs/running-experiments.md",
+  "experiments/2021-05-27-tournament/analysis/2021-05-27-tournament.Rmd",
   "experiments/2021-05-27-cardinality/analysis/2021-05-27-cardinality.Rmd",
   "tail.Rmd"
   ]
