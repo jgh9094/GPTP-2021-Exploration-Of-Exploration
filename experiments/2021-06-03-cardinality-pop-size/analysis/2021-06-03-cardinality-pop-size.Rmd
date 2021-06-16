@@ -4,11 +4,13 @@
 
 ```{r}
 # Relative location of data.
-working_directory <- "experiments/2021-06-03-cardinality-pop-size/analysis/"
-# working_directory <- "./"                                              # << For local analysis
+working_directory <-
+  "experiments/2021-06-03-cardinality-pop-size/analysis/"
+# working_directory <- "./"
 
 # Settings for visualization
 cb_palette <- "Set2"
+
 # Create directory to dump plots
 dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```
@@ -52,9 +54,11 @@ data$POP_SIZE <- as.factor(
   data$POP_SIZE
 )
 
-data <- filter(data,cardinality=="100") # These runs finished.
-data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
-data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+data <- filter(data, cardinality=="100") # These runs finished.
+data$elite_trait_avg <-
+  data$ele_agg_per / data$OBJECTIVE_CNT
+data$unique_start_positions_coverage <-
+  data$uni_str_pos / data$OBJECTIVE_CNT
 
 final_data <- filter(data, evaluations==max(data$evaluations))
 
@@ -63,43 +67,18 @@ final_data <- filter(data, evaluations==max(data$evaluations))
 theme_set(theme_cowplot())
 ```
 
-## Performance (max)
-
-
-Raw aggregate performances.
-
-```{r}
-ggplot(data, aes(x=evaluations, y=ele_agg_per, color=POP_SIZE)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Elite aggregate performance"
-  ) +
-  scale_x_continuous(
-    name="Evaluations"
-  ) +
-  facet_wrap(
-    ~cardinality,
-    scales="free"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep=""),
-    width=10,
-    height=7
-  )
-```
+## Exploration diagnostic performance
 
 ```{r}
 elite_ave_performance_fig <-
   ggplot(
     data,
-    aes(x=evaluations, y=elite_trait_avg, color=POP_SIZE, fill=POP_SIZE)
+    aes(
+      x=evaluations,
+      y=elite_trait_avg,
+      color=POP_SIZE,
+      fill=POP_SIZE
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
@@ -115,10 +94,6 @@ elite_ave_performance_fig <-
   scale_x_continuous(
     name="Evaluations"
   ) +
-  # facet_wrap(
-  #   ~cardinality,
-  #   scales="free_x"
-  # ) +
   scale_fill_brewer(
     name="Population Size",
     palette=cb_palette
@@ -126,12 +101,11 @@ elite_ave_performance_fig <-
   scale_color_brewer(
     name="Population Size",
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
 elite_ave_performance_fig
 ```
+
+Same as above, but by generations instead of evaluations.
 
 ```{r}
 ggplot(data, aes(x=gen, y=elite_trait_avg, color=POP_SIZE)) +
@@ -148,13 +122,6 @@ ggplot(data, aes(x=gen, y=elite_trait_avg, color=POP_SIZE)) +
   ) +
   scale_x_continuous(
     name="Generations"
-  ) +
-  facet_wrap(
-    ~cardinality,
-    scales="free_x"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_trait_average_ot-gen.pdf", sep="")
   )
 ```
 
@@ -202,38 +169,17 @@ elite_final_performance_fig <- ggplot(
 elite_final_performance_fig
 ```
 
-## Unique starting positions (population)
-
-```{r}
-
-ggplot(data, aes(x=evaluations, y=uni_str_pos, color=POP_SIZE)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Unique starting positions (population)"
-  ) +
-  scale_x_continuous(
-    name="Evaluations"
-  ) +
-  facet_wrap(
-    ~cardinality,
-    scales="free"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_positions_ot.pdf", sep="")
-  )
-```
+## Unique starting positions
 
 ```{r}
 unique_start_position_coverage_fig <- ggplot(
     data,
-    aes(x=evaluations, y=unique_start_positions_coverage, color=POP_SIZE, fill=POP_SIZE)
+    aes(
+      x=evaluations,
+      y=unique_start_positions_coverage,
+      color=POP_SIZE,
+      fill=POP_SIZE
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
@@ -257,23 +203,20 @@ unique_start_position_coverage_fig <- ggplot(
   scale_color_brewer(
     name="Population Size",
     palette=cb_palette
-  ) +
-  # facet_wrap(
-  #   ~cardinality,
-  #   scales="free"
-  # ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
 unique_start_position_coverage_fig
 ```
 
-### Final coverage
+### Final starting position coverage
 
 ```{r}
 unique_start_positions_coverage_final_fig <- ggplot(
     final_data,
-    aes(x=POP_SIZE, y=unique_start_positions_coverage, fill=POP_SIZE)
+    aes(
+      x=POP_SIZE,
+      y=unique_start_positions_coverage,
+      fill=POP_SIZE
+    )
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -324,7 +267,10 @@ grid <- plot_grid(
     theme(),
   unique_start_position_coverage_fig +
     ggtitle("Start position coverage over time") +
-    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    guides(
+      color = guide_legend(nrow = 1),
+      fill=guide_legend(nrow = 1)
+    ) +
     theme(
       legend.position="bottom",
       legend.box="horizontal"
