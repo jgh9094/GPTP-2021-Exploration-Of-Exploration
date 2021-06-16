@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # This script downloads the data for a given experiment from the specified OSF repository.
