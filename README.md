@@ -1,8 +1,8 @@
 # An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways to optimality
 
-[![OSF](https://img.shields.io/badge/data%20%40%20OSF-10.17605%2FOSF.IO%2FXPJFT-blue)](https://osf.io/xpjft/)
+[![supplemental](https://img.shields.io/badge/go%20to-supplemental%20material-ff69b4)](https://jgh9094.github.io/GPTP-2021-Exploration-Of-Exploration/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4961239.svg)](https://doi.org/10.5281/zenodo.4961239)
-
+[![OSF](https://img.shields.io/badge/data%20%40%20OSF-10.17605%2FOSF.IO%2FXPJFT-blue)](https://osf.io/xpjft/)
 
 ## Overview
 
