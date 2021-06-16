@@ -5,7 +5,7 @@
 ```{r}
 # Relative location of data.
 working_directory <- "experiments/2021-06-01-novelty/analysis/"
-# working_directory <- "./"                                              # << For local analysis
+# working_directory <- "./"
 
 # Settings for visualization
 cb_palette <- "Set2"
@@ -34,7 +34,11 @@ print(version)
 ## Setup
 
 ```{r}
-data_loc <- paste0(working_directory, "data/timeseries-res-1000g.csv")
+data_loc <- paste0(
+  working_directory,
+  "data/timeseries-res-1000g.csv"
+)
+
 data <- read.csv(data_loc, na.strings="NONE")
 
 data$cardinality <- as.factor(
@@ -52,8 +56,10 @@ data$k <- as.factor(
    data$NOVEL_K
 )
 
-data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
-data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+data$elite_trait_avg <-
+  data$ele_agg_per / data$OBJECTIVE_CNT
+data$unique_start_positions_coverage <-
+  data$uni_str_pos / data$OBJECTIVE_CNT
 
 final_data <- filter(data, evaluations==max(data$evaluations))
 
@@ -62,33 +68,7 @@ final_data <- filter(data, evaluations==max(data$evaluations))
 theme_set(theme_cowplot())
 ```
 
-## Performance
-
-### Performance over time
-
-```{r}
-ggplot(data, aes(x=gen, y=ele_agg_per, color=k)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Elite aggregate performance",
-    limits=c(0, 10000)
-  ) +
-  scale_x_continuous(
-    name="Generation"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep=""),
-    width=10,
-    height=7
-  )
-```
+## Exploration diagnostic performance
 
 ```{r}
 elite_ave_performance_fig <-
@@ -118,9 +98,6 @@ elite_ave_performance_fig <-
   scale_color_brewer(
     name="k",
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
 elite_ave_performance_fig
 ```
@@ -171,29 +148,6 @@ elite_final_performance_fig
 
 ## Unique starting positions
 
-### Coverage over time
-
-```{r}
-ggplot(data, aes(x=gen, y=uni_str_pos, color=k)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Unique starting positions (population)",
-  ) +
-  scale_x_continuous(
-    name="Generation"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_positions_ot.pdf", sep="")
-  )
-```
-
 ```{r}
 unique_start_position_coverage_fig <- ggplot(
     data,
@@ -221,14 +175,11 @@ unique_start_position_coverage_fig <- ggplot(
   scale_color_brewer(
     name="k",
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
 unique_start_position_coverage_fig
 ```
 
-### Final coverage
+### Final starting position coverage
 
 ```{r}
 unique_start_positions_coverage_final_fig <- ggplot(
@@ -284,7 +235,10 @@ grid <- plot_grid(
     theme(),
   unique_start_position_coverage_fig +
     ggtitle("Start position coverage over time") +
-    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    guides(
+      color=guide_legend(nrow = 1),
+      fill=guide_legend(nrow = 1)
+    ) +
     theme(
       legend.position="bottom",
       legend.box="horizontal"
