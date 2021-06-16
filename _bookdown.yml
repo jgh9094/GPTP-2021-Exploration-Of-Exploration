@@ -9,6 +9,7 @@ rmd_files: [
   "docs/running-experiments.md",
   "experiments/2021-05-27-tournament/analysis/2021-05-27-tournament.Rmd",
   "experiments/2021-05-27-cardinality/analysis/2021-05-27-cardinality.Rmd",
+  "experiments/2021-06-03-cardinality-pop-size/analysis/2021-06-03-cardinality-pop-size.Rmd",
   "experiments/2021-05-28-epsilon/analysis/2021-05-28-epsilon.Rmd",
   "experiments/2021-05-28-downsampled/analysis/2021-05-28-downsampled.Rmd",
   "experiments/2021-06-01-cohort/analysis/2021-06-01-cohort.Rmd",
