@@ -1,0 +1,40 @@
+---
+title: "Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways"
+author: "Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria"
+date: "`r Sys.Date()`"
+output: bookdown::gitbook
+documentclass: book
+bibliography: ["packages.bib", "supplemental.bib"]
+biblio-style: apalike
+nocite: '@*'
+link-citations: yes
+github-repo: jgh9094/GPTP-2021
+description: "Supplemental material"
+---
+
+# Introduction
+
+This is the supplemental material associated with our 2021 GPTP contribution entitled, _An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways_.
+Preprint forthcoming.
+
+## About our supplemental material
+
+This supplemental material is hosted on [GitHub](https://github.com) using GitHub pages.
+The source code and configuration files used to generate this supplemental material can be found in [this GitHub repository].
+We compiled our data analyses and supplemental documentation into this nifty web-accessible book using [bookdown](https://bookdown.org/).
+
+Our supplemental material includes the following:
+
+- TODO
+
+## Contributing authors
+
+- [Jose Guadalupe Hernandez](https://jgh9094.github.io/)
+- [Alexander Lalejini](https://lalejini.com)
+- [Charles Ofria](http://ofria.com)
+
+## Research overview
+
+Abstract:
+
+> TODO

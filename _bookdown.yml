@@ -1,0 +1,12 @@
+book_filename: "supplemental-material"
+language:
+  ui:
+    chapter_name: "Chapter "
+delete_merged_file: true
+rmd_files: [
+  "index.Rmd",
+  "docs/data-availability.md",
+  "docs/running-experiments.md",
+  "experiments/2021-05-27-cardinality/analysis/2021-05-27-cardinality.Rmd",
+  "tail.Rmd"
+  ]

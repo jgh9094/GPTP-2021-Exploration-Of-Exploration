@@ -1,0 +1,20 @@
+# Executables
+dia_world
+
+# Data files
+*.csv
+data/
+*.tar.gz
+
+# Image files
+imgs/
+
+# Python virtual environment
+pyenv/
+
+# Bookdown output
+_book/
+_bookdown_files/
+supplemental-material/
+supplemental-material_files/
+

@@ -1,0 +1,21 @@
+# R
+.RData
+.Rhistory
+
+# Bookdown
+_site/
+
+# Python
+experiments/pyenv/
+
+# Data
+*.csv
+*.tar.gz
+
+# Images
+*.pdf
+*.png
+*.jpg
+
+supplemental-material
+supplemental-material_files
