@@ -62,44 +62,11 @@ data$unique_start_positions_coverage <-
 theme_set(theme_cowplot())
 ```
 
-## Performance (max)
+## Exploration diagnostic performance
 
-
-Raw aggregate performances. Note that different cardinalities have different score potentials.
-
-```{r}
-ggplot(data, aes(x=gen, y=ele_agg_per, color=cardinality)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Elite aggregate performance",
-    limits=c(0, 10000)
-  ) +
-  scale_x_continuous(
-    name="Generation"
-  ) +
-  scale_fill_brewer(
-    name="Cardinaltiy",
-    palette=cb_palette
-  ) +
-  scale_color_brewer(
-    name="Cardinaltiy",
-    palette=cb_palette
-  ) +
-  ggsave(
-    paste(
-      working_directory,
-      "imgs/elite_agg_performance_ot.pdf",
-      sep=""
-    )
-  )
-```
+First, we look at performance over time.
+Specifically, we look at the normalized aggregage score of the most performant individuals over time.
+To control for different cardinalities having different maximum scores, we normalized performances (by dividing by cardinality) to values between 0 and 100.
 
 ```{r}
 elite_trait_ave_fit <- ggplot(
@@ -140,42 +107,9 @@ elite_trait_ave_fit <- ggplot(
 elite_trait_ave_fit
 ```
 
-```{r}
-ggplot(
-    data,
-    aes(
-      x=evaluations,
-      y=elite_trait_avg,
-      color=cardinality,
-      fill=cardinality
-    )
-  ) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Average trait performance",
-    limits=c(0, 100)
-  ) +
-  scale_x_continuous(
-    name="Evaluations"
-  ) +
-  scale_fill_brewer(
-    name="Cardinaltiy",
-    palette=cb_palette
-  ) +
-  scale_color_brewer(
-    name="Cardinaltiy",
-    palette=cb_palette
-  )
-```
-
 ### Final performance
+
+Next, we look only at the final performances of each treatment
 
 ```{r}
 final_data <- filter(data, gen==max(data$gen))
@@ -220,7 +154,9 @@ elite_trait_ave_fit_final <- ggplot(
 elite_trait_ave_fit_final
 ```
 
-## Unique starting positions (population)
+## Unique starting positions
+
+Next, we analyze the number of unique starting position maintained by populations.
 
 ```{r}
 ggplot(data, aes(x=gen, y=uni_str_pos, color=cardinality)) +
@@ -239,12 +175,26 @@ ggplot(data, aes(x=gen, y=uni_str_pos, color=cardinality)) +
     name="Generation"
   ) +
   ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_positions_ot.pdf", sep="")
+    paste(
+      working_directory,
+      "imgs/pop_unique_starting_positions_ot.pdf",
+       sep=""
+    )
   )
 ```
 
+Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
+
 ```{r}
-unique_start_positions_coverage_fig <- ggplot(data, aes(x=gen, y=unique_start_positions_coverage, color=cardinality, fill=cardinality)) +
+unique_start_positions_coverage_fig <- ggplot(
+    data,
+    aes(
+      x=gen,
+      y=unique_start_positions_coverage,
+      color=cardinality,
+      fill=cardinality
+    )
+  ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
     geom="ribbon",
@@ -269,15 +219,25 @@ unique_start_positions_coverage_fig <- ggplot(data, aes(x=gen, y=unique_start_po
     palette=cb_palette
   ) +
   ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
+    paste(
+      working_directory,
+      "imgs/pop_unique_starting_position_coverage_ot.pdf",
+      sep=""
+    )
   )
 unique_start_positions_coverage_fig
 ```
 
-### Final coverage
+### Final starting position coverage
 
 ```{r}
-final_unique_start_positions_coverage_fig <- ggplot(final_data,  aes(x=cardinality, y=unique_start_positions_coverage, fill=cardinality)
+final_unique_start_positions_coverage_fig <- ggplot(
+    final_data,
+    aes(
+      x=cardinality,
+      y=unique_start_positions_coverage,
+      fill=cardinality
+    )
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -318,6 +278,8 @@ final_unique_start_positions_coverage_fig
 
 ## Manuscript figures
 
+Combine figures for the manuscript.
+
 ```{r}
 grid <- plot_grid(
   elite_trait_ave_fit +
@@ -328,7 +290,7 @@ grid <- plot_grid(
     theme(),
   unique_start_positions_coverage_fig +
     ggtitle("Start position coverage over time") +
-    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    guides(color=guide_legend(nrow = 1), fill=guide_legend(nrow=1)) +
     theme(
       legend.position="bottom",
       legend.box="horizontal"
