@@ -1,6 +1,8 @@
 # An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways to optimality
 
 [![OSF](https://img.shields.io/badge/data%20%40%20OSF-10.17605%2FOSF.IO%2FXPJFT-blue)](https://osf.io/xpjft/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4961239.svg)](https://doi.org/10.5281/zenodo.4961239)
+
 
 ## Overview
 
