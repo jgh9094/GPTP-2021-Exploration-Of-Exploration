@@ -34,15 +34,21 @@ print(version)
 ## Setup
 
 ```{r}
-data_loc <- paste0(working_directory, "data/timeseries-res-1000g.csv")
+data_loc <- paste0(
+  working_directory,
+  "data/timeseries-res-1000g.csv"
+)
+
 data <- read.csv(data_loc, na.strings="NONE")
 
 data$selection_name <- as.factor(
   data$selection_name
 )
 
-data$elite_trait_avg <- data$ele_agg_per / data$OBJECTIVE_CNT
-data$unique_start_positions_coverage <- data$uni_str_pos / data$OBJECTIVE_CNT
+data$elite_trait_avg <-
+  data$ele_agg_per / data$OBJECTIVE_CNT
+data$unique_start_positions_coverage <-
+  data$uni_str_pos / data$OBJECTIVE_CNT
 
 final_data <- filter(data, evaluations==max(data$evaluations))
 
@@ -51,48 +57,17 @@ final_data <- filter(data, evaluations==max(data$evaluations))
 theme_set(theme_cowplot())
 ```
 
-## Performance
-
-### Performance over time
-
-```{r}
-ggplot(data, aes(x=gen, y=ele_agg_per, color=selection_name, fill=selection_name)) +
-  stat_summary(geom="line", fun=mean) +
-  stat_summary(
-    geom="ribbon",
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    alpha=0.2,
-    linetype=0
-  ) +
-  scale_y_continuous(
-    name="Elite aggregate performance",
-    limits=c(0, 10000)
-  ) +
-  scale_x_continuous(
-    name="Generation"
-  ) +
-  scale_fill_brewer(
-    name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
-    labels=c("Lexicase", "Tournament"),
-    palette=cb_palette
-  ) +
-  scale_color_brewer(
-    name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
-    labels=c("Lexicase", "Tournament"),
-    palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_agg_performance_ot.pdf", sep="")
-  )
-```
+## Exploration diagnostic performance
 
 ```{r}
 elite_ave_performance_fig <- ggplot(
     data,
-    aes(x=gen, y=elite_trait_avg, color=selection_name, fill=selection_name)
+    aes(
+      x=gen,
+      y=elite_trait_avg,
+      color=selection_name,
+      fill=selection_name
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
@@ -120,9 +95,6 @@ elite_ave_performance_fig <- ggplot(
     limits=c("EpsilonLexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
 elite_ave_performance_fig
 ```
@@ -132,7 +104,11 @@ elite_ave_performance_fig
 ```{r}
 elite_final_performance_fig <- ggplot(
     final_data,
-    aes(x=selection_name, y=elite_trait_avg, fill=selection_name)
+    aes(
+      x=selection_name,
+      y=elite_trait_avg,
+      fill=selection_name
+    )
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -179,8 +155,6 @@ elite_final_performance_fig
 
 ## Unique starting positions
 
-### Coverage over time
-
 ```{r}
 ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
   stat_summary(geom="line", fun=mean) +
@@ -197,17 +171,20 @@ ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
   ) +
   scale_x_continuous(
     name="Generation"
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_positions_ot.pdf", sep="")
   )
 ```
 
-```{r}
+Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
 
+```{r}
 unique_start_position_coverage_fig <- ggplot(
     data,
-    aes(x=gen, y=unique_start_positions_coverage, color=selection_name, fill=selection_name)
+    aes(
+      x=gen,
+      y=unique_start_positions_coverage,
+      color=selection_name,
+      fill=selection_name
+    )
   ) +
   stat_summary(geom="line", fun=mean) +
   stat_summary(
@@ -235,19 +212,20 @@ unique_start_position_coverage_fig <- ggplot(
     limits=c("EpsilonLexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/pop_unique_starting_position_coverage_ot.pdf", sep="")
   )
 unique_start_position_coverage_fig
 ```
 
-### Final Coverage
+### Final starting position Coverage
 
 ```{r}
 unique_start_positions_coverage_final_fig <- ggplot(
     final_data,
-    aes(x=selection_name, y=unique_start_positions_coverage, fill=selection_name)
+    aes(
+      x=selection_name,
+      y=unique_start_positions_coverage,
+      fill=selection_name
+    )
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -304,7 +282,10 @@ grid <- plot_grid(
     theme(),
   unique_start_position_coverage_fig +
     ggtitle("Start position coverage over time") +
-    guides(color = guide_legend(nrow = 1), fill=guide_legend(nrow = 1)) +
+    guides(
+      color = guide_legend(nrow = 1),
+      fill=guide_legend(nrow = 1)
+    ) +
     theme(
       legend.position="bottom",
       legend.box="horizontal"
@@ -319,7 +300,11 @@ grid <- plot_grid(
 )
 
 save_plot(
-  paste(working_directory, "imgs/tournament-vs-lexicase-panel.pdf", sep=""),
+  paste(
+    working_directory,
+    "imgs/tournament-vs-lexicase-panel.pdf",
+    sep=""
+  ),
   grid,
   base_width=12,
   base_height=8
