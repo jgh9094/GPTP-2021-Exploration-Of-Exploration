@@ -100,9 +100,6 @@ elite_trait_ave_fit <- ggplot(
   scale_color_brewer(
     name="Cardinaltiy",
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(working_directory, "imgs/elite_trait_average_ot.pdf", sep="")
   )
 elite_trait_ave_fit
 ```
@@ -173,13 +170,6 @@ ggplot(data, aes(x=gen, y=uni_str_pos, color=cardinality)) +
   ) +
   scale_x_continuous(
     name="Generation"
-  ) +
-  ggsave(
-    paste(
-      working_directory,
-      "imgs/pop_unique_starting_positions_ot.pdf",
-       sep=""
-    )
   )
 ```
 
@@ -217,13 +207,6 @@ unique_start_positions_coverage_fig <- ggplot(
   scale_color_brewer(
     name="Cardinaltiy",
     palette=cb_palette
-  ) +
-  ggsave(
-    paste(
-      working_directory,
-      "imgs/pop_unique_starting_position_coverage_ot.pdf",
-      sep=""
-    )
   )
 unique_start_positions_coverage_fig
 ```
