@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EXP_TAG=2021-06-03-cardinality-pop-size
-EXP_DIR=/mnt/home/lalejini/devo_ws/GPTP-2021/experiments
+EXP_DIR=/mnt/home/lalejini/devo_ws/GPTP-2021-Exploration-Of-Exploration/experiments
 BASE_DATA_DIR=/mnt/scratch/lalejini/data/gptp-2021/${EXP_TAG}
 
 REPLICATES=50
