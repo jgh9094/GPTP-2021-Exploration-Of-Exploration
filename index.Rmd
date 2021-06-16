@@ -8,7 +8,7 @@ bibliography: ["packages.bib", "supplemental.bib"]
 biblio-style: apalike
 nocite: '@*'
 link-citations: yes
-github-repo: jgh9094/GPTP-2021
+github-repo: jgh9094/GPTP-2021-Exploration-Of-Exploration
 description: "Supplemental material"
 ---
 
