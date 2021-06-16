@@ -1,0 +1,567 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[]{book}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways},
+            pdfauthor={Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage[]{natbib}
+\bibliographystyle{apalike}
+
+\title{Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways}
+\author{Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria}
+\date{2021-06-16}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\hypertarget{introduction}{%
+\chapter{Introduction}\label{introduction}}
+
+This is the supplemental material associated with our 2021 GPTP contribution entitled, \emph{An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways}.
+Preprint forthcoming.
+
+\hypertarget{about-our-supplemental-material}{%
+\section{About our supplemental material}\label{about-our-supplemental-material}}
+
+This supplemental material is hosted on \href{https://github.com}{GitHub} using GitHub pages.
+The source code and configuration files used to generate this supplemental material can be found in \href{https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration}{this GitHub repository}.
+We compiled our data analyses and supplemental documentation into this nifty web-accessible book using \href{https://bookdown.org/}{bookdown}.
+
+Our supplemental material includes the following:
+
+\begin{itemize}
+\tightlist
+\item
+  TODO
+\end{itemize}
+
+\hypertarget{contributing-authors}{%
+\section{Contributing authors}\label{contributing-authors}}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://jgh9094.github.io/}{Jose Guadalupe Hernandez}
+\item
+  \href{https://lalejini.com}{Alexander Lalejini}
+\item
+  \href{http://ofria.com}{Charles Ofria}
+\end{itemize}
+
+\hypertarget{research-overview}{%
+\section{Research overview}\label{research-overview}}
+
+Abstract:
+
+\begin{quote}
+TODO
+\end{quote}
+
+\hypertarget{data-availability}{%
+\chapter{Data Availability}\label{data-availability}}
+
+\hypertarget{source-code}{%
+\section{Source code}\label{source-code}}
+
+The source code for this work is available on GitHub at \url{https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration}.
+
+\hypertarget{experimental-results}{%
+\section{Experimental results}\label{experimental-results}}
+
+The data from our experiments are available online in an OSF repository \citep{osf_data} at \url{https://osf.io/xpjft/}.
+
+\hypertarget{compile-and-run-experiments}{%
+\chapter{Compile and run experiments}\label{compile-and-run-experiments}}
+
+Here, we provide a guide to compiling and running our experiments using our Docker image.
+
+Please file an \href{https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration/issues}{issue on GitHub} if something is unclear or does not work.
+
+\hypertarget{docker}{%
+\section{Docker}\label{docker}}
+
+TODO
+
+\hypertarget{getting-the-right-image}{%
+\subsection{Getting the right image}\label{getting-the-right-image}}
+
+\hypertarget{dockerhub}{%
+\subsubsection{DockerHub}\label{dockerhub}}
+
+\hypertarget{local-build}{%
+\subsubsection{Local build}\label{local-build}}
+
+\hypertarget{spinning-up-a-container}{%
+\subsection{Spinning up a container}\label{spinning-up-a-container}}
+
+\hypertarget{running-inside-the-container}{%
+\subsection{Running inside the container}\label{running-inside-the-container}}
+
+\hypertarget{copying-content-from-the-container}{%
+\subsection{Copying content from the container}\label{copying-content-from-the-container}}
+
+\hypertarget{diagnostic-cardinality}{%
+\chapter{Diagnostic cardinality}\label{diagnostic-cardinality}}
+
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}
+\StringTok{  "experiments/2021-05-27-cardinality/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies}{%
+\section{Analysis dependencies}\label{analysis-dependencies}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup}{%
+\section{Setup}\label{setup}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}
+\NormalTok{  working_directory,}
+  \StringTok{"data/timeseries-res-1000g.csv"}
+\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}
+\NormalTok{  data_loc,}
+  \DataTypeTok{na.strings=}\StringTok{"NONE"}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance}}
+
+First, we look at performance over time.
+Specifically, we look at the normalized aggregage score of the most performant individuals over time.
+To control for different cardinalities having different maximum scores, we normalized performances (by dividing by cardinality) to values between 0 and 100.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_trait_ave_fit <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{cardinality,}
+      \DataTypeTok{fill=}\NormalTok{cardinality}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_trait_ave_fit}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\hypertarget{final-performance}{%
+\subsection{Final performance}\label{final-performance}}
+
+Next, we look only at the final performances of each treatment
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, gen}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{gen))}
+\NormalTok{elite_trait_ave_fit_final <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{cardinality, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{cardinality)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{cardinality),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinality"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_trait_ave_fit_final}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{unique-starting-positions}{%
+\section{Unique starting positions}\label{unique-starting-positions}}
+
+Next, we analyze the number of unique starting position maintained by populations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{uni_str_pos, }\DataTypeTok{color=}\NormalTok{cardinality)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Unique starting positions (population)"}\NormalTok{,}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{cardinality,}
+      \DataTypeTok{fill=}\NormalTok{cardinality}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.05}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{final-starting-position-coverage}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{final_unique_start_positions_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{cardinality,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{cardinality}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{cardinality),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.05}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinality"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cardinaltiy"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{final_unique_start_positions_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\hypertarget{manuscript-figures}{%
+\section{Manuscript figures}\label{manuscript-figures}}
+
+Combine figures for the manuscript.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_trait_ave_fit }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_trait_ave_fit_final }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_positions_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{), }\DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  final_unique_start_positions_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/cardinality-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{10}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\bibliography{packages.bib,supplemental.bib}
+
+\end{document}
