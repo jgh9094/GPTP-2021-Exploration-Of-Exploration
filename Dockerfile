@@ -2,12 +2,12 @@
 # Run interactively:
 #   docker run -it --entrypoint bash <IMAGE TAG>
 # To build image locally (instead of pulling from dockerhub)
-#   docker build /PATH/TO/GPTP-2021/
+#   docker build /PATH/TO/GPTP-2021-Exploration-Of-Exploration/
 
 # Pull a base image
 FROM ubuntu:20.04
 
-COPY . /opt/GPTP-2021
+COPY . /opt/GPTP-2021-Exploration-Of-Exploration
 
 # To make installs not ask questions about timezones
 ARG DEBIAN_FRONTEND=noninteractive
@@ -47,7 +47,7 @@ RUN cd /usr/bin/ && ln -s g++-10 g++ &&  cd /
 # install project python dependencies (listed in requirements.txt)
 ########################################################
 RUN \
-  pip3 install -r /opt/GPTP-2021/experiments/requirements.txt \
+  pip3 install -r /opt/GPTP-2021-Exploration-Of-Exploration/experiments/requirements.txt \
     && \
   pip3 install osfclient \
     && \
@@ -59,7 +59,7 @@ RUN \
 RUN \
   export OSF_PROJECT=xpjft \
     && \
-  export PROJECT_PATH=/opt/GPTP-2021 \
+  export PROJECT_PATH=/opt/GPTP-2021-Exploration-Of-Exploration \
     && \
   cd ${PROJECT_PATH} \
     && \
@@ -164,7 +164,7 @@ RUN \
 # compile experiment code
 ########################################################
 RUN \
-  cd /opt/GPTP-2021 && \
+  cd /opt/GPTP-2021-Exploration-Of-Exploration && \
   make native && \
   echo "finished compiling experiments"
 
@@ -172,9 +172,9 @@ RUN \
 # # build supplemental material (will run analyses)
 # ########################################################
 RUN \
-  cd /opt/GPTP-2021 && \
+  cd /opt/GPTP-2021-Exploration-Of-Exploration && \
   ./build_book.sh && \
   echo "finished running data analyses and building the supplemental material"
 
 
-WORKDIR /opt/GPTP-2021
+WORKDIR /opt/GPTP-2021-Exploration-Of-Exploration
