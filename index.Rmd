@@ -20,7 +20,7 @@ Preprint forthcoming.
 ## About our supplemental material
 
 This supplemental material is hosted on [GitHub](https://github.com) using GitHub pages.
-The source code and configuration files used to generate this supplemental material can be found in [this GitHub repository].
+The source code and configuration files used to generate this supplemental material can be found in [this GitHub repository](https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration).
 We compiled our data analyses and supplemental documentation into this nifty web-accessible book using [bookdown](https://bookdown.org/).
 
 Our supplemental material includes the following:
