@@ -166,7 +166,7 @@ ggplot(data, aes(x=gen, y=uni_str_pos, color=cardinality)) +
     linetype=0
   ) +
   scale_y_continuous(
-    name="Unique starting positions (population)",
+    name="Unique activation positions (population)",
   ) +
   scale_x_continuous(
     name="Generation"
@@ -194,7 +194,7 @@ unique_start_positions_coverage_fig <- ggplot(
     linetype=0
   ) +
   scale_y_continuous(
-    name="Starting position coverage",
+    name="Activation position coverage",
     limits=c(0.0, 1.05)
   ) +
   scale_x_continuous(
@@ -239,7 +239,7 @@ final_unique_start_positions_coverage_fig <- ggplot(
     alpha = 0.5
   ) +
   scale_y_continuous(
-    name="Starting position coverage",
+    name="Activation position coverage",
     limits=c(0, 1.05)
   ) +
   scale_x_discrete(
@@ -264,6 +264,18 @@ final_unique_start_positions_coverage_fig
 Combine figures for the manuscript.
 
 ```{r}
+legend <- cowplot::get_legend(
+    elite_trait_ave_fit +
+      guides(
+        color=guide_legend(nrow=1),
+        fill=guide_legend(nrow=1)
+      ) +
+      theme(
+        legend.position = "bottom",
+        legend.box="horizontal"
+      )
+  )
+
 grid <- plot_grid(
   elite_trait_ave_fit +
     ggtitle("Performance over time") +
@@ -272,14 +284,10 @@ grid <- plot_grid(
     ggtitle("Final performance") +
     theme(),
   unique_start_positions_coverage_fig +
-    ggtitle("Start position coverage over time") +
-    guides(color=guide_legend(nrow = 1), fill=guide_legend(nrow=1)) +
-    theme(
-      legend.position="bottom",
-      legend.box="horizontal"
-    ),
+    ggtitle("Activation position coverage over time") +
+    theme(legend.position="none"),
   final_unique_start_positions_coverage_fig +
-    ggtitle("Final start position coverage") +
+    ggtitle("Final activation position coverage") +
     theme(),
   nrow=2,
   ncol=2,
@@ -287,11 +295,19 @@ grid <- plot_grid(
   labels="auto"
 )
 
+grid <- plot_grid(
+  grid,
+  legend,
+  nrow=2,
+  ncol=1,
+  rel_heights=c(1, 0.1)
+)
+
 save_plot(
   paste(working_directory, "imgs/cardinality-panel.pdf", sep=""),
   grid,
   base_width=12,
-  base_height=10
+  base_height=8
 )
 
 grid
