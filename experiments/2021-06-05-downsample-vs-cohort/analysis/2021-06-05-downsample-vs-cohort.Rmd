@@ -182,7 +182,7 @@ unique_start_position_coverage_fig <- ggplot(
     linetype=0
   ) +
   scale_y_continuous(
-    name="Starting position coverage",
+    name="Activation position coverage",
     limits=c(0.0, 1.0)
   ) +
   scale_x_continuous(
@@ -232,7 +232,7 @@ unique_start_positions_coverage_final_fig <- ggplot(
     alpha = 0.5
   ) +
   scale_y_continuous(
-    name="Starting position coverage",
+    name="Activation position coverage",
     limits=c(0, 1.0)
   ) +
   scale_x_discrete(
@@ -261,6 +261,19 @@ unique_start_positions_coverage_final_fig
 ## Manuscript figures
 
 ```{r}
+legend <- cowplot::get_legend(
+    elite_ave_performance_fig +
+      guides(
+        color=guide_legend(nrow=1),
+        fill=guide_legend(nrow=1)
+      ) +
+      theme(
+        legend.position = "bottom",
+        legend.box="horizontal",
+        legend.justification="center"
+      )
+  )
+
 grid <- plot_grid(
   elite_ave_performance_fig +
     ggtitle("Performance over time") +
@@ -269,22 +282,23 @@ grid <- plot_grid(
     ggtitle("Final performance") +
     theme(),
   unique_start_position_coverage_fig +
-    ggtitle("Start position coverage over time") +
-    guides(
-      color = guide_legend(nrow = 1),
-      fill=guide_legend(nrow = 1)
-    ) +
-    theme(
-      legend.position="bottom",
-      legend.box="horizontal"
-    ),
+    ggtitle("Activation position coverage over time") +
+    theme(legend.position="none"),
   unique_start_positions_coverage_final_fig +
-    ggtitle("Final start position coverage") +
+    ggtitle("Final activation position coverage") +
     theme(),
   nrow=2,
   ncol=2,
   rel_widths=c(3,2),
   labels="auto"
+)
+
+grid <- plot_grid(
+  grid,
+  legend,
+  nrow=2,
+  ncol=1,
+  rel_heights=c(1, 0.1)
 )
 
 save_plot(
