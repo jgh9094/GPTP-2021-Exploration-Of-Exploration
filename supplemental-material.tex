@@ -205,8 +205,8 @@ TODO
 \hypertarget{copying-content-from-the-container}{%
 \subsection{Copying content from the container}\label{copying-content-from-the-container}}
 
-\hypertarget{diagnostic-cardinality}{%
-\chapter{Diagnostic cardinality}\label{diagnostic-cardinality}}
+\hypertarget{tournament-selection-vs-lexicase-selection}{%
+\chapter{Tournament selection vs Lexicase selection}\label{tournament-selection-vs-lexicase-selection}}
 
 \hypertarget{overview}{%
 \section{Overview}\label{overview}}
@@ -214,8 +214,7 @@ TODO
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# Relative location of data.}
-\NormalTok{working_directory <-}
-\StringTok{  "experiments/2021-05-27-cardinality/analysis/"}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-05-27-tournament/analysis/"}
 \CommentTok{# working_directory <- "./"}
 
 \CommentTok{# Settings for visualization}
@@ -274,6 +273,380 @@ These analyses were conducted in the following computing environment:
 \NormalTok{  working_directory,}
   \StringTok{"data/timeseries-res-1000g.csv"}
 \NormalTok{)}
+
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{selection_name,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\hypertarget{final-performance}{%
+\section{Final Performance}\label{final-performance}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{selection_name,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{selection_name),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{unique-starting-positions}{%
+\section{Unique starting positions}\label{unique-starting-positions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{uni_str_pos, }\DataTypeTok{color=}\NormalTok{selection_name)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Unique starting positions (population)"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{selection_name,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limit=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generation"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{final-starting-position-coverage}{%
+\subsection{Final starting position Coverage}\label{final-starting-position-coverage}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{selection_name,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{selection_name),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\hypertarget{manuscript-figures}{%
+\section{Manuscript figures}\label{manuscript-figures}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(}
+\NormalTok{    working_directory,}
+    \StringTok{"imgs/tournament-vs-lexicase-panel.pdf"}\NormalTok{,}
+    \DataTypeTok{sep=}\StringTok{""}
+\NormalTok{  ),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\hypertarget{diagnostic-cardinality}{%
+\chapter{Diagnostic cardinality}\label{diagnostic-cardinality}}
+
+\hypertarget{overview-1}{%
+\section{Overview}\label{overview-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}
+\StringTok{  "experiments/2021-05-27-cardinality/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-1}{%
+\section{Analysis dependencies}\label{analysis-dependencies-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-1}{%
+\section{Setup}\label{setup-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}
+\NormalTok{  working_directory,}
+  \StringTok{"data/timeseries-res-1000g.csv"}
+\NormalTok{)}
 \NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}
 \NormalTok{  data_loc,}
   \DataTypeTok{na.strings=}\StringTok{"NONE"}
@@ -298,8 +671,8 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{exploration-diagnostic-performance}{%
-\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance}}
+\hypertarget{exploration-diagnostic-performance-1}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-1}}
 
 First, we look at performance over time.
 Specifically, we look at the normalized aggregage score of the most performant individuals over time.
@@ -343,10 +716,10 @@ To control for different cardinalities having different maximum scores, we norma
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-15-1.pdf}
 
-\hypertarget{final-performance}{%
-\subsection{Final performance}\label{final-performance}}
+\hypertarget{final-performance-1}{%
+\subsection{Final performance}\label{final-performance-1}}
 
 Next, we look only at the final performances of each treatment
 
@@ -395,10 +768,10 @@ Next, we look only at the final performances of each treatment
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-16-1.pdf}
 
-\hypertarget{unique-starting-positions}{%
-\section{Unique starting positions}\label{unique-starting-positions}}
+\hypertarget{unique-starting-positions-1}{%
+\section{Unique starting positions}\label{unique-starting-positions-1}}
 
 Next, we analyze the number of unique starting position maintained by populations.
 
@@ -422,7 +795,7 @@ Next, we analyze the number of unique starting position maintained by population
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-17-1.pdf}
 
 Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
 
@@ -464,10 +837,10 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-18-1.pdf}
 
-\hypertarget{final-starting-position-coverage}{%
-\subsection{Final starting position coverage}\label{final-starting-position-coverage}}
+\hypertarget{final-starting-position-coverage-1}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-1}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -517,10 +890,10 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-19-1.pdf}
 
-\hypertarget{manuscript-figures}{%
-\section{Manuscript figures}\label{manuscript-figures}}
+\hypertarget{manuscript-figures-1}{%
+\section{Manuscript figures}\label{manuscript-figures-1}}
 
 Combine figures for the manuscript.
 
@@ -560,7 +933,2017 @@ Combine figures for the manuscript.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\hypertarget{increasing-population-size-versus-increasing-generations}{%
+\chapter{Increasing population size versus increasing generations}\label{increasing-population-size-versus-increasing-generations}}
+
+\hypertarget{overview-2}{%
+\section{Overview}\label{overview-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}
+\StringTok{  "experiments/2021-06-03-cardinality-pop-size/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-2}{%
+\section{Analysis dependencies}\label{analysis-dependencies-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-2}{%
+\section{Setup}\label{setup-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/timeseries.csv"}\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{POP_SIZE <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{POP_SIZE}
+\NormalTok{)}
+
+\NormalTok{data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, cardinality}\OperatorTok{==}\StringTok{"100"}\NormalTok{) }\CommentTok{# These runs finished.}
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-2}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{POP_SIZE,}
+      \DataTypeTok{fill=}\NormalTok{POP_SIZE}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+Same as above, but by generations instead of evaluations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{color=}\NormalTok{POP_SIZE)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Elite trait average"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-26-1.pdf}
+
+\hypertarget{final-performance-2}{%
+\subsection{Final performance}\label{final-performance-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{POP_SIZE, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{POP_SIZE)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{POP_SIZE),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+\hypertarget{unique-starting-positions-2}{%
+\section{Unique starting positions}\label{unique-starting-positions-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{POP_SIZE,}
+      \DataTypeTok{fill=}\NormalTok{POP_SIZE}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population Size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+\hypertarget{final-starting-position-coverage-2}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{POP_SIZE,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{POP_SIZE}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{POP_SIZE),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population size"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Population size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\hypertarget{manuscript-figures-2}{%
+\section{Manuscript figures}\label{manuscript-figures-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/pop-size-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+\hypertarget{epsilon-lexicase}{%
+\chapter{Epsilon lexicase}\label{epsilon-lexicase}}
+
+\hypertarget{overview-3}{%
+\section{Overview}\label{overview-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-05-28-epsilon/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-3}{%
+\section{Analysis dependencies}\label{analysis-dependencies-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-3}{%
+\section{Setup}\label{setup-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}
+\NormalTok{  working_directory,}
+  \StringTok{"data/timeseries-res-1000g.csv"}
+\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-3}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{color=}\NormalTok{epsilon, }\DataTypeTok{fill=}\NormalTok{epsilon)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-35-1.pdf}
+
+\hypertarget{final-performance-3}{%
+\subsection{Final performance}\label{final-performance-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{epsilon, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{epsilon)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{epsilon),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+\hypertarget{unique-starting-positions-3}{%
+\section{Unique starting positions}\label{unique-starting-positions-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{epsilon,}
+      \DataTypeTok{fill=}\NormalTok{epsilon}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-37-1.pdf}
+
+\hypertarget{final-coverage}{%
+\subsection{Final coverage}\label{final-coverage}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{epsilon,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{epsilon}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{epsilon),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Epsilon"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-38-1.pdf}
+
+\hypertarget{manuscript-figures-3}{%
+\section{Manuscript figures}\label{manuscript-figures-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/epsilon-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-39-1.pdf}
+
+\hypertarget{down-sampled-lexicase}{%
+\chapter{Down-sampled lexicase}\label{down-sampled-lexicase}}
+
+\hypertarget{overview-4}{%
+\section{Overview}\label{overview-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-05-28-downsampled/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-4}{%
+\section{Analysis dependencies}\label{analysis-dependencies-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-4}{%
+\section{Setup}\label{setup-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/timeseries.csv"}\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{proportion <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{DSLEX_PROP,}
+  \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\FloatTok{0.02}\NormalTok{, }\FloatTok{0.01}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-4}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{proportion,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-44-1.pdf}
+
+\hypertarget{final-performance-4}{%
+\subsection{Final performance}\label{final-performance-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{proportion,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{proportion),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-45-1.pdf}
+
+\hypertarget{unique-starting-positions-4}{%
+\section{Unique starting positions}\label{unique-starting-positions-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{proportion,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-46-1.pdf}
+
+\hypertarget{final-starting-position-coverage-3}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{proportion,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{proportion),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Sampling rate"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-47-1.pdf}
+
+\hypertarget{manuscript-figures-4}{%
+\section{Manuscript figures}\label{manuscript-figures-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/down-sampled-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-48-1.pdf}
+
+\hypertarget{cohort-lexicase}{%
+\chapter{Cohort lexicase}\label{cohort-lexicase}}
+
+\hypertarget{overview-5}{%
+\section{Overview}\label{overview-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-06-01-cohort/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-5}{%
+\section{Analysis dependencies}\label{analysis-dependencies-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-5}{%
+\section{Setup}\label{setup-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/timeseries.csv"}\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{proportion <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{COH_LEX_PROP,}
+  \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\FloatTok{0.02}\NormalTok{, }\FloatTok{0.01}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-5}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{proportion,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-53-1.pdf}
+
+\hypertarget{final-performance-5}{%
+\subsection{Final performance}\label{final-performance-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{proportion, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{proportion)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{proportion),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-54-1.pdf}
+
+\hypertarget{unique-starting-positions-5}{%
+\section{Unique starting positions}\label{unique-starting-positions-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{evaluations,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{proportion,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Evaluations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-55-1.pdf}
+
+\hypertarget{final-starting-position-coverage-4}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{proportion,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{proportion}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{proportion),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Cohort size"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-56-1.pdf}
+
+\hypertarget{manuscript-figures-5}{%
+\section{Manuscript figures}\label{manuscript-figures-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/cohort-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
+
+\hypertarget{down-sampled-lexicase-versus-cohort-lexicase}{%
+\chapter{Down-sampled lexicase versus cohort lexicase}\label{down-sampled-lexicase-versus-cohort-lexicase}}
+
+\hypertarget{overview-6}{%
+\section{Overview}\label{overview-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}
+\StringTok{  "experiments/2021-06-05-downsample-vs-cohort/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Dark2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-6}{%
+\section{Analysis dependencies}\label{analysis-dependencies-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-6}{%
+\section{Setup}\label{setup-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/timeseries.csv"}\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\CommentTok{# I always set cohort and downsampled lexicase sampling rates to}
+\CommentTok{# be the same on a given run (regardless of selection scheme)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{proportion <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{COH_LEX_PROP,}
+  \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\FloatTok{0.02}\NormalTok{, }\FloatTok{0.01}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-6}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{elite_trait_avg,}
+      \DataTypeTok{color=}\NormalTok{selection_name,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-62-1.pdf}
+
+\hypertarget{final-performance-6}{%
+\subsection{Final performance}\label{final-performance-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{selection_name, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{selection_name)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{selection_name),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
+
+\hypertarget{unique-starting-positions-6}{%
+\section{Unique starting positions}\label{unique-starting-positions-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{gen,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{color=}\NormalTok{selection_name,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-64-1.pdf}
+
+\hypertarget{final-starting-position-coverage-5}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{x=}\NormalTok{selection_name,}
+      \DataTypeTok{y=}\NormalTok{unique_start_positions_coverage,}
+      \DataTypeTok{fill=}\NormalTok{selection_name}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{selection_name),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"CohortLexicase"}\NormalTok{, }\StringTok{"DownSampledLexicase"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Cohort lexicase"}\NormalTok{, }\StringTok{"Down-sampled lexicase"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
+
+\hypertarget{manuscript-figures-6}{%
+\section{Manuscript figures}\label{manuscript-figures-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(}
+\NormalTok{    working_directory,}
+    \StringTok{"imgs/down-sampled-vs-cohort-panel.pdf"}\NormalTok{,}
+    \DataTypeTok{sep=}\StringTok{""}
+\NormalTok{  ),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
+
+\hypertarget{novelty-lexicase}{%
+\chapter{Novelty lexicase}\label{novelty-lexicase}}
+
+\hypertarget{overview-7}{%
+\section{Overview}\label{overview-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-06-01-novelty/analysis/"}
+\CommentTok{# working_directory <- "./"}
+
+\CommentTok{# Settings for visualization}
+\NormalTok{cb_palette <-}\StringTok{ "Set2"}
+\CommentTok{# Create directory to dump plots}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analysis-dependencies-7}{%
+\section{Analysis dependencies}\label{analysis-dependencies-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{library}\NormalTok{(viridis)}
+\KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted in the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          1.0                         
+## year           2021                        
+## month          05                          
+## day            18                          
+## svn rev        80317                       
+## language       R                           
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
+\end{verbatim}
+
+\hypertarget{setup-7}{%
+\section{Setup}\label{setup-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}
+\NormalTok{  working_directory,}
+  \StringTok{"data/timeseries-res-1000g.csv"}
+\NormalTok{)}
+
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{cardinality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{epsilon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{LEX_EPS}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{k <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
+\NormalTok{   data}\OperatorTok{$}\NormalTok{NOVEL_K}
+\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{ele_agg_per }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+\NormalTok{data}\OperatorTok{$}\NormalTok{unique_start_positions_coverage <-}
+\StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
+
+\NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exploration-diagnostic-performance-7}{%
+\section{Exploration diagnostic performance}\label{exploration-diagnostic-performance-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_ave_performance_fig <-}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{color=}\NormalTok{k, }\DataTypeTok{fill=}\NormalTok{k)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{elite_ave_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-71-1.pdf}
+
+\hypertarget{final-performance-7}{%
+\subsection{Final performance}\label{final-performance-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elite_final_performance_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{k, }\DataTypeTok{y=}\NormalTok{elite_trait_avg, }\DataTypeTok{fill=}\NormalTok{k)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{k),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{elite_final_performance_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
+
+\hypertarget{unique-starting-positions-7}{%
+\section{Unique starting positions}\label{unique-starting-positions-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_position_coverage_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{gen, }\DataTypeTok{y=}\NormalTok{unique_start_positions_coverage, }\DataTypeTok{color=}\NormalTok{k, }\DataTypeTok{fill=}\NormalTok{k)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{, }\DataTypeTok{fun=}\NormalTok{mean) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Generations"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  )}
+\NormalTok{unique_start_position_coverage_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-73-1.pdf}
+
+\hypertarget{final-starting-position-coverage-6}{%
+\subsection{Final starting position coverage}\label{final-starting-position-coverage-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unique_start_positions_coverage_final_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    final_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{k, }\DataTypeTok{y=}\NormalTok{unique_start_positions_coverage, }\DataTypeTok{fill=}\NormalTok{k)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{,}
+    \DataTypeTok{scale=}\StringTok{"width"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{k),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"k"}\NormalTok{,}
+    \DataTypeTok{palette=}\NormalTok{cb_palette}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{unique_start_positions_coverage_final_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-74-1.pdf}
+
+\hypertarget{manuscript-figures-7}{%
+\section{Manuscript figures}\label{manuscript-figures-7}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
+\NormalTok{  elite_final_performance_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+\NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{guides}\NormalTok{(}
+      \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
+      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}
+      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
+      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
+\NormalTok{    ),}
+\NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+  \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/novelty-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
+\NormalTok{  grid,}
+  \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
+  \DataTypeTok{base_height=}\DecValTok{8}
+\NormalTok{)}
+
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
