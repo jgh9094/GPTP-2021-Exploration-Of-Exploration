@@ -110,7 +110,7 @@
 
 \title{Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways}
 \author{Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria}
-\date{2021-06-16}
+\date{2021-06-17}
 
 \begin{document}
 \maketitle
@@ -414,7 +414,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Unique starting positions (population)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Unique activation positions (population)"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -447,7 +447,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limit=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -501,7 +501,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -535,6 +535,19 @@ Different cardinalities have numbers of possible starting positions, so next, we
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -543,22 +556,23 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
@@ -787,7 +801,7 @@ Next, we analyze the number of unique starting position maintained by population
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Unique starting positions (population)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Unique activation positions (population)"}\NormalTok{,}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Generation"}
@@ -819,7 +833,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.05}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -869,7 +883,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.05}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -899,6 +913,19 @@ Combine figures for the manuscript.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_trait_ave_fit }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_trait_ave_fit }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -907,26 +934,30 @@ Combine figures for the manuscript.
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_positions_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{), }\DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  final_unique_start_positions_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
-  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
   \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/cardinality-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
 \NormalTok{  grid,}
   \DataTypeTok{base_width=}\DecValTok{12}\NormalTok{,}
-  \DataTypeTok{base_height=}\DecValTok{10}
+  \DataTypeTok{base_height=}\DecValTok{8}
 \NormalTok{)}
 
 \NormalTok{grid}
@@ -1172,7 +1203,7 @@ Same as above, but by generations instead of evaluations.
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -1222,7 +1253,7 @@ Same as above, but by generations instead of evaluations.
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -1250,6 +1281,19 @@ Same as above, but by generations instead of evaluations.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -1258,23 +1302,25 @@ Same as above, but by generations instead of evaluations.
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
-  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+  \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
 \NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
+\NormalTok{)}
+
 
 \KeywordTok{save_plot}\NormalTok{(}
   \KeywordTok{paste}\NormalTok{(working_directory, }\StringTok{"imgs/pop-size-panel.pdf"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}
@@ -1493,7 +1539,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -1543,7 +1589,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -1571,6 +1617,19 @@ These analyses were conducted in the following computing environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -1579,22 +1638,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
@@ -1824,7 +1884,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -1874,7 +1934,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -1902,6 +1962,19 @@ These analyses were conducted in the following computing environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -1910,22 +1983,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
@@ -2153,7 +2227,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -2203,7 +2277,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -2231,6 +2305,19 @@ These analyses were conducted in the following computing environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -2239,22 +2326,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
@@ -2495,7 +2583,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -2550,7 +2638,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -2584,6 +2672,19 @@ These analyses were conducted in the following computing environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -2592,22 +2693,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}
@@ -2832,7 +2934,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{linetype=}\DecValTok{0}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
@@ -2878,7 +2980,7 @@ These analyses were conducted in the following computing environment:
     \DataTypeTok{alpha =} \FloatTok{0.5}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Starting position coverage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
@@ -2906,6 +3008,19 @@ These analyses were conducted in the following computing environment:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{legend <-}\StringTok{ }\NormalTok{cowplot}\OperatorTok{::}\KeywordTok{get_legend}\NormalTok{(}
+\NormalTok{    elite_ave_performance_fig }\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{),}
+        \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      ) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme}\NormalTok{(}
+        \DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
+        \DataTypeTok{legend.box=}\StringTok{"horizontal"}\NormalTok{,}
+        \DataTypeTok{legend.justification=}\StringTok{"center"}
+\NormalTok{      )}
+\NormalTok{  )}
+
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
@@ -2914,22 +3029,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Start position coverage over time"}\NormalTok{) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{guides}\NormalTok{(}
-      \DataTypeTok{color=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{),}
-      \DataTypeTok{fill=}\KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{legend.position=}\StringTok{"bottom"}\NormalTok{,}
-      \DataTypeTok{legend.box=}\StringTok{"horizontal"}
-\NormalTok{    ),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final start position coverage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
   \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{rel_widths=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{),}
   \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  grid,}
+\NormalTok{  legend,}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{rel_heights=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
 \NormalTok{)}
 
 \KeywordTok{save_plot}\NormalTok{(}

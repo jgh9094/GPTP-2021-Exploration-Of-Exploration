@@ -24,7 +24,7 @@
 <meta name="author" content="Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria" />
 
 
-<meta name="date" content="2021-06-16" />
+<meta name="date" content="2021-06-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -431,7 +431,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb41-16" title="16">    <span class="dt">linetype=</span><span class="dv">0</span></a>
 <a class="sourceLine" id="cb41-17" title="17">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb41-18" title="18"><span class="st">  </span><span class="kw">scale_y_continuous</span>(</a>
-<a class="sourceLine" id="cb41-19" title="19">    <span class="dt">name=</span><span class="st">&quot;Starting position coverage&quot;</span>,</a>
+<a class="sourceLine" id="cb41-19" title="19">    <span class="dt">name=</span><span class="st">&quot;Activation position coverage&quot;</span>,</a>
 <a class="sourceLine" id="cb41-20" title="20">    <span class="dt">limits=</span><span class="kw">c</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</a>
 <a class="sourceLine" id="cb41-21" title="21">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb41-22" title="22"><span class="st">  </span><span class="kw">scale_x_continuous</span>(</a>
@@ -474,7 +474,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb42-23" title="23">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
 <a class="sourceLine" id="cb42-24" title="24">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb42-25" title="25"><span class="st">  </span><span class="kw">scale_y_continuous</span>(</a>
-<a class="sourceLine" id="cb42-26" title="26">    <span class="dt">name=</span><span class="st">&quot;Starting position coverage&quot;</span>,</a>
+<a class="sourceLine" id="cb42-26" title="26">    <span class="dt">name=</span><span class="st">&quot;Activation position coverage&quot;</span>,</a>
 <a class="sourceLine" id="cb42-27" title="27">    <span class="dt">limits=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">1.0</span>)</a>
 <a class="sourceLine" id="cb42-28" title="28">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb42-29" title="29"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
@@ -497,40 +497,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="manuscript-figures-3" class="section level2">
 <h2><span class="header-section-number">7.6</span> Manuscript figures</h2>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">grid &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(</a>
-<a class="sourceLine" id="cb43-2" title="2">  elite_ave_performance_fig <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-3" title="3"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Performance over time&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-4" title="4"><span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>),</a>
-<a class="sourceLine" id="cb43-5" title="5">  elite_final_performance_fig <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-6" title="6"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Final performance&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-7" title="7"><span class="st">    </span><span class="kw">theme</span>(),</a>
-<a class="sourceLine" id="cb43-8" title="8">  unique_start_position_coverage_fig <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-9" title="9"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Start position coverage over time&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-10" title="10"><span class="st">    </span><span class="kw">guides</span>(</a>
-<a class="sourceLine" id="cb43-11" title="11">      <span class="dt">color =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb43-12" title="12">      <span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">nrow =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb43-13" title="13">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-14" title="14"><span class="st">    </span><span class="kw">theme</span>(</a>
-<a class="sourceLine" id="cb43-15" title="15">      <span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</a>
-<a class="sourceLine" id="cb43-16" title="16">      <span class="dt">legend.box=</span><span class="st">&quot;horizontal&quot;</span></a>
-<a class="sourceLine" id="cb43-17" title="17">    ),</a>
-<a class="sourceLine" id="cb43-18" title="18">  unique_start_positions_coverage_final_fig <span class="op">+</span></a>
-<a class="sourceLine" id="cb43-19" title="19"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Final start position coverage&quot;</span>) <span class="op">+</span></a>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">legend &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">get_legend</span>(</a>
+<a class="sourceLine" id="cb43-2" title="2">    elite_ave_performance_fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="st">      </span><span class="kw">guides</span>(</a>
+<a class="sourceLine" id="cb43-4" title="4">        <span class="dt">color=</span><span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb43-5" title="5">        <span class="dt">fill=</span><span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb43-6" title="6">      ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-7" title="7"><span class="st">      </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb43-8" title="8">        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</a>
+<a class="sourceLine" id="cb43-9" title="9">        <span class="dt">legend.box=</span><span class="st">&quot;horizontal&quot;</span>,</a>
+<a class="sourceLine" id="cb43-10" title="10">        <span class="dt">legend.justification=</span><span class="st">&quot;center&quot;</span></a>
+<a class="sourceLine" id="cb43-11" title="11">      )</a>
+<a class="sourceLine" id="cb43-12" title="12">  )</a>
+<a class="sourceLine" id="cb43-13" title="13"></a>
+<a class="sourceLine" id="cb43-14" title="14">grid &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(</a>
+<a class="sourceLine" id="cb43-15" title="15">  elite_ave_performance_fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-16" title="16"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Performance over time&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-17" title="17"><span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>),</a>
+<a class="sourceLine" id="cb43-18" title="18">  elite_final_performance_fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-19" title="19"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Final performance&quot;</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb43-20" title="20"><span class="st">    </span><span class="kw">theme</span>(),</a>
-<a class="sourceLine" id="cb43-21" title="21">  <span class="dt">nrow=</span><span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb43-22" title="22">  <span class="dt">ncol=</span><span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb43-23" title="23">  <span class="dt">rel_widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb43-24" title="24">  <span class="dt">labels=</span><span class="st">&quot;auto&quot;</span></a>
-<a class="sourceLine" id="cb43-25" title="25">)</a>
-<a class="sourceLine" id="cb43-26" title="26"></a>
-<a class="sourceLine" id="cb43-27" title="27"><span class="kw">save_plot</span>(</a>
-<a class="sourceLine" id="cb43-28" title="28">  <span class="kw">paste</span>(working_directory, <span class="st">&quot;imgs/epsilon-panel.pdf&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>),</a>
-<a class="sourceLine" id="cb43-29" title="29">  grid,</a>
-<a class="sourceLine" id="cb43-30" title="30">  <span class="dt">base_width=</span><span class="dv">12</span>,</a>
-<a class="sourceLine" id="cb43-31" title="31">  <span class="dt">base_height=</span><span class="dv">8</span></a>
-<a class="sourceLine" id="cb43-32" title="32">)</a>
-<a class="sourceLine" id="cb43-33" title="33"></a>
-<a class="sourceLine" id="cb43-34" title="34">grid</a></code></pre></div>
+<a class="sourceLine" id="cb43-21" title="21">  unique_start_position_coverage_fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-22" title="22"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Activation position coverage over time&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-23" title="23"><span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>),</a>
+<a class="sourceLine" id="cb43-24" title="24">  unique_start_positions_coverage_final_fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-25" title="25"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Final activation position coverage&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb43-26" title="26"><span class="st">    </span><span class="kw">theme</span>(),</a>
+<a class="sourceLine" id="cb43-27" title="27">  <span class="dt">nrow=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb43-28" title="28">  <span class="dt">ncol=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb43-29" title="29">  <span class="dt">rel_widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb43-30" title="30">  <span class="dt">labels=</span><span class="st">&quot;auto&quot;</span></a>
+<a class="sourceLine" id="cb43-31" title="31">)</a>
+<a class="sourceLine" id="cb43-32" title="32"></a>
+<a class="sourceLine" id="cb43-33" title="33">grid &lt;-<span class="st"> </span><span class="kw">plot_grid</span>(</a>
+<a class="sourceLine" id="cb43-34" title="34">  grid,</a>
+<a class="sourceLine" id="cb43-35" title="35">  legend,</a>
+<a class="sourceLine" id="cb43-36" title="36">  <span class="dt">nrow=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb43-37" title="37">  <span class="dt">ncol=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb43-38" title="38">  <span class="dt">rel_heights=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb43-39" title="39">)</a>
+<a class="sourceLine" id="cb43-40" title="40"></a>
+<a class="sourceLine" id="cb43-41" title="41"><span class="kw">save_plot</span>(</a>
+<a class="sourceLine" id="cb43-42" title="42">  <span class="kw">paste</span>(working_directory, <span class="st">&quot;imgs/epsilon-panel.pdf&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>),</a>
+<a class="sourceLine" id="cb43-43" title="43">  grid,</a>
+<a class="sourceLine" id="cb43-44" title="44">  <span class="dt">base_width=</span><span class="dv">12</span>,</a>
+<a class="sourceLine" id="cb43-45" title="45">  <span class="dt">base_height=</span><span class="dv">8</span></a>
+<a class="sourceLine" id="cb43-46" title="46">)</a>
+<a class="sourceLine" id="cb43-47" title="47"></a>
+<a class="sourceLine" id="cb43-48" title="48">grid</a></code></pre></div>
 <p><img src="supplemental-material_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 
 </div>
