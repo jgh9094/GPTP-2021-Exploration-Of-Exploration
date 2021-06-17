@@ -272,7 +272,8 @@ legend <- cowplot::get_legend(
       ) +
       theme(
         legend.position = "bottom",
-        legend.box="horizontal"
+        legend.box="horizontal",
+        legend.justification="center"
       )
   )
 

@@ -276,8 +276,15 @@ unique_start_positions_coverage_final_fig
 ```{r}
 legend <- cowplot::get_legend(
     elite_ave_performance_fig +
-      guides(color = guide_legend(nrow = 1)) +
-      theme(legend.position = "bottom")
+      guides(
+        color=guide_legend(nrow=1),
+        fill=guide_legend(nrow=1)
+      ) +
+      theme(
+        legend.position = "bottom",
+        legend.box="horizontal",
+        legend.justification="center"
+      )
   )
 
 grid <- plot_grid(
