@@ -292,7 +292,7 @@ grid <- plot_grid(
     theme(),
   nrow=2,
   ncol=2,
-  rel_widths=c(2,1),
+  rel_widths=c(3,2),
   labels="auto"
 )
 
