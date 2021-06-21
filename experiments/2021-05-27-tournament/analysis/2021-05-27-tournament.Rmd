@@ -9,6 +9,7 @@ working_directory <- "experiments/2021-05-27-tournament/analysis/"
 
 # Settings for visualization
 cb_palette <- "Set2"
+
 # Create directory to dump plots
 dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```
@@ -18,9 +19,13 @@ dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```{r, message=FALSE}
 library(ggplot2)
 library(tidyverse)
+library(knitr)
 library(cowplot)
 library(viridis)
 library(RColorBrewer)
+library(rstatix)
+library(ggsignif)
+library(Hmisc)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
 
@@ -41,8 +46,10 @@ data_loc <- paste0(
 
 data <- read.csv(data_loc, na.strings="NONE")
 
-data$selection_name <- as.factor(
-  data$selection_name
+data$selection_name <- factor(
+  data$selection_name,
+  levels=c("EpsilonLexicase", "Tournament"),
+  labels=c("Lexicase", "Tournament")
 )
 
 data$elite_trait_avg <-
@@ -51,6 +58,23 @@ data$unique_start_positions_coverage <-
   data$uni_str_pos / data$OBJECTIVE_CNT
 
 final_data <- filter(data, evaluations==max(data$evaluations))
+
+# Labeler for stats annotations
+p_label <- function(p_value) {
+  threshold = 0.0001
+  if (p_value < threshold) {
+    return(paste0("p < ", threshold))
+  } else {
+    return(paste0("p = ", p_value))
+  }
+}
+
+# Significance threshold
+alpha <- 0.05
+
+# Common graph variables
+performance_ylim <- 105
+coverage_ylim <- 1.0
 
 ####### misc #######
 # Configure our default graphing theme
@@ -79,20 +103,20 @@ elite_ave_performance_fig <- ggplot(
   ) +
   scale_y_continuous(
     name="Average trait performance",
-    limits=c(0, 100)
+    limits=c(0, performance_ylim)
   ) +
   scale_x_continuous(
     name="Generation"
   ) +
   scale_fill_brewer(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
   ) +
   scale_color_brewer(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
   )
@@ -100,6 +124,17 @@ elite_ave_performance_fig
 ```
 
 ## Final Performance
+
+```{r}
+# Compute manual labels for geom_signif
+stat.test <- final_data %>%
+  wilcox_test(elite_trait_avg ~ selection_name) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="selection_name",step.increase=1)
+stat.test$manual_position <- stat.test$y.position * 1.05
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+```
 
 ```{r}
 elite_final_performance_fig <- ggplot(
@@ -128,29 +163,56 @@ elite_final_performance_fig <- ggplot(
   ) +
   scale_y_continuous(
     name="Average trait performance",
-    limits=c(0, 100)
+    limits=c(0, performance_ylim)
   ) +
   scale_x_discrete(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
   ) +
   scale_fill_brewer(
     name="Selection",
     palette=cb_palette,
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
   ) +
   scale_color_brewer(
     name="Selection",
     palette=cb_palette,
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
+  ) +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(
+        signif(
+          kruskal.test(
+            formula=elite_trait_avg~selection_name,
+            data=final_data)$p.value,digits=4
+        )
+      )
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(
+      xmin=group1,
+      xmax=group2,
+      annotations=label,
+      y_position=manual_position
+    ),
+    manual=TRUE,
+    inherit.aes=FALSE
   ) +
   theme(
     legend.position="none"
   )
 elite_final_performance_fig
+```
+
+```{r, echo=FALSE, results="asis"}
+kable(stat.test)
 ```
 
 ## Unique starting positions
@@ -196,20 +258,20 @@ unique_start_position_coverage_fig <- ggplot(
   ) +
   scale_y_continuous(
     name="Activation position coverage",
-    limit=c(0, 1.0)
+    limit=c(0, coverage_ylim)
   ) +
   scale_x_continuous(
     name="Generation"
   ) +
   scale_fill_brewer(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
   ) +
   scale_color_brewer(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
     palette=cb_palette
   )
@@ -217,6 +279,17 @@ unique_start_position_coverage_fig
 ```
 
 ### Final starting position Coverage
+
+```{r}
+# Compute manual labels for geom_signif
+stat.test <- final_data %>%
+  wilcox_test(unique_start_positions_coverage ~ selection_name) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="selection_name",step.increase=1)
+stat.test$manual_position <- stat.test$y.position * 1.05
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+```
 
 ```{r}
 unique_start_positions_coverage_final_fig <- ggplot(
@@ -245,24 +318,47 @@ unique_start_positions_coverage_final_fig <- ggplot(
   ) +
   scale_y_continuous(
     name="Activation position coverage",
-    limits=c(0, 1.0)
+    limits=c(0, coverage_ylim)
   ) +
   scale_x_discrete(
     name="Selection",
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
   ) +
   scale_fill_brewer(
     name="Selection",
     palette=cb_palette,
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
   ) +
   scale_color_brewer(
     name="Selection",
     palette=cb_palette,
-    limits=c("EpsilonLexicase", "Tournament"),
+    limits=c("Lexicase", "Tournament"),
     labels=c("Lexicase", "Tournament"),
+  ) +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(
+        signif(
+          kruskal.test(
+            formula=unique_start_positions_coverage~selection_name,
+            data=final_data)$p.value,digits=4
+        )
+      )
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(
+      xmin=group1,
+      xmax=group2,
+      annotations=label,
+      y_position=manual_position
+    ),
+    manual=TRUE,
+    inherit.aes=FALSE
   ) +
   theme(
     legend.position="none"
@@ -270,8 +366,11 @@ unique_start_positions_coverage_final_fig <- ggplot(
 unique_start_positions_coverage_final_fig
 ```
 
-## Manuscript figures
+```{r, echo=FALSE, results="asis"}
+kable(stat.test)
+```
 
+## Manuscript figures
 
 ```{r}
 legend <- cowplot::get_legend(
@@ -290,12 +389,14 @@ legend <- cowplot::get_legend(
 grid <- plot_grid(
   elite_ave_performance_fig +
     ggtitle("Performance over time") +
+    labs(subtitle="") +
     theme(legend.position="none"),
   elite_final_performance_fig +
     ggtitle("Final performance") +
     theme(),
   unique_start_position_coverage_fig +
     ggtitle("Activation position coverage over time") +
+    labs(subtitle="") +
     theme(legend.position="none"),
   unique_start_positions_coverage_final_fig +
     ggtitle("Final activation position coverage") +
