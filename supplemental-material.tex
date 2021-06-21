@@ -110,7 +110,7 @@
 
 \title{Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways}
 \author{Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria}
-\date{2021-06-17}
+\date{2021-06-21}
 
 \begin{document}
 \maketitle
@@ -219,6 +219,7 @@ TODO
 
 \CommentTok{# Settings for visualization}
 \NormalTok{cb_palette <-}\StringTok{ "Set2"}
+
 \CommentTok{# Create directory to dump plots}
 \KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"imgs"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
@@ -231,9 +232,13 @@ TODO
 \begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(ggplot2)}
 \KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(knitr)}
 \KeywordTok{library}\NormalTok{(cowplot)}
 \KeywordTok{library}\NormalTok{(viridis)}
 \KeywordTok{library}\NormalTok{(RColorBrewer)}
+\KeywordTok{library}\NormalTok{(rstatix)}
+\KeywordTok{library}\NormalTok{(ggsignif)}
+\KeywordTok{library}\NormalTok{(Hmisc)}
 \KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -276,8 +281,10 @@ These analyses were conducted in the following computing environment:
 
 \NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
 
-\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(}
-\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name}
+\NormalTok{data}\OperatorTok{$}\NormalTok{selection_name <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}
+\NormalTok{  data}\OperatorTok{$}\NormalTok{selection_name,}
+  \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+  \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{)}
 \NormalTok{)}
 
 \NormalTok{data}\OperatorTok{$}\NormalTok{elite_trait_avg <-}
@@ -286,6 +293,23 @@ These analyses were conducted in the following computing environment:
 \StringTok{  }\NormalTok{data}\OperatorTok{$}\NormalTok{uni_str_pos }\OperatorTok{/}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{OBJECTIVE_CNT}
 
 \NormalTok{final_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, evaluations}\OperatorTok{==}\KeywordTok{max}\NormalTok{(data}\OperatorTok{$}\NormalTok{evaluations))}
+
+\CommentTok{# Labeler for stats annotations}
+\NormalTok{p_label <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p_value) \{}
+\NormalTok{  threshold =}\StringTok{ }\FloatTok{0.0001}
+  \ControlFlowTok{if}\NormalTok{ (p_value }\OperatorTok{<}\StringTok{ }\NormalTok{threshold) \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"p < "}\NormalTok{, threshold))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"p = "}\NormalTok{, p_value))}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\CommentTok{# Significance threshold}
+\NormalTok{alpha <-}\StringTok{ }\FloatTok{0.05}
+
+\CommentTok{# Common graph variables}
+\NormalTok{performance_ylim <-}\StringTok{ }\DecValTok{105}
+\NormalTok{coverage_ylim <-}\StringTok{ }\FloatTok{1.0}
 
 \CommentTok{####### misc #######}
 \CommentTok{# Configure our default graphing theme}
@@ -317,20 +341,20 @@ These analyses were conducted in the following computing environment:
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, performance_ylim)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Generation"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  )}
@@ -342,6 +366,19 @@ These analyses were conducted in the following computing environment:
 
 \hypertarget{final-performance}{%
 \section{Final Performance}\label{final-performance}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Compute manual labels for geom_signif}
+\NormalTok{stat.test <-}\StringTok{ }\NormalTok{final_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{wilcox_test}\NormalTok{(elite_trait_avg }\OperatorTok{~}\StringTok{ }\NormalTok{selection_name) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{adjust_pvalue}\NormalTok{(}\DataTypeTok{method =} \StringTok{"bonferroni"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_significance}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_xy_position}\NormalTok{(}\DataTypeTok{x=}\StringTok{"selection_name"}\NormalTok{,}\DataTypeTok{step.increase=}\DecValTok{1}\NormalTok{)}
+\NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{ }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\OperatorTok{*}\StringTok{ }\FloatTok{1.05}
+\NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -371,33 +408,73 @@ These analyses were conducted in the following computing environment:
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Average trait performance"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, performance_ylim)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
     \DataTypeTok{palette=}\NormalTok{cb_palette,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
     \DataTypeTok{palette=}\NormalTok{cb_palette,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}
+    \DataTypeTok{subtitle=}\KeywordTok{paste0}\NormalTok{(}
+      \StringTok{"Kruskal-Wallis, "}\NormalTok{,}
+      \KeywordTok{p_label}\NormalTok{(}
+        \KeywordTok{signif}\NormalTok{(}
+          \KeywordTok{kruskal.test}\NormalTok{(}
+            \DataTypeTok{formula=}\NormalTok{elite_trait_avg}\OperatorTok{~}\NormalTok{selection_name,}
+            \DataTypeTok{data=}\NormalTok{final_data)}\OperatorTok{$}\NormalTok{p.value,}\DataTypeTok{digits=}\DecValTok{4}
+\NormalTok{        )}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\NormalTok{ggsignif}\OperatorTok{::}\KeywordTok{geom_signif}\NormalTok{(}
+    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(stat.test, p.adj }\OperatorTok{<=}\StringTok{ }\NormalTok{alpha),}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{xmin=}\NormalTok{group1,}
+      \DataTypeTok{xmax=}\NormalTok{group2,}
+      \DataTypeTok{annotations=}\NormalTok{label,}
+      \DataTypeTok{y_position=}\NormalTok{manual_position}
+\NormalTok{    ),}
+    \DataTypeTok{manual=}\OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{inherit.aes=}\OtherTok{FALSE}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Ignoring unknown aesthetics: xmin, xmax, annotations, y_position
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{elite_final_performance_fig}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{tabular}{l|l|l|r|r|r|r|r|l|r|l|r|r|r|l}
+\hline
+.y. & group1 & group2 & n1 & n2 & statistic & p & p.adj & p.adj.signif & y.position & groups & xmin & xmax & manual\_position & label\\
+\hline
+elite\_trait\_avg & Lexicase & Tournament & 50 & 50 & 2357 & 0 & 0 & **** & 97.477 & Lexicase  , Tournament & 1 & 2 & 102.3508 & p < 1e-04\\
+\hline
+\end{tabular}
 
 \hypertarget{unique-starting-positions}{%
 \section{Unique starting positions}\label{unique-starting-positions}}
@@ -423,7 +500,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
 
@@ -448,20 +525,20 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
-    \DataTypeTok{limit=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+    \DataTypeTok{limit=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, coverage_ylim)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Generation"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  )}
@@ -469,10 +546,23 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-10-1.pdf}
 
 \hypertarget{final-starting-position-coverage}{%
 \subsection{Final starting position Coverage}\label{final-starting-position-coverage}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Compute manual labels for geom_signif}
+\NormalTok{stat.test <-}\StringTok{ }\NormalTok{final_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{wilcox_test}\NormalTok{(unique_start_positions_coverage }\OperatorTok{~}\StringTok{ }\NormalTok{selection_name) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{adjust_pvalue}\NormalTok{(}\DataTypeTok{method =} \StringTok{"bonferroni"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_significance}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_xy_position}\NormalTok{(}\DataTypeTok{x=}\StringTok{"selection_name"}\NormalTok{,}\DataTypeTok{step.increase=}\DecValTok{1}\NormalTok{)}
+\NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{ }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\OperatorTok{*}\StringTok{ }\FloatTok{1.05}
+\NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -502,33 +592,73 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Activation position coverage"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, coverage_ylim)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
     \DataTypeTok{palette=}\NormalTok{cb_palette,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Selection"}\NormalTok{,}
     \DataTypeTok{palette=}\NormalTok{cb_palette,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"EpsilonLexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
     \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Lexicase"}\NormalTok{, }\StringTok{"Tournament"}\NormalTok{),}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}
+    \DataTypeTok{subtitle=}\KeywordTok{paste0}\NormalTok{(}
+      \StringTok{"Kruskal-Wallis, "}\NormalTok{,}
+      \KeywordTok{p_label}\NormalTok{(}
+        \KeywordTok{signif}\NormalTok{(}
+          \KeywordTok{kruskal.test}\NormalTok{(}
+            \DataTypeTok{formula=}\NormalTok{unique_start_positions_coverage}\OperatorTok{~}\NormalTok{selection_name,}
+            \DataTypeTok{data=}\NormalTok{final_data)}\OperatorTok{$}\NormalTok{p.value,}\DataTypeTok{digits=}\DecValTok{4}
+\NormalTok{        )}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\NormalTok{ggsignif}\OperatorTok{::}\KeywordTok{geom_signif}\NormalTok{(}
+    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(stat.test, p.adj }\OperatorTok{<=}\StringTok{ }\NormalTok{alpha),}
+    \KeywordTok{aes}\NormalTok{(}
+      \DataTypeTok{xmin=}\NormalTok{group1,}
+      \DataTypeTok{xmax=}\NormalTok{group2,}
+      \DataTypeTok{annotations=}\NormalTok{label,}
+      \DataTypeTok{y_position=}\NormalTok{manual_position}
+\NormalTok{    ),}
+    \DataTypeTok{manual=}\OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{inherit.aes=}\OtherTok{FALSE}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Ignoring unknown aesthetics: xmin, xmax, annotations, y_position
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{unique_start_positions_coverage_final_fig}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{tabular}{l|l|l|r|r|r|r|r|l|r|l|r|r|r|l}
+\hline
+.y. & group1 & group2 & n1 & n2 & statistic & p & p.adj & p.adj.signif & y.position & groups & xmin & xmax & manual\_position & label\\
+\hline
+unique\_start\_positions\_coverage & Lexicase & Tournament & 50 & 50 & 2500 & 0 & 0 & **** & 0.7 & Lexicase  , Tournament & 1 & 2 & 0.735 & p < 1e-04\\
+\hline
+\end{tabular}
 
 \hypertarget{manuscript-figures}{%
 \section{Manuscript figures}\label{manuscript-figures}}
@@ -551,12 +681,14 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  elite_ave_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Performance over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{subtitle=}\StringTok{""}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  elite_final_performance_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final performance"}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(),}
 \NormalTok{  unique_start_position_coverage_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Activation position coverage over time"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{subtitle=}\StringTok{""}\NormalTok{) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{),}
 \NormalTok{  unique_start_positions_coverage_final_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final activation position coverage"}\NormalTok{) }\OperatorTok{+}
@@ -590,7 +722,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-14-1.pdf}
 
 \hypertarget{diagnostic-cardinality}{%
 \chapter{Diagnostic cardinality}\label{diagnostic-cardinality}}
@@ -730,7 +862,7 @@ To control for different cardinalities having different maximum scores, we norma
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-19-1.pdf}
 
 \hypertarget{final-performance-1}{%
 \subsection{Final performance}\label{final-performance-1}}
@@ -782,7 +914,7 @@ Next, we look only at the final performances of each treatment
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-20-1.pdf}
 
 \hypertarget{unique-starting-positions-1}{%
 \section{Unique starting positions}\label{unique-starting-positions-1}}
@@ -809,7 +941,7 @@ Next, we analyze the number of unique starting position maintained by population
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-17-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-21-1.pdf}
 
 Different cardinalities have numbers of possible starting positions, so next, we look at the proportion of starting positions (out of all possible) maintained by populations.
 
@@ -851,7 +983,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-22-1.pdf}
 
 \hypertarget{final-starting-position-coverage-1}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-1}}
@@ -904,7 +1036,7 @@ Different cardinalities have numbers of possible starting positions, so next, we
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-19-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 \hypertarget{manuscript-figures-1}{%
 \section{Manuscript figures}\label{manuscript-figures-1}}
@@ -964,7 +1096,7 @@ Combine figures for the manuscript.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-20-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-24-1.pdf}
 
 \hypertarget{increasing-population-size-versus-increasing-generations}{%
 \chapter{Increasing population size versus increasing generations}\label{increasing-population-size-versus-increasing-generations}}
@@ -1105,7 +1237,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-29-1.pdf}
 
 Same as above, but by generations instead of evaluations.
 
@@ -1129,7 +1261,7 @@ Same as above, but by generations instead of evaluations.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-30-1.pdf}
 
 \hypertarget{final-performance-2}{%
 \subsection{Final performance}\label{final-performance-2}}
@@ -1178,7 +1310,7 @@ Same as above, but by generations instead of evaluations.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \hypertarget{unique-starting-positions-2}{%
 \section{Unique starting positions}\label{unique-starting-positions-2}}
@@ -1221,7 +1353,7 @@ Same as above, but by generations instead of evaluations.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-28-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-32-1.pdf}
 
 \hypertarget{final-starting-position-coverage-2}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-2}}
@@ -1274,7 +1406,7 @@ Same as above, but by generations instead of evaluations.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 \hypertarget{manuscript-figures-2}{%
 \section{Manuscript figures}\label{manuscript-figures-2}}
@@ -1333,7 +1465,7 @@ Same as above, but by generations instead of evaluations.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-34-1.pdf}
 
 \hypertarget{epsilon-lexicase}{%
 \chapter{Epsilon lexicase}\label{epsilon-lexicase}}
@@ -1465,7 +1597,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-39-1.pdf}
 
 \hypertarget{final-performance-3}{%
 \subsection{Final performance}\label{final-performance-3}}
@@ -1514,7 +1646,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-40-1.pdf}
 
 \hypertarget{unique-starting-positions-3}{%
 \section{Unique starting positions}\label{unique-starting-positions-3}}
@@ -1557,7 +1689,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-37-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-41-1.pdf}
 
 \hypertarget{final-coverage}{%
 \subsection{Final coverage}\label{final-coverage}}
@@ -1610,7 +1742,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-42-1.pdf}
 
 \hypertarget{manuscript-figures-3}{%
 \section{Manuscript figures}\label{manuscript-figures-3}}
@@ -1668,7 +1800,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-39-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-43-1.pdf}
 
 \hypertarget{down-sampled-lexicase}{%
 \chapter{Down-sampled lexicase}\label{down-sampled-lexicase}}
@@ -1806,7 +1938,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-44-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-48-1.pdf}
 
 \hypertarget{final-performance-4}{%
 \subsection{Final performance}\label{final-performance-4}}
@@ -1859,7 +1991,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-45-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \hypertarget{unique-starting-positions-4}{%
 \section{Unique starting positions}\label{unique-starting-positions-4}}
@@ -1902,7 +2034,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-46-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \hypertarget{final-starting-position-coverage-3}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-3}}
@@ -1955,7 +2087,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \hypertarget{manuscript-figures-4}{%
 \section{Manuscript figures}\label{manuscript-figures-4}}
@@ -2013,7 +2145,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-48-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \hypertarget{cohort-lexicase}{%
 \chapter{Cohort lexicase}\label{cohort-lexicase}}
@@ -2153,7 +2285,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \hypertarget{final-performance-5}{%
 \subsection{Final performance}\label{final-performance-5}}
@@ -2202,7 +2334,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \hypertarget{unique-starting-positions-5}{%
 \section{Unique starting positions}\label{unique-starting-positions-5}}
@@ -2245,7 +2377,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \hypertarget{final-starting-position-coverage-4}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-4}}
@@ -2298,7 +2430,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \hypertarget{manuscript-figures-5}{%
 \section{Manuscript figures}\label{manuscript-figures-5}}
@@ -2356,7 +2488,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \hypertarget{down-sampled-lexicase-versus-cohort-lexicase}{%
 \chapter{Down-sampled lexicase versus cohort lexicase}\label{down-sampled-lexicase-versus-cohort-lexicase}}
@@ -2503,7 +2635,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \hypertarget{final-performance-6}{%
 \subsection{Final performance}\label{final-performance-6}}
@@ -2558,7 +2690,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \hypertarget{unique-starting-positions-6}{%
 \section{Unique starting positions}\label{unique-starting-positions-6}}
@@ -2606,7 +2738,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 \hypertarget{final-starting-position-coverage-5}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-5}}
@@ -2665,7 +2797,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \hypertarget{manuscript-figures-6}{%
 \section{Manuscript figures}\label{manuscript-figures-6}}
@@ -2727,7 +2859,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 \hypertarget{novelty-lexicase}{%
 \chapter{Novelty lexicase}\label{novelty-lexicase}}
@@ -2865,7 +2997,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 \hypertarget{final-performance-7}{%
 \subsection{Final performance}\label{final-performance-7}}
@@ -2914,7 +3046,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \hypertarget{unique-starting-positions-7}{%
 \section{Unique starting positions}\label{unique-starting-positions-7}}
@@ -2952,7 +3084,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 \hypertarget{final-starting-position-coverage-6}{%
 \subsection{Final starting position coverage}\label{final-starting-position-coverage-6}}
@@ -3001,7 +3133,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-78-1.pdf}
 
 \hypertarget{manuscript-figures-7}{%
 \section{Manuscript figures}\label{manuscript-figures-7}}
@@ -3059,7 +3191,7 @@ These analyses were conducted in the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
