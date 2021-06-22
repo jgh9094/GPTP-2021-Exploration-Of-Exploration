@@ -26,6 +26,7 @@ library(RColorBrewer)
 library(rstatix)
 library(ggsignif)
 library(Hmisc)
+library(kableExtra)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
 
@@ -211,11 +212,21 @@ elite_final_performance_fig <- ggplot(
 elite_final_performance_fig
 ```
 
-```{r, echo=FALSE, results="asis"}
-kable(stat.test)
+```{r}
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
 ```
 
-## Unique starting positions
+## Unique activation coverage
 
 ```{r}
 ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
@@ -278,7 +289,7 @@ unique_start_position_coverage_fig <- ggplot(
 unique_start_position_coverage_fig
 ```
 
-### Final starting position Coverage
+### Final activation position Coverage
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -367,7 +378,17 @@ unique_start_positions_coverage_final_fig
 ```
 
 ```{r, echo=FALSE, results="asis"}
-kable(stat.test)
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
 ```
 
 ## Manuscript figures
