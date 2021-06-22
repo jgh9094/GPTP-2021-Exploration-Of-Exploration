@@ -95,11 +95,15 @@ RUN \
     && \
   ./download_data.sh \
     && \
+  export EXP_TAG=2021-06-14-downsampled-pop-size \
+    && \
+  ./download_data.sh \
+    && \
+  export EXP_TAG=2021-06-14-cohort-pop-size \
+    && \
+  ./download_data.sh \
+    && \
   echo "downloaded experiment data"
-
-# 2021-06-14-cohort-pop-size
-# 2021-06-14-downsampled-pop-size
-
 
 # ########################################################
 # # install r + r dependencies
