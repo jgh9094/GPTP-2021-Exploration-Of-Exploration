@@ -2,7 +2,10 @@
 title: "Supplemental Material for An Exploration of Exploration: Measuring the ability of lexicase selection to find obscure pathways"
 author: "Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria"
 date: "`r Sys.Date()`"
-output: bookdown::gitbook
+output:
+  bookdown::gitbook:
+    includes:
+      in_header: header.html
 documentclass: book
 bibliography: ["packages.bib", "supplemental.bib"]
 biblio-style: apalike
