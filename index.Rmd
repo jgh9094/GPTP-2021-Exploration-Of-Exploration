@@ -28,16 +28,22 @@ We compiled our data analyses and supplemental documentation into this nifty web
 
 Our supplemental material includes the following:
 
-- TODO
+- Data availability (Section \@ref(data-availability))
+- Guide for running our software (Section \@ref(compile-and-run-experiments))
+- Experiment analyses:
+  - Tournament selection versus lexicase selection (Section \@ref(tournament-selection-vs-lexicase-selection))
+  - Lexicase selection at a range of diagnostic cardinalities (Section \@ref(diagnostic-cardinality))
+  - Increasing population size versus increasing generations (Section \@ref(increasing-population-size-versus-increasing-generations))
+  - Epsilon lexicase selection (Section \@ref(epsilon-lexicase))
+  - Down-sampled lexicase selection (Section \@ref(down-sampled-lexicase))
+    - Down-sampled lexicase selection (increased population size) (Section \@ref(down-sampled-lexicase-with-increased-population-size))
+  - Cohort lexicase selection (Section \@ref(cohort-lexicase))
+    - Cohort lexicase selection (increased population size) (Section \@ref(cohort-lexicase-with-increased-population-size))
+  - Novelty-lexicase selection (Section \@ref(novelty-lexicase))
+
 
 ## Contributing authors
 
 - [Jose Guadalupe Hernandez](https://jgh9094.github.io/)
 - [Alexander Lalejini](https://lalejini.com)
 - [Charles Ofria](http://ofria.com)
-
-## Research overview
-
-Abstract:
-
-> TODO
