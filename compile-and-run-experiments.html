@@ -301,24 +301,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Please file an <a href="https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration/issues">issue on GitHub</a> if something is unclear or does not work.</p>
 <div id="docker" class="section level2">
 <h2><span class="header-section-number">3.1</span> Docker</h2>
-<p>TODO</p>
+<p>You’ll need <a href="https://docs.docker.com/get-docker/">Docker</a> to follow this guide. This guide was written using <code>Docker version 20.10.2, build 20.10.2-0ubuntu1~20.10.1</code>.</p>
 <div id="getting-the-right-image" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> Getting the right image</h3>
-<div id="dockerhub" class="section level4">
-<h4><span class="header-section-number">3.1.1.1</span> DockerHub</h4>
-</div>
-<div id="local-build" class="section level4">
-<h4><span class="header-section-number">3.1.1.2</span> Local build</h4>
-</div>
+<p>We’ve already built a Docker image for this project with everything needed to compile and run our code inside: <a href="https://hub.docker.com/repository/docker/amlalejini/gptp-2021-an-exploration-of-exploration" class="uri">https://hub.docker.com/repository/docker/amlalejini/gptp-2021-an-exploration-of-exploration</a></p>
+<p>You can pull our Docker image from DockerHub:</p>
+<pre><code>docker pull amlalejini/gptp-2021-an-exploration-of-exploration</code></pre>
+<p>Now, if you run <code>docker image ls</code>, you should see something like</p>
+<pre><code>REPOSITORY                                           TAG       IMAGE ID       CREATED       SIZE
+amlalejini/gptp-2021-an-exploration-of-exploration   latest    d0f392bfe129   3 hours ago   2.67GB</code></pre>
 </div>
 <div id="spinning-up-a-container" class="section level3">
 <h3><span class="header-section-number">3.1.2</span> Spinning up a container</h3>
+<p>You can spin up a container with the image we just pulled from DockerHub, using <code>docker run -it &lt;IMAGE&gt;</code>.
+Note that <code>&lt;IMAGE&gt;</code> corresponds to the <code>IMAGE ID</code> field for the image we want to run with (which you can get from <code>docker image ls</code>).
+In this example, I would run:</p>
+<pre><code>docker run -it d0f392bfe129</code></pre>
+<p>This will drop you inside a container made with the correct docker image. You can see everything that’s been installed/included in the container by looking through <a href="https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration/blob/main/Dockerfile">this DockerFile</a>. Most importantly, the container already has <a href="https://github.com/jgh9094/GPTP-2021-Exploration-Of-Exploration">our GitHub repository</a> and the correct version of the <a href="https://github.com/devosoft/Empirical">Empirical library</a> included. Even more conveniently, we’ve already compiled the experiment for you (<code>/opt/GPTP-2021-Exploration-Of-Exploration/dia_world</code>).</p>
 </div>
 <div id="running-inside-the-container" class="section level3">
 <h3><span class="header-section-number">3.1.3</span> Running inside the container</h3>
+<p>Inside the container, navigate to <code>/opt/GPTP-2021-Exploration-Of-Exploration</code> and run <code>./dia_world</code>. Done! You’re running the software used to conduct our experiments!</p>
+<p>To generate a configuration file (<code>Dia.cfg</code>), you can run <code>./dia_world --gen</code>. You can also run <code>./dia_world --help</code> for a list of configuration options. The executable will default to the parameters specified in a <code>Dia.cfg</code> file (in the same directory), but you can override any setting on the command line. E.g., <code>./dia_world -POP_SIZE 42</code> will configuration the population size to be 42.</p>
+<p>You can exit the container at any time with <code>exit</code>.</p>
 </div>
 <div id="copying-content-from-the-container" class="section level3">
 <h3><span class="header-section-number">3.1.4</span> Copying content from the container</h3>
+<p>To copy files out of the container to your local machine, <a href="https://docs.docker.com/engine/reference/commandline/cp/">use the <code>docker cp</code> command</a>.</p>
 
 </div>
 </div>

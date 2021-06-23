@@ -7,8 +7,6 @@ experimental-results
 compile-and-run-experiments
 docker
 getting-the-right-image
-dockerhub
-local-build
 spinning-up-a-container
 running-inside-the-container
 copying-content-from-the-container
