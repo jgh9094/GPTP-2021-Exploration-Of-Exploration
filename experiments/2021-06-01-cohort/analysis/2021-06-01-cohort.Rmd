@@ -127,10 +127,10 @@ elite_ave_performance_fig
 ```{r}
 # Compute manual labels for geom_signif
 stat.test <- final_data %>%
-  wilcox_test(elite_trait_avg ~ selection_name) %>%
+  wilcox_test(elite_trait_avg ~ proportion) %>%
   adjust_pvalue(method = "bonferroni") %>%
   add_significance() %>%
-  add_xy_position(x="selection_name",step.increase=1)
+  add_xy_position(x="proportion",step.increase=1)
 stat.test$manual_position <- stat.test$y.position * 1.05
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 ```
