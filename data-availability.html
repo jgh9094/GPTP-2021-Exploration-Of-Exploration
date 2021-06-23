@@ -24,7 +24,7 @@
 <meta name="author" content="Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria" />
 
 
-<meta name="date" content="2021-06-21" />
+<meta name="date" content="2021-06-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,6 +52,10 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" integrity="undefined" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="undefined" crossorigin="anonymous"></script> -->
 
 
 <style type="text/css">
@@ -137,7 +141,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#about-our-supplemental-material"><i class="fa fa-check"></i><b>1.1</b> About our supplemental material</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#contributing-authors"><i class="fa fa-check"></i><b>1.2</b> Contributing authors</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#research-overview"><i class="fa fa-check"></i><b>1.3</b> Research overview</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="data-availability.html"><a href="data-availability.html"><i class="fa fa-check"></i><b>2</b> Data Availability</a><ul>
 <li class="chapter" data-level="2.1" data-path="data-availability.html"><a href="data-availability.html#source-code"><i class="fa fa-check"></i><b>2.1</b> Source code</a></li>
@@ -157,8 +160,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#setup"><i class="fa fa-check"></i><b>4.3</b> Setup</a></li>
 <li class="chapter" data-level="4.4" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#exploration-diagnostic-performance"><i class="fa fa-check"></i><b>4.4</b> Exploration diagnostic performance</a></li>
 <li class="chapter" data-level="4.5" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#final-performance"><i class="fa fa-check"></i><b>4.5</b> Final Performance</a></li>
-<li class="chapter" data-level="4.6" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#unique-starting-positions"><i class="fa fa-check"></i><b>4.6</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#final-starting-position-coverage"><i class="fa fa-check"></i><b>4.6.1</b> Final starting position Coverage</a></li>
+<li class="chapter" data-level="4.6" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#activation-position-coverage"><i class="fa fa-check"></i><b>4.6</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#final-activation-position-coverage"><i class="fa fa-check"></i><b>4.6.1</b> Final activation position Coverage</a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="tournament-selection-vs-lexicase-selection.html"><a href="tournament-selection-vs-lexicase-selection.html#manuscript-figures"><i class="fa fa-check"></i><b>4.7</b> Manuscript figures</a></li>
 </ul></li>
@@ -169,8 +172,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.4" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#exploration-diagnostic-performance-1"><i class="fa fa-check"></i><b>5.4</b> Exploration diagnostic performance</a><ul>
 <li class="chapter" data-level="5.4.1" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#final-performance-1"><i class="fa fa-check"></i><b>5.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#unique-starting-positions-1"><i class="fa fa-check"></i><b>5.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="5.5.1" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#final-starting-position-coverage-1"><i class="fa fa-check"></i><b>5.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="5.5" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#activation-position-coverage-1"><i class="fa fa-check"></i><b>5.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#final-activation-position-coverage-1"><i class="fa fa-check"></i><b>5.5.1</b> Final activation position coverage</a></li>
 </ul></li>
 <li class="chapter" data-level="5.6" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#does-activation-position-coverage-predict-performance"><i class="fa fa-check"></i><b>5.6</b> Does activation position coverage predict performance?</a></li>
 <li class="chapter" data-level="5.7" data-path="diagnostic-cardinality.html"><a href="diagnostic-cardinality.html#manuscript-figures-1"><i class="fa fa-check"></i><b>5.7</b> Manuscript figures</a></li>
@@ -182,8 +185,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.4" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#exploration-diagnostic-performance-2"><i class="fa fa-check"></i><b>6.4</b> Exploration diagnostic performance</a><ul>
 <li class="chapter" data-level="6.4.1" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#final-performance-2"><i class="fa fa-check"></i><b>6.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="6.5" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#unique-starting-positions-2"><i class="fa fa-check"></i><b>6.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="6.5.1" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#final-starting-position-coverage-2"><i class="fa fa-check"></i><b>6.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="6.5" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#activation-position-coverage-2"><i class="fa fa-check"></i><b>6.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#final-activation-position-coverage-2"><i class="fa fa-check"></i><b>6.5.1</b> Final activation position coverage</a></li>
 </ul></li>
 <li class="chapter" data-level="6.6" data-path="increasing-population-size-versus-increasing-generations.html"><a href="increasing-population-size-versus-increasing-generations.html#manuscript-figures-2"><i class="fa fa-check"></i><b>6.6</b> Manuscript figures</a></li>
 </ul></li>
@@ -194,8 +197,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.4" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#exploration-diagnostic-performance-3"><i class="fa fa-check"></i><b>7.4</b> Exploration diagnostic performance</a><ul>
 <li class="chapter" data-level="7.4.1" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#final-performance-3"><i class="fa fa-check"></i><b>7.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="7.5" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#unique-starting-positions-3"><i class="fa fa-check"></i><b>7.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="7.5.1" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#final-coverage"><i class="fa fa-check"></i><b>7.5.1</b> Final coverage</a></li>
+<li class="chapter" data-level="7.5" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#activation-position-coverage-3"><i class="fa fa-check"></i><b>7.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#final-activation-position-coverage-3"><i class="fa fa-check"></i><b>7.5.1</b> Final activation position coverage</a></li>
 </ul></li>
 <li class="chapter" data-level="7.6" data-path="epsilon-lexicase.html"><a href="epsilon-lexicase.html#manuscript-figures-3"><i class="fa fa-check"></i><b>7.6</b> Manuscript figures</a></li>
 </ul></li>
@@ -206,70 +209,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.4" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#exploration-diagnostic-performance-4"><i class="fa fa-check"></i><b>8.4</b> Exploration diagnostic performance</a><ul>
 <li class="chapter" data-level="8.4.1" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#final-performance-4"><i class="fa fa-check"></i><b>8.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="8.5" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#unique-starting-positions-4"><i class="fa fa-check"></i><b>8.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="8.5.1" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#final-starting-position-coverage-3"><i class="fa fa-check"></i><b>8.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="8.5" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#activation-position-coverage-4"><i class="fa fa-check"></i><b>8.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#final-activation-position-coverage-4"><i class="fa fa-check"></i><b>8.5.1</b> Final activation position coverage</a></li>
 </ul></li>
 <li class="chapter" data-level="8.6" data-path="down-sampled-lexicase.html"><a href="down-sampled-lexicase.html#manuscript-figures-4"><i class="fa fa-check"></i><b>8.6</b> Manuscript figures</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html"><i class="fa fa-check"></i><b>9</b> Cohort lexicase</a><ul>
-<li class="chapter" data-level="9.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#overview-5"><i class="fa fa-check"></i><b>9.1</b> Overview</a></li>
-<li class="chapter" data-level="9.2" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#analysis-dependencies-5"><i class="fa fa-check"></i><b>9.2</b> Analysis dependencies</a></li>
-<li class="chapter" data-level="9.3" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#setup-5"><i class="fa fa-check"></i><b>9.3</b> Setup</a></li>
-<li class="chapter" data-level="9.4" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#exploration-diagnostic-performance-5"><i class="fa fa-check"></i><b>9.4</b> Exploration diagnostic performance</a><ul>
-<li class="chapter" data-level="9.4.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#final-performance-5"><i class="fa fa-check"></i><b>9.4.1</b> Final performance</a></li>
+<li class="chapter" data-level="9" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html"><i class="fa fa-check"></i><b>9</b> Down-sampled lexicase with increased population size</a><ul>
+<li class="chapter" data-level="9.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#overview-5"><i class="fa fa-check"></i><b>9.1</b> Overview</a></li>
+<li class="chapter" data-level="9.2" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#analysis-dependencies-5"><i class="fa fa-check"></i><b>9.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="9.3" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#setup-5"><i class="fa fa-check"></i><b>9.3</b> Setup</a></li>
+<li class="chapter" data-level="9.4" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#exploration-diagnostic-performance-5"><i class="fa fa-check"></i><b>9.4</b> Exploration diagnostic performance</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#final-performance-5"><i class="fa fa-check"></i><b>9.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="9.5" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#unique-starting-positions-5"><i class="fa fa-check"></i><b>9.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="9.5.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#final-starting-position-coverage-4"><i class="fa fa-check"></i><b>9.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="9.5" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#activation-position-coverage-5"><i class="fa fa-check"></i><b>9.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#final-activation-position-coverage-5"><i class="fa fa-check"></i><b>9.5.1</b> Final activation position coverage</a></li>
 </ul></li>
-<li class="chapter" data-level="9.6" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#manuscript-figures-5"><i class="fa fa-check"></i><b>9.6</b> Manuscript figures</a></li>
+<li class="chapter" data-level="9.6" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#manuscript-figures-5"><i class="fa fa-check"></i><b>9.6</b> Manuscript figures</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html"><i class="fa fa-check"></i><b>10</b> Down-sampled lexicase versus cohort lexicase</a><ul>
-<li class="chapter" data-level="10.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#overview-6"><i class="fa fa-check"></i><b>10.1</b> Overview</a></li>
-<li class="chapter" data-level="10.2" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#analysis-dependencies-6"><i class="fa fa-check"></i><b>10.2</b> Analysis dependencies</a></li>
-<li class="chapter" data-level="10.3" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#setup-6"><i class="fa fa-check"></i><b>10.3</b> Setup</a></li>
-<li class="chapter" data-level="10.4" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#exploration-diagnostic-performance-6"><i class="fa fa-check"></i><b>10.4</b> Exploration diagnostic performance</a><ul>
-<li class="chapter" data-level="10.4.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#final-performance-6"><i class="fa fa-check"></i><b>10.4.1</b> Final performance</a></li>
+<li class="chapter" data-level="10" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html"><i class="fa fa-check"></i><b>10</b> Cohort lexicase</a><ul>
+<li class="chapter" data-level="10.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#overview-6"><i class="fa fa-check"></i><b>10.1</b> Overview</a></li>
+<li class="chapter" data-level="10.2" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#analysis-dependencies-6"><i class="fa fa-check"></i><b>10.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="10.3" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#setup-6"><i class="fa fa-check"></i><b>10.3</b> Setup</a></li>
+<li class="chapter" data-level="10.4" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#exploration-diagnostic-performance-6"><i class="fa fa-check"></i><b>10.4</b> Exploration diagnostic performance</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#final-performance-6"><i class="fa fa-check"></i><b>10.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="10.5" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#unique-starting-positions-6"><i class="fa fa-check"></i><b>10.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="10.5.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#final-starting-position-coverage-5"><i class="fa fa-check"></i><b>10.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="10.5" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#activation-position-coverage-6"><i class="fa fa-check"></i><b>10.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#final-activation-position-coverage-6"><i class="fa fa-check"></i><b>10.5.1</b> Final activation position coverage</a></li>
 </ul></li>
-<li class="chapter" data-level="10.6" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#manuscript-figures-6"><i class="fa fa-check"></i><b>10.6</b> Manuscript figures</a></li>
+<li class="chapter" data-level="10.6" data-path="cohort-lexicase.html"><a href="cohort-lexicase.html#manuscript-figures-6"><i class="fa fa-check"></i><b>10.6</b> Manuscript figures</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html"><i class="fa fa-check"></i><b>11</b> Novelty lexicase</a><ul>
-<li class="chapter" data-level="11.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#overview-7"><i class="fa fa-check"></i><b>11.1</b> Overview</a></li>
-<li class="chapter" data-level="11.2" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#analysis-dependencies-7"><i class="fa fa-check"></i><b>11.2</b> Analysis dependencies</a></li>
-<li class="chapter" data-level="11.3" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#setup-7"><i class="fa fa-check"></i><b>11.3</b> Setup</a></li>
-<li class="chapter" data-level="11.4" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#exploration-diagnostic-performance-7"><i class="fa fa-check"></i><b>11.4</b> Exploration diagnostic performance</a><ul>
-<li class="chapter" data-level="11.4.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#final-performance-7"><i class="fa fa-check"></i><b>11.4.1</b> Final performance</a></li>
+<li class="chapter" data-level="11" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html"><i class="fa fa-check"></i><b>11</b> Cohort lexicase with increased population size</a><ul>
+<li class="chapter" data-level="11.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#overview-7"><i class="fa fa-check"></i><b>11.1</b> Overview</a></li>
+<li class="chapter" data-level="11.2" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#analysis-dependencies-7"><i class="fa fa-check"></i><b>11.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="11.3" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#setup-7"><i class="fa fa-check"></i><b>11.3</b> Setup</a></li>
+<li class="chapter" data-level="11.4" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#exploration-diagnostic-performance-7"><i class="fa fa-check"></i><b>11.4</b> Exploration diagnostic performance</a><ul>
+<li class="chapter" data-level="11.4.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#final-performance-7"><i class="fa fa-check"></i><b>11.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="11.5" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#unique-starting-positions-7"><i class="fa fa-check"></i><b>11.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="11.5.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#final-starting-position-coverage-6"><i class="fa fa-check"></i><b>11.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="11.5" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#activation-position-coverage-7"><i class="fa fa-check"></i><b>11.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="11.5.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#final-activation-position-coverage-7"><i class="fa fa-check"></i><b>11.5.1</b> Final activation position coverage</a></li>
 </ul></li>
-<li class="chapter" data-level="11.6" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#manuscript-figures-7"><i class="fa fa-check"></i><b>11.6</b> Manuscript figures</a></li>
+<li class="chapter" data-level="11.6" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#manuscript-figures-7"><i class="fa fa-check"></i><b>11.6</b> Manuscript figures</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html"><i class="fa fa-check"></i><b>12</b> Down-sampled lexicase with increased population size</a><ul>
-<li class="chapter" data-level="12.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#overview-8"><i class="fa fa-check"></i><b>12.1</b> Overview</a></li>
-<li class="chapter" data-level="12.2" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#analysis-dependencies-8"><i class="fa fa-check"></i><b>12.2</b> Analysis dependencies</a></li>
-<li class="chapter" data-level="12.3" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#setup-8"><i class="fa fa-check"></i><b>12.3</b> Setup</a></li>
-<li class="chapter" data-level="12.4" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#exploration-diagnostic-performance-8"><i class="fa fa-check"></i><b>12.4</b> Exploration diagnostic performance</a><ul>
-<li class="chapter" data-level="12.4.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#final-performance-8"><i class="fa fa-check"></i><b>12.4.1</b> Final performance</a></li>
+<li class="chapter" data-level="12" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html"><i class="fa fa-check"></i><b>12</b> Down-sampled lexicase versus cohort lexicase</a><ul>
+<li class="chapter" data-level="12.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#overview-8"><i class="fa fa-check"></i><b>12.1</b> Overview</a></li>
+<li class="chapter" data-level="12.2" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#analysis-dependencies-8"><i class="fa fa-check"></i><b>12.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="12.3" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#setup-8"><i class="fa fa-check"></i><b>12.3</b> Setup</a></li>
+<li class="chapter" data-level="12.4" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#exploration-diagnostic-performance-8"><i class="fa fa-check"></i><b>12.4</b> Exploration diagnostic performance</a><ul>
+<li class="chapter" data-level="12.4.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#final-performance-8"><i class="fa fa-check"></i><b>12.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="12.5" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#unique-starting-positions-8"><i class="fa fa-check"></i><b>12.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="12.5.1" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#final-starting-position-coverage-7"><i class="fa fa-check"></i><b>12.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="12.5" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#activation-position-coverage-8"><i class="fa fa-check"></i><b>12.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="12.5.1" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#final-activation-position-coverage-8"><i class="fa fa-check"></i><b>12.5.1</b> Final activation position coverage</a></li>
 </ul></li>
-<li class="chapter" data-level="12.6" data-path="down-sampled-lexicase-with-increased-population-size.html"><a href="down-sampled-lexicase-with-increased-population-size.html#manuscript-figures-8"><i class="fa fa-check"></i><b>12.6</b> Manuscript figures</a></li>
+<li class="chapter" data-level="12.6" data-path="down-sampled-lexicase-versus-cohort-lexicase.html"><a href="down-sampled-lexicase-versus-cohort-lexicase.html#manuscript-figures-8"><i class="fa fa-check"></i><b>12.6</b> Manuscript figures</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html"><i class="fa fa-check"></i><b>13</b> Cohort lexicase with increased population size</a><ul>
-<li class="chapter" data-level="13.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#overview-9"><i class="fa fa-check"></i><b>13.1</b> Overview</a></li>
-<li class="chapter" data-level="13.2" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#analysis-dependencies-9"><i class="fa fa-check"></i><b>13.2</b> Analysis dependencies</a></li>
-<li class="chapter" data-level="13.3" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#setup-9"><i class="fa fa-check"></i><b>13.3</b> Setup</a></li>
-<li class="chapter" data-level="13.4" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#exploration-diagnostic-performance-9"><i class="fa fa-check"></i><b>13.4</b> Exploration diagnostic performance</a><ul>
-<li class="chapter" data-level="13.4.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#final-performance-9"><i class="fa fa-check"></i><b>13.4.1</b> Final performance</a></li>
+<li class="chapter" data-level="13" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html"><i class="fa fa-check"></i><b>13</b> Novelty-lexicase</a><ul>
+<li class="chapter" data-level="13.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#overview-9"><i class="fa fa-check"></i><b>13.1</b> Overview</a></li>
+<li class="chapter" data-level="13.2" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#analysis-dependencies-9"><i class="fa fa-check"></i><b>13.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="13.3" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#setup-9"><i class="fa fa-check"></i><b>13.3</b> Setup</a></li>
+<li class="chapter" data-level="13.4" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#exploration-diagnostic-performance-9"><i class="fa fa-check"></i><b>13.4</b> Exploration diagnostic performance</a><ul>
+<li class="chapter" data-level="13.4.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#final-performance-9"><i class="fa fa-check"></i><b>13.4.1</b> Final performance</a></li>
 </ul></li>
-<li class="chapter" data-level="13.5" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#unique-starting-positions-9"><i class="fa fa-check"></i><b>13.5</b> Unique starting positions</a><ul>
-<li class="chapter" data-level="13.5.1" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#final-starting-position-coverage-8"><i class="fa fa-check"></i><b>13.5.1</b> Final starting position coverage</a></li>
+<li class="chapter" data-level="13.5" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#activation-position-coverage-9"><i class="fa fa-check"></i><b>13.5</b> Activation position coverage</a><ul>
+<li class="chapter" data-level="13.5.1" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#final-activation-position-coverage-9"><i class="fa fa-check"></i><b>13.5.1</b> Final activation position coverage</a></li>
 </ul></li>
-<li class="chapter" data-level="13.6" data-path="cohort-lexicase-with-increased-population-size.html"><a href="cohort-lexicase-with-increased-population-size.html#manuscript-figures-9"><i class="fa fa-check"></i><b>13.6</b> Manuscript figures</a></li>
+<li class="chapter" data-level="13.6" data-path="novelty-lexicase.html"><a href="novelty-lexicase.html#manuscript-figures-9"><i class="fa fa-check"></i><b>13.6</b> Manuscript figures</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
