@@ -1,4 +1,4 @@
-# Novelty lexicase
+# Novelty-lexicase
 
 ## Overview
 
@@ -9,6 +9,7 @@ working_directory <- "experiments/2021-06-01-novelty/analysis/"
 
 # Settings for visualization
 cb_palette <- "Set2"
+
 # Create directory to dump plots
 dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```
@@ -18,9 +19,14 @@ dir.create(paste0(working_directory, "imgs"), showWarnings=FALSE)
 ```{r, message=FALSE}
 library(ggplot2)
 library(tidyverse)
+library(knitr)
 library(cowplot)
 library(viridis)
 library(RColorBrewer)
+library(rstatix)
+library(ggsignif)
+library(Hmisc)
+library(kableExtra)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
 
@@ -62,6 +68,19 @@ data$unique_start_positions_coverage <-
   data$uni_str_pos / data$OBJECTIVE_CNT
 
 final_data <- filter(data, evaluations==max(data$evaluations))
+
+# Labeler for stats annotations
+p_label <- function(p_value) {
+  threshold = 0.0001
+  if (p_value < threshold) {
+    return(paste0("p < ", threshold))
+  } else {
+    return(paste0("p = ", p_value))
+  }
+}
+
+# Significance threshold
+alpha <- 0.05
 
 ####### misc #######
 # Configure our default graphing theme
@@ -105,6 +124,16 @@ elite_ave_performance_fig
 ### Final performance
 
 ```{r}
+# Compute manual labels for geom_signif
+stat.test <- final_data %>%
+  wilcox_test(elite_trait_avg ~ k) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="k",step.increase=1)
+stat.test$manual_position <- stat.test$y.position * 1.05
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+```
+```{r}
 elite_final_performance_fig <- ggplot(
     final_data,
     aes(x=k, y=elite_trait_avg, fill=k)
@@ -146,7 +175,21 @@ elite_final_performance_fig <- ggplot(
 elite_final_performance_fig
 ```
 
-## Unique starting positions
+```{r}
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
+```
+
+## Activation position coverage
 
 ```{r}
 unique_start_position_coverage_fig <- ggplot(
@@ -179,7 +222,18 @@ unique_start_position_coverage_fig <- ggplot(
 unique_start_position_coverage_fig
 ```
 
-### Final starting position coverage
+### Final activation position coverage
+
+```{r}
+# Compute manual labels for geom_signif
+stat.test <- final_data %>%
+  wilcox_test(unique_start_positions_coverage ~ k) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="k",step.increase=1)
+stat.test$manual_position <- stat.test$y.position * 1.05
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+```
 
 ```{r}
 unique_start_positions_coverage_final_fig <- ggplot(
@@ -221,6 +275,20 @@ unique_start_positions_coverage_final_fig <- ggplot(
     legend.position="none"
   )
 unique_start_positions_coverage_final_fig
+```
+
+```{r}
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
 ```
 
 ## Manuscript figures

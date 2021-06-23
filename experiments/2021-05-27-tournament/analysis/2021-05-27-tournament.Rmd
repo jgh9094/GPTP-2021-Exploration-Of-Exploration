@@ -226,7 +226,7 @@ stat.test %>%
   scroll_box(width="600px")
 ```
 
-## Unique activation coverage
+## Activation position coverage
 
 ```{r}
 ggplot(data, aes(x=gen, y=uni_str_pos, color=selection_name)) +
@@ -377,7 +377,7 @@ unique_start_positions_coverage_final_fig <- ggplot(
 unique_start_positions_coverage_final_fig
 ```
 
-```{r, echo=FALSE, results="asis"}
+```{r}
 stat.test %>%
   kbl() %>%
   kable_styling(

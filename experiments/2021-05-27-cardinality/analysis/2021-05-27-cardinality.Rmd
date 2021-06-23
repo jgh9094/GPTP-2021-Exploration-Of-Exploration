@@ -26,6 +26,7 @@ library(RColorBrewer)
 library(rstatix)
 library(ggsignif)
 library(Hmisc)
+library(kableExtra)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
 
@@ -180,11 +181,21 @@ elite_trait_ave_fit_final <- ggplot(
 elite_trait_ave_fit_final
 ```
 
-```{r, echo=FALSE, results="asis"}
-kable(stat.test)
+```{r}
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
 ```
 
-## Unique starting positions
+## Activation position coverage
 
 Next, we analyze the number of unique starting position maintained by populations.
 
@@ -244,7 +255,7 @@ unique_start_positions_coverage_fig <- ggplot(
 unique_start_positions_coverage_fig
 ```
 
-### Final starting position coverage
+### Final activation position coverage
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -303,8 +314,18 @@ final_unique_start_positions_coverage_fig <- ggplot(
 final_unique_start_positions_coverage_fig
 ```
 
-```{r, echo=FALSE, results="asis"}
-kable(stat.test)
+```{r}
+stat.test %>%
+  kbl() %>%
+  kable_styling(
+    bootstrap_options = c(
+      "striped",
+      "hover",
+      "condensed",
+      "responsive"
+    )
+  ) %>%
+  scroll_box(width="600px")
 ```
 
 ## Does activation position coverage predict performance?
