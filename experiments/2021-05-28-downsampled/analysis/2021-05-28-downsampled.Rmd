@@ -59,6 +59,13 @@ data$proportion <- factor(
   levels=c(1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01)
 )
 
+data$proportion_label <- data$DSLEX_PROP * 100
+data$proportion_label <- paste0(data$proportion_label, "%")
+data$proportion_label <- factor(
+  data$proportion_label,
+  levels=c("100%", "50%", "20%", "10%", "5%" , "2%", "1%")
+)
+
 data$elite_trait_avg <-
   data$ele_agg_per / data$OBJECTIVE_CNT
 data$unique_start_positions_coverage <-
@@ -92,8 +99,8 @@ elite_ave_performance_fig <- ggplot(
     aes(
       x=evaluations,
       y=elite_trait_avg,
-      color=proportion,
-      fill=proportion
+      color=proportion_label,
+      fill=proportion_label
     )
   ) +
   stat_summary(geom="line", fun=mean) +
@@ -127,10 +134,10 @@ elite_ave_performance_fig
 ```{r}
 # Compute manual labels for geom_signif
 stat.test <- final_data %>%
-  wilcox_test(elite_trait_avg ~ proportion) %>%
+  wilcox_test(elite_trait_avg ~ proportion_label) %>%
   adjust_pvalue(method = "bonferroni") %>%
   add_significance() %>%
-  add_xy_position(x="proportion",step.increase=1)
+  add_xy_position(x="proportion_label",step.increase=1)
 stat.test$manual_position <- stat.test$y.position * 1.05
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 ```
@@ -139,9 +146,9 @@ stat.test$label <- mapply(p_label,stat.test$p.adj)
 elite_final_performance_fig <- ggplot(
     final_data,
     aes(
-      x=proportion,
+      x=proportion_label,
       y=elite_trait_avg,
-      fill=proportion
+      fill=proportion_label
     )
   ) +
   geom_flat_violin(
@@ -150,7 +157,7 @@ elite_final_performance_fig <- ggplot(
     scale="width"
   ) +
   geom_point(
-    mapping=aes(color=proportion),
+    mapping=aes(color=proportion_label),
     position = position_jitter(width = .15),
     size = .5,
     alpha = 0.8
@@ -203,8 +210,8 @@ unique_start_position_coverage_fig <- ggplot(
     aes(
       x=evaluations,
       y=unique_start_positions_coverage,
-      color=proportion,
-      fill=proportion
+      color=proportion_label,
+      fill=proportion_label
     )
   ) +
   stat_summary(geom="line", fun=mean) +
@@ -238,10 +245,10 @@ unique_start_position_coverage_fig
 ```{r}
 # Compute manual labels for geom_signif
 stat.test <- final_data %>%
-  wilcox_test(unique_start_positions_coverage ~ proportion) %>%
+  wilcox_test(unique_start_positions_coverage ~ proportion_label) %>%
   adjust_pvalue(method = "bonferroni") %>%
   add_significance() %>%
-  add_xy_position(x="proportion",step.increase=1)
+  add_xy_position(x="proportion_label",step.increase=1)
 stat.test$manual_position <- stat.test$y.position * 1.05
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 ```
@@ -250,9 +257,9 @@ stat.test$label <- mapply(p_label,stat.test$p.adj)
 unique_start_positions_coverage_final_fig <- ggplot(
     final_data,
     aes(
-      x=proportion,
+      x=proportion_label,
       y=unique_start_positions_coverage,
-      fill=proportion
+      fill=proportion_label
     )
   ) +
   geom_flat_violin(
@@ -261,7 +268,7 @@ unique_start_positions_coverage_final_fig <- ggplot(
     scale="width"
   ) +
   geom_point(
-    mapping=aes(color=proportion),
+    mapping=aes(color=proportion_label),
     position = position_jitter(width = .15),
     size = .5,
     alpha = 0.8
