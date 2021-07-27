@@ -24,7 +24,7 @@
 <meta name="author" content="Jose Guadalupe Hernandez, Alexander Lalejini, and Charles Ofria" />
 
 
-<meta name="date" content="2021-06-23" />
+<meta name="date" content="2021-07-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -361,29 +361,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb102-17" title="17">  <span class="dt">levels=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>)</a>
 <a class="sourceLine" id="cb102-18" title="18">)</a>
 <a class="sourceLine" id="cb102-19" title="19"></a>
-<a class="sourceLine" id="cb102-20" title="20">data<span class="op">$</span>elite_trait_avg &lt;-</a>
-<a class="sourceLine" id="cb102-21" title="21"><span class="st">  </span>data<span class="op">$</span>ele_agg_per <span class="op">/</span><span class="st"> </span>data<span class="op">$</span>OBJECTIVE_CNT</a>
-<a class="sourceLine" id="cb102-22" title="22">data<span class="op">$</span>unique_start_positions_coverage &lt;-</a>
-<a class="sourceLine" id="cb102-23" title="23"><span class="st">  </span>data<span class="op">$</span>uni_str_pos <span class="op">/</span><span class="st"> </span>data<span class="op">$</span>OBJECTIVE_CNT</a>
-<a class="sourceLine" id="cb102-24" title="24"></a>
-<a class="sourceLine" id="cb102-25" title="25">final_data &lt;-<span class="st"> </span><span class="kw">filter</span>(data, evaluations<span class="op">==</span><span class="kw">max</span>(data<span class="op">$</span>evaluations))</a>
+<a class="sourceLine" id="cb102-20" title="20">data<span class="op">$</span>proportion_label &lt;-<span class="st"> </span>data<span class="op">$</span>COH_LEX_PROP <span class="op">*</span><span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb102-21" title="21">data<span class="op">$</span>proportion_label &lt;-<span class="st"> </span><span class="kw">paste0</span>(data<span class="op">$</span>proportion_label, <span class="st">&quot;%&quot;</span>)</a>
+<a class="sourceLine" id="cb102-22" title="22">data<span class="op">$</span>proportion_label &lt;-<span class="st"> </span><span class="kw">factor</span>(</a>
+<a class="sourceLine" id="cb102-23" title="23">  data<span class="op">$</span>proportion_label,</a>
+<a class="sourceLine" id="cb102-24" title="24">  <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;100%&quot;</span>, <span class="st">&quot;50%&quot;</span>, <span class="st">&quot;20%&quot;</span>, <span class="st">&quot;10%&quot;</span>, <span class="st">&quot;5%&quot;</span> , <span class="st">&quot;2%&quot;</span>, <span class="st">&quot;1%&quot;</span>)</a>
+<a class="sourceLine" id="cb102-25" title="25">)</a>
 <a class="sourceLine" id="cb102-26" title="26"></a>
-<a class="sourceLine" id="cb102-27" title="27"><span class="co"># Labeler for stats annotations</span></a>
-<a class="sourceLine" id="cb102-28" title="28">p_label &lt;-<span class="st"> </span><span class="cf">function</span>(p_value) {</a>
-<a class="sourceLine" id="cb102-29" title="29">  threshold =<span class="st"> </span><span class="fl">0.0001</span></a>
-<a class="sourceLine" id="cb102-30" title="30">  <span class="cf">if</span> (p_value <span class="op">&lt;</span><span class="st"> </span>threshold) {</a>
-<a class="sourceLine" id="cb102-31" title="31">    <span class="kw">return</span>(<span class="kw">paste0</span>(<span class="st">&quot;p &lt; &quot;</span>, threshold))</a>
-<a class="sourceLine" id="cb102-32" title="32">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb102-33" title="33">    <span class="kw">return</span>(<span class="kw">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_value))</a>
-<a class="sourceLine" id="cb102-34" title="34">  }</a>
-<a class="sourceLine" id="cb102-35" title="35">}</a>
-<a class="sourceLine" id="cb102-36" title="36"></a>
-<a class="sourceLine" id="cb102-37" title="37"><span class="co"># Significance threshold</span></a>
-<a class="sourceLine" id="cb102-38" title="38">alpha &lt;-<span class="st"> </span><span class="fl">0.05</span></a>
-<a class="sourceLine" id="cb102-39" title="39"></a>
-<a class="sourceLine" id="cb102-40" title="40"><span class="co">####### misc #######</span></a>
-<a class="sourceLine" id="cb102-41" title="41"><span class="co"># Configure our default graphing theme</span></a>
-<a class="sourceLine" id="cb102-42" title="42"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a></code></pre></div>
+<a class="sourceLine" id="cb102-27" title="27">data<span class="op">$</span>elite_trait_avg &lt;-</a>
+<a class="sourceLine" id="cb102-28" title="28"><span class="st">  </span>data<span class="op">$</span>ele_agg_per <span class="op">/</span><span class="st"> </span>data<span class="op">$</span>OBJECTIVE_CNT</a>
+<a class="sourceLine" id="cb102-29" title="29">data<span class="op">$</span>unique_start_positions_coverage &lt;-</a>
+<a class="sourceLine" id="cb102-30" title="30"><span class="st">  </span>data<span class="op">$</span>uni_str_pos <span class="op">/</span><span class="st"> </span>data<span class="op">$</span>OBJECTIVE_CNT</a>
+<a class="sourceLine" id="cb102-31" title="31"></a>
+<a class="sourceLine" id="cb102-32" title="32">final_data &lt;-<span class="st"> </span><span class="kw">filter</span>(data, evaluations<span class="op">==</span><span class="kw">max</span>(data<span class="op">$</span>evaluations))</a>
+<a class="sourceLine" id="cb102-33" title="33"></a>
+<a class="sourceLine" id="cb102-34" title="34"><span class="co"># Labeler for stats annotations</span></a>
+<a class="sourceLine" id="cb102-35" title="35">p_label &lt;-<span class="st"> </span><span class="cf">function</span>(p_value) {</a>
+<a class="sourceLine" id="cb102-36" title="36">  threshold =<span class="st"> </span><span class="fl">0.0001</span></a>
+<a class="sourceLine" id="cb102-37" title="37">  <span class="cf">if</span> (p_value <span class="op">&lt;</span><span class="st"> </span>threshold) {</a>
+<a class="sourceLine" id="cb102-38" title="38">    <span class="kw">return</span>(<span class="kw">paste0</span>(<span class="st">&quot;p &lt; &quot;</span>, threshold))</a>
+<a class="sourceLine" id="cb102-39" title="39">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb102-40" title="40">    <span class="kw">return</span>(<span class="kw">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_value))</a>
+<a class="sourceLine" id="cb102-41" title="41">  }</a>
+<a class="sourceLine" id="cb102-42" title="42">}</a>
+<a class="sourceLine" id="cb102-43" title="43"></a>
+<a class="sourceLine" id="cb102-44" title="44"><span class="co"># Significance threshold</span></a>
+<a class="sourceLine" id="cb102-45" title="45">alpha &lt;-<span class="st"> </span><span class="fl">0.05</span></a>
+<a class="sourceLine" id="cb102-46" title="46"></a>
+<a class="sourceLine" id="cb102-47" title="47"><span class="co">####### misc #######</span></a>
+<a class="sourceLine" id="cb102-48" title="48"><span class="co"># Configure our default graphing theme</span></a>
+<a class="sourceLine" id="cb102-49" title="49"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a></code></pre></div>
 </div>
 <div id="exploration-diagnostic-performance-6" class="section level2">
 <h2><span class="header-section-number">10.4</span> Exploration diagnostic performance</h2>
@@ -392,8 +399,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb103-3" title="3">    <span class="kw">aes</span>(</a>
 <a class="sourceLine" id="cb103-4" title="4">      <span class="dt">x=</span>evaluations,</a>
 <a class="sourceLine" id="cb103-5" title="5">      <span class="dt">y=</span>elite_trait_avg,</a>
-<a class="sourceLine" id="cb103-6" title="6">      <span class="dt">color=</span>proportion,</a>
-<a class="sourceLine" id="cb103-7" title="7">      <span class="dt">fill=</span>proportion</a>
+<a class="sourceLine" id="cb103-6" title="6">      <span class="dt">color=</span>proportion_label,</a>
+<a class="sourceLine" id="cb103-7" title="7">      <span class="dt">fill=</span>proportion_label</a>
 <a class="sourceLine" id="cb103-8" title="8">    )</a>
 <a class="sourceLine" id="cb103-9" title="9">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb103-10" title="10"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">geom=</span><span class="st">&quot;line&quot;</span>, <span class="dt">fun=</span>mean) <span class="op">+</span></a>
@@ -425,15 +432,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">10.4.1</span> Final performance</h3>
 <div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" title="1"><span class="co"># Compute manual labels for geom_signif</span></a>
 <a class="sourceLine" id="cb104-2" title="2">stat.test &lt;-<span class="st"> </span>final_data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb104-3" title="3"><span class="st">  </span><span class="kw">wilcox_test</span>(elite_trait_avg <span class="op">~</span><span class="st"> </span>proportion) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb104-3" title="3"><span class="st">  </span><span class="kw">wilcox_test</span>(elite_trait_avg <span class="op">~</span><span class="st"> </span>proportion_label) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb104-4" title="4"><span class="st">  </span><span class="kw">adjust_pvalue</span>(<span class="dt">method =</span> <span class="st">&quot;bonferroni&quot;</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb104-5" title="5"><span class="st">  </span><span class="kw">add_significance</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb104-6" title="6"><span class="st">  </span><span class="kw">add_xy_position</span>(<span class="dt">x=</span><span class="st">&quot;proportion&quot;</span>,<span class="dt">step.increase=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb104-6" title="6"><span class="st">  </span><span class="kw">add_xy_position</span>(<span class="dt">x=</span><span class="st">&quot;proportion_label&quot;</span>,<span class="dt">step.increase=</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb104-7" title="7">stat.test<span class="op">$</span>manual_position &lt;-<span class="st"> </span>stat.test<span class="op">$</span>y.position <span class="op">*</span><span class="st"> </span><span class="fl">1.05</span></a>
 <a class="sourceLine" id="cb104-8" title="8">stat.test<span class="op">$</span>label &lt;-<span class="st"> </span><span class="kw">mapply</span>(p_label,stat.test<span class="op">$</span>p.adj)</a></code></pre></div>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" title="1">elite_final_performance_fig &lt;-<span class="st"> </span><span class="kw">ggplot</span>(</a>
 <a class="sourceLine" id="cb105-2" title="2">    final_data,</a>
-<a class="sourceLine" id="cb105-3" title="3">    <span class="kw">aes</span>(<span class="dt">x=</span>proportion, <span class="dt">y=</span>elite_trait_avg, <span class="dt">fill=</span>proportion)</a>
+<a class="sourceLine" id="cb105-3" title="3">    <span class="kw">aes</span>(<span class="dt">x=</span>proportion_label, <span class="dt">y=</span>elite_trait_avg, <span class="dt">fill=</span>proportion_label)</a>
 <a class="sourceLine" id="cb105-4" title="4">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb105-5" title="5"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
 <a class="sourceLine" id="cb105-6" title="6">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
@@ -441,7 +448,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb105-8" title="8">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span></a>
 <a class="sourceLine" id="cb105-9" title="9">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb105-10" title="10"><span class="st">  </span><span class="kw">geom_point</span>(</a>
-<a class="sourceLine" id="cb105-11" title="11">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>proportion),</a>
+<a class="sourceLine" id="cb105-11" title="11">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>proportion_label),</a>
 <a class="sourceLine" id="cb105-12" title="12">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
 <a class="sourceLine" id="cb105-13" title="13">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
 <a class="sourceLine" id="cb105-14" title="14">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
@@ -539,10 +546,10 @@ label
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:right;">
 50
@@ -566,7 +573,7 @@ elite_trait_avg
 183.9910
 </td>
 <td style="text-align:left;">
-1 , 0.5
+100%, 50%
 </td>
 <td style="text-align:right;">
 1
@@ -586,10 +593,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:right;">
 50
@@ -613,7 +620,7 @@ elite_trait_avg
 274.1178
 </td>
 <td style="text-align:left;">
-1 , 0.2
+100%, 20%
 </td>
 <td style="text-align:right;">
 1
@@ -633,10 +640,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -660,7 +667,7 @@ elite_trait_avg
 364.2445
 </td>
 <td style="text-align:left;">
-1 , 0.1
+100%, 10%
 </td>
 <td style="text-align:right;">
 1
@@ -680,10 +687,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -707,7 +714,7 @@ elite_trait_avg
 454.3712
 </td>
 <td style="text-align:left;">
-1 , 0.05
+100%, 5%
 </td>
 <td style="text-align:right;">
 1
@@ -727,10 +734,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -754,7 +761,7 @@ elite_trait_avg
 544.4980
 </td>
 <td style="text-align:left;">
-1 , 0.02
+100%, 2%
 </td>
 <td style="text-align:right;">
 1
@@ -774,10 +781,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -801,7 +808,7 @@ elite_trait_avg
 634.6247
 </td>
 <td style="text-align:left;">
-1 , 0.01
+100%, 1%
 </td>
 <td style="text-align:right;">
 1
@@ -821,10 +828,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:right;">
 50
@@ -848,7 +855,7 @@ elite_trait_avg
 724.7515
 </td>
 <td style="text-align:left;">
-0.5, 0.2
+50%, 20%
 </td>
 <td style="text-align:right;">
 2
@@ -868,10 +875,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -895,7 +902,7 @@ elite_trait_avg
 814.8782
 </td>
 <td style="text-align:left;">
-0.5, 0.1
+50%, 10%
 </td>
 <td style="text-align:right;">
 2
@@ -915,10 +922,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -942,7 +949,7 @@ elite_trait_avg
 905.0050
 </td>
 <td style="text-align:left;">
-0.5 , 0.05
+50%, 5%
 </td>
 <td style="text-align:right;">
 2
@@ -962,10 +969,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -989,7 +996,7 @@ elite_trait_avg
 995.1318
 </td>
 <td style="text-align:left;">
-0.5 , 0.02
+50%, 2%
 </td>
 <td style="text-align:right;">
 2
@@ -1009,10 +1016,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1036,7 +1043,7 @@ elite_trait_avg
 1085.2585
 </td>
 <td style="text-align:left;">
-0.5 , 0.01
+50%, 1%
 </td>
 <td style="text-align:right;">
 2
@@ -1056,10 +1063,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -1083,7 +1090,7 @@ elite_trait_avg
 1175.3853
 </td>
 <td style="text-align:left;">
-0.2, 0.1
+20%, 10%
 </td>
 <td style="text-align:right;">
 3
@@ -1103,10 +1110,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -1130,7 +1137,7 @@ elite_trait_avg
 1265.5120
 </td>
 <td style="text-align:left;">
-0.2 , 0.05
+20%, 5%
 </td>
 <td style="text-align:right;">
 3
@@ -1150,10 +1157,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -1177,7 +1184,7 @@ elite_trait_avg
 1355.6388
 </td>
 <td style="text-align:left;">
-0.2 , 0.02
+20%, 2%
 </td>
 <td style="text-align:right;">
 3
@@ -1197,10 +1204,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1224,7 +1231,7 @@ elite_trait_avg
 1445.7655
 </td>
 <td style="text-align:left;">
-0.2 , 0.01
+20%, 1%
 </td>
 <td style="text-align:right;">
 3
@@ -1244,10 +1251,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -1271,7 +1278,7 @@ elite_trait_avg
 1535.8923
 </td>
 <td style="text-align:left;">
-0.1 , 0.05
+10%, 5%
 </td>
 <td style="text-align:right;">
 4
@@ -1291,10 +1298,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -1318,7 +1325,7 @@ elite_trait_avg
 1626.0190
 </td>
 <td style="text-align:left;">
-0.1 , 0.02
+10%, 2%
 </td>
 <td style="text-align:right;">
 4
@@ -1338,10 +1345,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1365,7 +1372,7 @@ elite_trait_avg
 1716.1457
 </td>
 <td style="text-align:left;">
-0.1 , 0.01
+10%, 1%
 </td>
 <td style="text-align:right;">
 4
@@ -1385,10 +1392,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -1412,7 +1419,7 @@ elite_trait_avg
 1806.2725
 </td>
 <td style="text-align:left;">
-0.05, 0.02
+5%, 2%
 </td>
 <td style="text-align:right;">
 5
@@ -1432,10 +1439,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1459,7 +1466,7 @@ elite_trait_avg
 1896.3992
 </td>
 <td style="text-align:left;">
-0.05, 0.01
+5%, 1%
 </td>
 <td style="text-align:right;">
 5
@@ -1479,10 +1486,10 @@ p &lt; 1e-04
 elite_trait_avg
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1506,7 +1513,7 @@ elite_trait_avg
 1986.5260
 </td>
 <td style="text-align:left;">
-0.02, 0.01
+2%, 1%
 </td>
 <td style="text-align:right;">
 6
@@ -1533,8 +1540,8 @@ p &lt; 1e-04
 <a class="sourceLine" id="cb107-3" title="3">    <span class="kw">aes</span>(</a>
 <a class="sourceLine" id="cb107-4" title="4">      <span class="dt">x=</span>evaluations,</a>
 <a class="sourceLine" id="cb107-5" title="5">      <span class="dt">y=</span>unique_start_positions_coverage,</a>
-<a class="sourceLine" id="cb107-6" title="6">      <span class="dt">color=</span>proportion,</a>
-<a class="sourceLine" id="cb107-7" title="7">      <span class="dt">fill=</span>proportion</a>
+<a class="sourceLine" id="cb107-6" title="6">      <span class="dt">color=</span>proportion_label,</a>
+<a class="sourceLine" id="cb107-7" title="7">      <span class="dt">fill=</span>proportion_label</a>
 <a class="sourceLine" id="cb107-8" title="8">    )</a>
 <a class="sourceLine" id="cb107-9" title="9">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb107-10" title="10"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">geom=</span><span class="st">&quot;line&quot;</span>, <span class="dt">fun=</span>mean) <span class="op">+</span></a>
@@ -1566,18 +1573,18 @@ p &lt; 1e-04
 <h3><span class="header-section-number">10.5.1</span> Final activation position coverage</h3>
 <div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" title="1"><span class="co"># Compute manual labels for geom_signif</span></a>
 <a class="sourceLine" id="cb108-2" title="2">stat.test &lt;-<span class="st"> </span>final_data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb108-3" title="3"><span class="st">  </span><span class="kw">wilcox_test</span>(unique_start_positions_coverage <span class="op">~</span><span class="st"> </span>proportion) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb108-3" title="3"><span class="st">  </span><span class="kw">wilcox_test</span>(unique_start_positions_coverage <span class="op">~</span><span class="st"> </span>proportion_label) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb108-4" title="4"><span class="st">  </span><span class="kw">adjust_pvalue</span>(<span class="dt">method =</span> <span class="st">&quot;bonferroni&quot;</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb108-5" title="5"><span class="st">  </span><span class="kw">add_significance</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb108-6" title="6"><span class="st">  </span><span class="kw">add_xy_position</span>(<span class="dt">x=</span><span class="st">&quot;proportion&quot;</span>,<span class="dt">step.increase=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb108-6" title="6"><span class="st">  </span><span class="kw">add_xy_position</span>(<span class="dt">x=</span><span class="st">&quot;proportion_label&quot;</span>,<span class="dt">step.increase=</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb108-7" title="7">stat.test<span class="op">$</span>manual_position &lt;-<span class="st"> </span>stat.test<span class="op">$</span>y.position <span class="op">*</span><span class="st"> </span><span class="fl">1.05</span></a>
 <a class="sourceLine" id="cb108-8" title="8">stat.test<span class="op">$</span>label &lt;-<span class="st"> </span><span class="kw">mapply</span>(p_label,stat.test<span class="op">$</span>p.adj)</a></code></pre></div>
 <div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" title="1">unique_start_positions_coverage_final_fig &lt;-<span class="st"> </span><span class="kw">ggplot</span>(</a>
 <a class="sourceLine" id="cb109-2" title="2">    final_data,</a>
 <a class="sourceLine" id="cb109-3" title="3">    <span class="kw">aes</span>(</a>
-<a class="sourceLine" id="cb109-4" title="4">      <span class="dt">x=</span>proportion,</a>
+<a class="sourceLine" id="cb109-4" title="4">      <span class="dt">x=</span>proportion_label,</a>
 <a class="sourceLine" id="cb109-5" title="5">      <span class="dt">y=</span>unique_start_positions_coverage,</a>
-<a class="sourceLine" id="cb109-6" title="6">      <span class="dt">fill=</span>proportion</a>
+<a class="sourceLine" id="cb109-6" title="6">      <span class="dt">fill=</span>proportion_label</a>
 <a class="sourceLine" id="cb109-7" title="7">    )</a>
 <a class="sourceLine" id="cb109-8" title="8">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb109-9" title="9"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
@@ -1586,7 +1593,7 @@ p &lt; 1e-04
 <a class="sourceLine" id="cb109-12" title="12">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span></a>
 <a class="sourceLine" id="cb109-13" title="13">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb109-14" title="14"><span class="st">  </span><span class="kw">geom_point</span>(</a>
-<a class="sourceLine" id="cb109-15" title="15">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>proportion),</a>
+<a class="sourceLine" id="cb109-15" title="15">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>proportion_label),</a>
 <a class="sourceLine" id="cb109-16" title="16">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
 <a class="sourceLine" id="cb109-17" title="17">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
 <a class="sourceLine" id="cb109-18" title="18">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
@@ -1684,10 +1691,10 @@ label
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:right;">
 50
@@ -1711,7 +1718,7 @@ unique_start_positions_coverage
 0.680
 </td>
 <td style="text-align:left;">
-1 , 0.5
+100%, 50%
 </td>
 <td style="text-align:right;">
 1
@@ -1731,10 +1738,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:right;">
 50
@@ -1758,7 +1765,7 @@ unique_start_positions_coverage
 0.974
 </td>
 <td style="text-align:left;">
-1 , 0.2
+100%, 20%
 </td>
 <td style="text-align:right;">
 1
@@ -1778,10 +1785,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -1805,7 +1812,7 @@ unique_start_positions_coverage
 1.268
 </td>
 <td style="text-align:left;">
-1 , 0.1
+100%, 10%
 </td>
 <td style="text-align:right;">
 1
@@ -1825,10 +1832,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -1852,7 +1859,7 @@ unique_start_positions_coverage
 1.562
 </td>
 <td style="text-align:left;">
-1 , 0.05
+100%, 5%
 </td>
 <td style="text-align:right;">
 1
@@ -1872,10 +1879,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -1899,7 +1906,7 @@ unique_start_positions_coverage
 1.856
 </td>
 <td style="text-align:left;">
-1 , 0.02
+100%, 2%
 </td>
 <td style="text-align:right;">
 1
@@ -1919,10 +1926,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-1
+100%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -1946,7 +1953,7 @@ unique_start_positions_coverage
 2.150
 </td>
 <td style="text-align:left;">
-1 , 0.01
+100%, 1%
 </td>
 <td style="text-align:right;">
 1
@@ -1966,10 +1973,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:right;">
 50
@@ -1993,7 +2000,7 @@ unique_start_positions_coverage
 2.444
 </td>
 <td style="text-align:left;">
-0.5, 0.2
+50%, 20%
 </td>
 <td style="text-align:right;">
 2
@@ -2013,10 +2020,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -2040,7 +2047,7 @@ unique_start_positions_coverage
 2.738
 </td>
 <td style="text-align:left;">
-0.5, 0.1
+50%, 10%
 </td>
 <td style="text-align:right;">
 2
@@ -2060,10 +2067,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -2087,7 +2094,7 @@ unique_start_positions_coverage
 3.032
 </td>
 <td style="text-align:left;">
-0.5 , 0.05
+50%, 5%
 </td>
 <td style="text-align:right;">
 2
@@ -2107,10 +2114,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -2134,7 +2141,7 @@ unique_start_positions_coverage
 3.326
 </td>
 <td style="text-align:left;">
-0.5 , 0.02
+50%, 2%
 </td>
 <td style="text-align:right;">
 2
@@ -2154,10 +2161,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.5
+50%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -2181,7 +2188,7 @@ unique_start_positions_coverage
 3.620
 </td>
 <td style="text-align:left;">
-0.5 , 0.01
+50%, 1%
 </td>
 <td style="text-align:right;">
 2
@@ -2201,10 +2208,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:right;">
 50
@@ -2228,7 +2235,7 @@ unique_start_positions_coverage
 3.914
 </td>
 <td style="text-align:left;">
-0.2, 0.1
+20%, 10%
 </td>
 <td style="text-align:right;">
 3
@@ -2248,10 +2255,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -2275,7 +2282,7 @@ unique_start_positions_coverage
 4.208
 </td>
 <td style="text-align:left;">
-0.2 , 0.05
+20%, 5%
 </td>
 <td style="text-align:right;">
 3
@@ -2295,10 +2302,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -2322,7 +2329,7 @@ unique_start_positions_coverage
 4.502
 </td>
 <td style="text-align:left;">
-0.2 , 0.02
+20%, 2%
 </td>
 <td style="text-align:right;">
 3
@@ -2342,10 +2349,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.2
+20%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -2369,7 +2376,7 @@ unique_start_positions_coverage
 4.796
 </td>
 <td style="text-align:left;">
-0.2 , 0.01
+20%, 1%
 </td>
 <td style="text-align:right;">
 3
@@ -2389,10 +2396,10 @@ p = 0.0010605
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:right;">
 50
@@ -2416,7 +2423,7 @@ unique_start_positions_coverage
 5.090
 </td>
 <td style="text-align:left;">
-0.1 , 0.05
+10%, 5%
 </td>
 <td style="text-align:right;">
 4
@@ -2436,10 +2443,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -2463,7 +2470,7 @@ unique_start_positions_coverage
 5.384
 </td>
 <td style="text-align:left;">
-0.1 , 0.02
+10%, 2%
 </td>
 <td style="text-align:right;">
 4
@@ -2483,10 +2490,10 @@ p = 0.004557
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.1
+10%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -2510,7 +2517,7 @@ unique_start_positions_coverage
 5.678
 </td>
 <td style="text-align:left;">
-0.1 , 0.01
+10%, 1%
 </td>
 <td style="text-align:right;">
 4
@@ -2530,10 +2537,10 @@ p = 0.042
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:right;">
 50
@@ -2557,7 +2564,7 @@ ns
 5.972
 </td>
 <td style="text-align:left;">
-0.05, 0.02
+5%, 2%
 </td>
 <td style="text-align:right;">
 5
@@ -2577,10 +2584,10 @@ p = 0.315
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.05
+5%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -2604,7 +2611,7 @@ unique_start_positions_coverage
 6.266
 </td>
 <td style="text-align:left;">
-0.05, 0.01
+5%, 1%
 </td>
 <td style="text-align:right;">
 5
@@ -2624,10 +2631,10 @@ p &lt; 1e-04
 unique_start_positions_coverage
 </td>
 <td style="text-align:left;">
-0.02
+2%
 </td>
 <td style="text-align:left;">
-0.01
+1%
 </td>
 <td style="text-align:right;">
 50
@@ -2651,7 +2658,7 @@ unique_start_positions_coverage
 6.560
 </td>
 <td style="text-align:left;">
-0.02, 0.01
+2%, 1%
 </td>
 <td style="text-align:right;">
 6
